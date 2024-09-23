@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35309.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaTurneroCastracion.Entity", "SistemaTurneroCastracion.Entity\SistemaTurneroCastracion.Entity.csproj", "{67F417D1-4A32-417B-9743-AD3BF0ADC184}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaTurneroCastracion.DAL", "SistemaTurneroCastracion.DAL\SistemaTurneroCastracion.DAL.csproj", "{6A2CA25D-0FC3-4A1C-A8AE-C6095E08686B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaTurneroCastracion.BLL", "SistemaTurneroCastracion.BLL\SistemaTurneroCastracion.BLL.csproj", "{B544EFFB-CA81-4EED-833B-A6238DA8A58C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaTurneroCastracion.IOC", "SistemaTurneroCastracion.IOC\SistemaTurneroCastracion.IOC.csproj", "{14740D6F-8D94-4656-8990-0F5CA396C4FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaTurneroCastracion.API", "SistemaTurneroCastracion.API\SistemaTurneroCastracion.API.csproj", "{255FE2CA-889F-455D-BFFC-B3BCEA662474}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67F417D1-4A32-417B-9743-AD3BF0ADC184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67F417D1-4A32-417B-9743-AD3BF0ADC184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67F417D1-4A32-417B-9743-AD3BF0ADC184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67F417D1-4A32-417B-9743-AD3BF0ADC184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A2CA25D-0FC3-4A1C-A8AE-C6095E08686B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A2CA25D-0FC3-4A1C-A8AE-C6095E08686B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A2CA25D-0FC3-4A1C-A8AE-C6095E08686B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A2CA25D-0FC3-4A1C-A8AE-C6095E08686B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B544EFFB-CA81-4EED-833B-A6238DA8A58C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B544EFFB-CA81-4EED-833B-A6238DA8A58C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B544EFFB-CA81-4EED-833B-A6238DA8A58C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B544EFFB-CA81-4EED-833B-A6238DA8A58C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14740D6F-8D94-4656-8990-0F5CA396C4FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14740D6F-8D94-4656-8990-0F5CA396C4FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14740D6F-8D94-4656-8990-0F5CA396C4FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14740D6F-8D94-4656-8990-0F5CA396C4FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{255FE2CA-889F-455D-BFFC-B3BCEA662474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{255FE2CA-889F-455D-BFFC-B3BCEA662474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{255FE2CA-889F-455D-BFFC-B3BCEA662474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{255FE2CA-889F-455D-BFFC-B3BCEA662474}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53489A79-1E79-44D5-ADE3-46CAED5F04CE}
+	EndGlobalSection
+EndGlobal

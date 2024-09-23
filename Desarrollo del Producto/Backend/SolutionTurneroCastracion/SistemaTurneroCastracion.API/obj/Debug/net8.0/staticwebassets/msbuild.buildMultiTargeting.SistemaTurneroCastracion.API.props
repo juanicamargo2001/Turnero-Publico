@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SistemaTurneroCastracion.API.props" />
+</Project>
