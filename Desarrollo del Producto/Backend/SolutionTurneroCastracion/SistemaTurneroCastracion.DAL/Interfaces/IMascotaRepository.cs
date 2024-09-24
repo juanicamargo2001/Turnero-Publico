@@ -1,4 +1,5 @@
 ﻿using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IMascotaRepository : IGenericRepository<Mascota>
     {
+        Task<List<MascotaDTO>> obtenerMascotasDueño();
+
     }
 }

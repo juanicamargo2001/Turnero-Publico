@@ -75,7 +75,7 @@ public partial class CentroCastracionContext : DbContext
             entity.ToTable("sexos");
 
             entity.Property(e => e.IdSexos).HasColumnName("id_sexos");
-            entity.Property(e => e.Sexo1)
+            entity.Property(e => e.SexoTipo)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("sexo");
@@ -88,7 +88,7 @@ public partial class CentroCastracionContext : DbContext
             entity.ToTable("tamaños");
 
             entity.Property(e => e.IdTamaño).HasColumnName("id_tamaño");
-            entity.Property(e => e.Tamaño1)
+            entity.Property(e => e.TamañoTipo)
                 .HasMaxLength(7)
                 .IsUnicode(false)
                 .HasColumnName("tamaño");

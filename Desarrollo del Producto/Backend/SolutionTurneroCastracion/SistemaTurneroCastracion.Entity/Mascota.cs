@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SistemaTurneroCastracion.Entity;
 
@@ -21,9 +22,13 @@ public partial class Mascota
 
     public string? Descripcion { get; set; }
 
-    public virtual Sexo IdSexoNavigation { get; set; } = null!;
 
-    public virtual Tamaño IdTamañoNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Sexo? IdSexoNavigation { get; set; } = null!;
 
-    public virtual TiposAnimal IdTipoAnimalNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Tamaño? IdTamañoNavigation { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual TiposAnimal? IdTipoAnimalNavigation { get; set; } = null!;
 }
