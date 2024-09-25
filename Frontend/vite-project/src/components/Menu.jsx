@@ -6,7 +6,7 @@ function Menu() {
   return (
     <nav className="navbar navbar-expand-lg bg-light w-100">
   <div className="container-fluid maven-pro-title">
-    <a className="navbar-brand" href="#">Navbar</a>
+    {/*<a className="navbar-brand" href="#">Navbar</a>*/}
     <button
       className="navbar-toggler"
       type="button"
@@ -21,13 +21,13 @@ function Menu() {
     <div className="collapse navbar-collapse" id="navbarNavDropdown">
       <ul className="navbar-nav">
         <li className="nav-item">
-          <a className="nav-link active " aria-current="page" href="#">Inicio</a>
+          <a className="nav-link active " aria-current="page" href="/">Inicio</a>
         </li>
         <li className="nav-item">
           <a className="nav-link" href="/registrar/animal">Obtener Turnos</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#">Pricing</a>
+          <a className="nav-link" href="/registrar/veterinario">Registrar Veterinario</a>
         </li>
         <li className="nav-item dropdown">
           <a

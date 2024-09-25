@@ -22,7 +22,7 @@ const RegistroAnimal = () => {
             type="text"
             className="form-control"
             id="nombre"
-            placeholder="Escribe el nombre del animal (opcional)"
+            placeholder="Escriba el nombre del animal (opcional)"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
@@ -33,7 +33,7 @@ const RegistroAnimal = () => {
             className="form-control"
             id="descripcion"
             rows="4"
-            placeholder="Escribe una descripción (opcional)"
+            placeholder="Escriba una descripción (opcional)"
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
           />
