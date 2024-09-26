@@ -1,11 +1,20 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "../index.css"
+import logo from '../imgs/logoBiocCordoba.png'; // Ajusta la ruta según la ubicación del archivo
+
 
 function Menu() {
   return (
-    <nav className="navbar navbar-expand-lg bg-light w-100">
+    <nav className="navbar navbar-expand-lg custom-menu-bg w-100">
   <div className="container-fluid maven-pro-title">
+  <a className="navbar-brand" href="/">
+          <img
+            src={logo}
+            alt="Logo"
+            className="d-inline-block align-text-top"
+          />
+        </a>
     {/*<a className="navbar-brand" href="#">Navbar</a>*/}
     <button
       className="navbar-toggler"

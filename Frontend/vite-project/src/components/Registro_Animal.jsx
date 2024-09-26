@@ -14,7 +14,7 @@ const RegistroAnimal = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="maven-pro-title">Formulario de Mascota</h2>
+      <h2 className="maven-pro-title">INGRESAR DATOS DE ANIMAL</h2>
       <form onSubmit={handleSubmit} className="maven-pro-body">
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
@@ -83,7 +83,11 @@ const RegistroAnimal = () => {
             <option value="" disabled>Seleccionar tamaño</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary">Enviar</button>
+        <div className="d-flex justify-content-between">
+        {/* Otros elementos si los hay */}
+        <button type="submit" className="btn btn-primary ms-auto confir">Confirmar</button>
+        </div>
+
       </form>
     </div>
   );
