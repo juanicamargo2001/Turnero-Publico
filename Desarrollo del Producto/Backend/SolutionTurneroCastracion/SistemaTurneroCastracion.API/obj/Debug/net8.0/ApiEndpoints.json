@@ -19,7 +19,7 @@
     "Parameters": [
       {
         "Name": "mascota",
-        "Type": "SistemaTurneroCastracion.Entity.Mascota",
+        "Type": "SistemaTurneroCastracion.Entity.Dtos.MascotaDTO",
         "IsRequired": true
       }
     ],
@@ -27,9 +27,25 @@
   },
   {
     "ContainingType": "SistemaTurneroCastracion.API.Controllers.MascotaController",
-    "Method": "BorrarMascota",
+    "Method": "EditarMascota",
     "RelativePath": "api/Mascota",
-    "HttpMethod": "DELETE",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "mascotaDto",
+        "Type": "SistemaTurneroCastracion.Entity.Dtos.MascotaDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.MascotaController",
+    "Method": "obtenerMascotaPorId",
+    "RelativePath": "api/Mascota/{id}",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [

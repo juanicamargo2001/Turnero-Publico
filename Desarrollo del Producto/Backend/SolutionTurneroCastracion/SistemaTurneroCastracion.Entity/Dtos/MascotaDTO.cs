@@ -8,6 +8,9 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 {
     public class MascotaDTO
     {
+
+        public int idMascota {  get; set; }
+
         public int Edad { get; set; }
 
         public string? Nombre { get; set; }
@@ -20,7 +23,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string? Tamaño { get; set; }
 
-        public string? Vecino { get; set; }
+        public int? Vecino { get; set; }
 
     }
 }

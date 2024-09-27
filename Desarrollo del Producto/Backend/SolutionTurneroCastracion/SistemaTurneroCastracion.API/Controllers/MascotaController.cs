@@ -15,7 +15,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         private readonly IMascotaRepository _mascotaRepository;
 
 
-        public MascotaController (IMascotaRepository mascotarepository)
+        public MascotaController(IMascotaRepository mascotarepository)
         {
             _mascotaRepository = mascotarepository;
         }
@@ -27,7 +27,8 @@ namespace SistemaTurneroCastracion.API.Controllers
             {
                 List<MascotaDTO> mascotas = await _mascotaRepository.obtenerMascotasDueño();
 
-                if (mascotas == null) {
+                if (mascotas == null)
+                {
 
                     return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontro ninguna Mascota", Result = "" });
                 }
@@ -35,85 +36,75 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotas });
 
             }
-            catch (Exception ex) { 
+            catch
+            {
                 return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" });
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CrearMascota([FromBody] Mascota mascota)
+        public async Task<IActionResult> CrearMascota([FromBody] MascotaDTO mascota)
         {
             try
             {
-                Mascota mascotaCreada = await _mascotaRepository.Crear(mascota);
+                Mascota mascotaCreada = await _mascotaRepository.crearMascota(mascota);
 
-                if (mascotaCreada == null) {
-                    return NotFound(new ValidacionResultadosDTO {Success = false, Message= "No se pudo registrar correctamente la mascota!", Result = ""});
+                if (mascotaCreada == null)
+                {
+                    return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se pudo registrar correctamente la mascota!", Result = "" });
                 }
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotaCreada });
 
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
             }
 
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> BorrarMascota([FromBody] int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> obtenerMascotaPorId(int id)
         {
             try
             {
-                Mascota mascotaEliminar = await _mascotaRepository.ObtenerPorId(id);
+                MascotaDTO mascotaId = await _mascotaRepository.obtenerMascotasDueño(id);
 
-                bool borrado = await _mascotaRepository.Eliminar(mascotaEliminar);
-
-                if (!borrado) {
-                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al intentar borrar la mascota o no existe!", Result = "" });
+                if (mascotaId == null)
+                {
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró la mascota!", Result = "" });
                 }
 
-                return NoContent();
-
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotaId });
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" });
             }
 
         }
+        [HttpPut]
+        public async Task<IActionResult> EditarMascota(MascotaDTO mascotaDto)
+        {
+            try
+            {
+                bool resultado = await _mascotaRepository.editarMascotaPorId(mascotaDto);
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> EditarMascota(int id, MascotaDTO mascotaDto)
-        //{
-        //    if (id != mascotaDto.idMascota)
-        //    {
-        //        return BadRequest("El ID proporcionado no coincide con el ID de la mascota.");
-        //    }
+                if (!resultado)
+                {
+                    return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontró una mascota con ese id!", Result = "" });
+                }
 
-        //    var mascota = await _mascotaRepository.ObtenerPorId(id);
 
-        //    if (mascota == null)
-        //    {
-        //        return NotFound("La mascota no se encontró.");
-        //    }
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+            }
+            catch { 
+                return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" }); 
+            }
+        }
 
-        //    // Mapear mascotaDto a la entidad Mascota
-        //    mascota.idTipoAnimal = mascotaDto.idTipoAnimal;
-        //    mascota.idSexo = mascotaDto.idSexo;
-        //    mascota.idTamaño = mascotaDto.idTamaño;
-        //    mascota.idVecino = mascotaDto.idVecino;
-        //    mascota.edad = mascotaDto.edad;
-        //    mascota.nombre = mascotaDto.nombre;
-        //    mascota.descripcion = mascotaDto.descripcion;
-
-        //    bool resultado = await _repository.Editar(mascota);
-
-        //    if (resultado)
-        //    {
-        //        return NoContent(); 
-        //    }
-        //}
 
     }
+
 }
+
