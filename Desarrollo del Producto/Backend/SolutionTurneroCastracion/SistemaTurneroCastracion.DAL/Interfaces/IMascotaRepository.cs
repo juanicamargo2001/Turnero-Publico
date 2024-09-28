@@ -11,7 +11,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface IMascotaRepository : IGenericRepository<Mascota>
     {
         Task<List<MascotaDTO>> obtenerMascotasDueño();
-        Task<MascotaDTO> obtenerMascotasDueño(int id);
+        Task<MascotaDTO> obtenerMascotasDueñoById(int id);
         Task<bool> editarMascotaPorId(MascotaDTO mascotaEditar);
         Task<Mascota> crearMascota(MascotaDTO mascota);
 

@@ -56,5 +56,317 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.SexoController",
+    "Method": "obtenerSexo",
+    "RelativePath": "api/Sexo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.SexoController",
+    "Method": "crearSexo",
+    "RelativePath": "api/Sexo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sexoNuevo",
+        "Type": "SistemaTurneroCastracion.Entity.Sexo",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.SexoController",
+    "Method": "editarSexo",
+    "RelativePath": "api/Sexo",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "sexoEditar",
+        "Type": "SistemaTurneroCastracion.Entity.Sexo",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.SexoController",
+    "Method": "obtenerSexoById",
+    "RelativePath": "api/Sexo/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.SexoController",
+    "Method": "borrarSexo",
+    "RelativePath": "api/Sexo/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.Tama\u00F1oController",
+    "Method": "obtenerTama\u00F1os",
+    "RelativePath": "api/Tama\u00F1o",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.Tama\u00F1oController",
+    "Method": "crearTama\u00F1o",
+    "RelativePath": "api/Tama\u00F1o",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tama\u00F1oCrear",
+        "Type": "SistemaTurneroCastracion.Entity.Tama\u00F1o",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.Tama\u00F1oController",
+    "Method": "editarTama\u00F1o",
+    "RelativePath": "api/Tama\u00F1o",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tama\u00F1oEditar",
+        "Type": "SistemaTurneroCastracion.Entity.Tama\u00F1o",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.Tama\u00F1oController",
+    "Method": "obtenerTama\u00F1oById",
+    "RelativePath": "api/Tama\u00F1o/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.Tama\u00F1oController",
+    "Method": "borrarTama\u00F1o",
+    "RelativePath": "api/Tama\u00F1o/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.TipoAnimalController",
+    "Method": "obtenerTipoAnimal",
+    "RelativePath": "api/TipoAnimal",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.TipoAnimalController",
+    "Method": "crearTipoAnimal",
+    "RelativePath": "api/TipoAnimal",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tiposAnimalCrear",
+        "Type": "SistemaTurneroCastracion.Entity.TiposAnimal",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.TipoAnimalController",
+    "Method": "editarTipoAnimal",
+    "RelativePath": "api/TipoAnimal",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tiposAnimalEditar",
+        "Type": "SistemaTurneroCastracion.Entity.TiposAnimal",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.TipoAnimalController",
+    "Method": "obtenerTipoAnimalById",
+    "RelativePath": "api/TipoAnimal/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.TipoAnimalController",
+    "Method": "borrarTipoAnimal",
+    "RelativePath": "api/TipoAnimal/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "obtenerVeterinarios",
+    "RelativePath": "api/Veterinario",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "crearVeterinario",
+    "RelativePath": "api/Veterinario",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "veterinarioCrear",
+        "Type": "SistemaTurneroCastracion.Entity.Veterinario",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "editarVeterinario",
+    "RelativePath": "api/Veterinario",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "veterinarioEditar",
+        "Type": "SistemaTurneroCastracion.Entity.Veterinario",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "obtenerVeterinarioById",
+    "RelativePath": "api/Veterinario/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "borrarVeterinario",
+    "RelativePath": "api/Veterinario/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "SistemaTurneroCastracion.API.Controllers.VeterinarioController",
+    "Method": "habilitarVeterinario",
+    "RelativePath": "api/Veterinario/habilitar/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]

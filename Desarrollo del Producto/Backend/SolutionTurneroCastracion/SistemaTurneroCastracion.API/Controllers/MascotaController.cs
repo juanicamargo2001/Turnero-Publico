@@ -68,7 +68,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         {
             try
             {
-                MascotaDTO mascotaId = await _mascotaRepository.obtenerMascotasDueño(id);
+                MascotaDTO mascotaId = await _mascotaRepository.obtenerMascotasDueñoById(id);
 
                 if (mascotaId == null)
                 {

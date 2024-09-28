@@ -44,7 +44,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<MascotaDTO> obtenerMascotasDueño(int id)
+        public async Task<MascotaDTO> obtenerMascotasDueñoById(int id)
         {
             using (var ctx = _dbContext)
             {

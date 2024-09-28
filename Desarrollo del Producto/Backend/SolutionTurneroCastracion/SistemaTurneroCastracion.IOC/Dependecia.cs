@@ -25,6 +25,14 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<IMascotaRepository, MascotaRepository>();
 
+            services.AddScoped<ISexoRepository, SexoRepository>();
+
+            services.AddScoped<ITipoAnimalRepository, TipoAnimalRepository>();
+
+            services.AddScoped<ITamañoRepository, TamañoRepository>();
+
+            services.AddScoped<IVeterinarioRepository, VeterinarioRepository>();
+
         }
     }
 }
