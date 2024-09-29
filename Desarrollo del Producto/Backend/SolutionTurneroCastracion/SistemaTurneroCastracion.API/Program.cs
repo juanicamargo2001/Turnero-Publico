@@ -1,6 +1,18 @@
 using SistemaTurneroCastracion.IOC;
 
+var MyAllowSpecificOrigins = "OriginsAllPermited";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          //policy.WithOrigins("http://example.com",
+                          //                    "http://www.contoso.com");
+                      });
+});
 
 
 builder.Services.AddControllers();
@@ -19,6 +31,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 
