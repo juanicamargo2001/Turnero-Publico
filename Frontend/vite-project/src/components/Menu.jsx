@@ -36,7 +36,7 @@ function Menu() {
           <a className="nav-link" href="/registrar/animal">Obtener Turnos</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="/registrar/veterinario">Registrar Veterinario</a>
+          <a className="nav-link" href="/modificar/veterinario">Veterinarios</a>
         </li>
         <li className="nav-item dropdown">
           <a
