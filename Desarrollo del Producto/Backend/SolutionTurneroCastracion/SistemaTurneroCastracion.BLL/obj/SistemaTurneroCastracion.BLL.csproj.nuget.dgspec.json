@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj": {}
+    "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj": {}
   },
   "projects": {
-    "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj": {
+    "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
+        "projectUniqueName": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
         "projectName": "SistemaTurneroCastracion.BLL",
-        "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
-        "packagesPath": "C:\\Users\\agust\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\obj\\",
+        "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
+        "packagesPath": "C:\\Users\\Martin\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\instalacion de visual\\cache\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\agust\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Martin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -32,11 +28,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj": {
-                "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj"
+              "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj": {
+                "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj"
               },
-              "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
-                "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
+              "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
+                "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
               }
             }
           }
@@ -45,13 +41,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -62,35 +52,25 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj": {
+    "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj",
+        "projectUniqueName": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj",
         "projectName": "SistemaTurneroCastracion.DAL",
-        "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj",
-        "packagesPath": "C:\\Users\\agust\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\obj\\",
+        "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj",
+        "packagesPath": "C:\\Users\\Martin\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\instalacion de visual\\cache\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\agust\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Martin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -104,8 +84,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
-                "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
+              "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
+                "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
               }
             }
           }
@@ -114,13 +94,7 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -131,35 +105,25 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
+    "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj",
+        "projectUniqueName": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj",
         "projectName": "SistemaTurneroCastracion.Entity",
-        "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj",
-        "packagesPath": "C:\\Users\\agust\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\obj\\",
+        "projectPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj",
+        "packagesPath": "C:\\Users\\Martin\\.nuget\\packages\\",
+        "outputPath": "D:\\Users\\Martin\\Desktop\\ProyectoSeminario\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\instalacion de visual\\cache\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\agust\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Martin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -179,46 +143,22 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "dependencies": {
-            "Microsoft.EntityFrameworkCore.SqlServer": {
-              "target": "Package",
-              "version": "[8.0.8, )"
-            },
-            "Microsoft.EntityFrameworkCore.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[8.0.8, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "all"
-            }
-          },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.410\\RuntimeIdentifierGraph.json"
         }
       }
     }
