@@ -1,6 +1,4 @@
 .vs/
-<<<<<<< HEAD
-.
-=======
-.Frontend/
->>>>>>> afce292966b718950150af400de54fedfbbaafd9
+.Frontend
+**/obj/
+
