@@ -9,5 +9,8 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IVeterinarioRepository : IGenericRepository<Veterinario>
     {
+
+        Task<Veterinario> buscarPorDocumento(int dni);
+
     }
 }

@@ -133,5 +133,21 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+        [HttpGet("/veterinario/{dni}")]
+        public async Task<IActionResult> buscarVeterinario(int dni)
+        {
+            if (dni == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el dni o no es valido!", Result = "" });
+
+            Veterinario veterinarioBuscado = await _veterinarioRepository.buscarPorDocumento(dni); 
+
+            if (veterinarioBuscado == null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un veterinario con ese dni asociado!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = veterinarioBuscado });
+
+        }
+
     }
 }

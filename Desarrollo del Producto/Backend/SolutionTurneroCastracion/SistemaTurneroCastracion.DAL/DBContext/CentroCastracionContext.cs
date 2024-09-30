@@ -33,7 +33,7 @@ public partial class CentroCastracionContext : DbContext
     {
         modelBuilder.Entity<Mascota>(entity =>
         {
-            entity.HasKey(e => e.IdMascota).HasName("PK__mascotas__6F037352AD90C913");
+            entity.HasKey(e => e.IdMascota).HasName("PK_mascotas");
 
             entity.ToTable("mascotas");
 
@@ -55,22 +55,22 @@ public partial class CentroCastracionContext : DbContext
             entity.HasOne(d => d.IdSexoNavigation).WithMany(p => p.Mascota)
                 .HasForeignKey(d => d.IdSexo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__mascotas__id_sex__412EB0B6");
+                .HasConstraintName("FK_mascotas_sexo");
 
             entity.HasOne(d => d.IdTamañoNavigation).WithMany(p => p.Mascota)
                 .HasForeignKey(d => d.IdTamaño)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__mascotas__id_tam__4222D4EF");
+                .HasConstraintName("FK_mascotas_tamaño");
 
             entity.HasOne(d => d.IdTipoAnimalNavigation).WithMany(p => p.Mascota)
                 .HasForeignKey(d => d.IdTipoAnimal)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__mascotas__id_tip__403A8C7D");
+                .HasConstraintName("FK_mascotas_tipo_animal");
         });
 
         modelBuilder.Entity<Sexo>(entity =>
         {
-            entity.HasKey(e => e.IdSexos).HasName("PK__sexos__49692BEA351AD111");
+            entity.HasKey(e => e.IdSexos).HasName("PK_sexos");
 
             entity.ToTable("sexos");
 
@@ -83,7 +83,7 @@ public partial class CentroCastracionContext : DbContext
 
         modelBuilder.Entity<Tamaño>(entity =>
         {
-            entity.HasKey(e => e.IdTamaño).HasName("PK__tamaños__073432EC4B8C8073");
+            entity.HasKey(e => e.IdTamaño).HasName("PK_tamaños");
 
             entity.ToTable("tamaños");
 
@@ -96,7 +96,7 @@ public partial class CentroCastracionContext : DbContext
 
         modelBuilder.Entity<TiposAnimal>(entity =>
         {
-            entity.HasKey(e => e.IdTipo).HasName("PK__tipos_an__CF901089C58D9B3D");
+            entity.HasKey(e => e.IdTipo).HasName("PK_tipos_animal");
 
             entity.ToTable("tipos_animal");
 
@@ -109,7 +109,7 @@ public partial class CentroCastracionContext : DbContext
 
         modelBuilder.Entity<Veterinario>(entity =>
         {
-            entity.HasKey(e => e.IdLegajo).HasName("PK__veterina__AB7BD83CB70FD0A3");
+            entity.HasKey(e => e.IdLegajo).HasName("PK_veterinarios");
 
             entity.ToTable("veterinarios");
 
@@ -136,6 +136,7 @@ public partial class CentroCastracionContext : DbContext
                 .HasColumnName("nombre");
             entity.Property(e => e.Telefono).HasColumnName("telefono");
         });
+
 
         OnModelCreatingPartial(modelBuilder);
     }
