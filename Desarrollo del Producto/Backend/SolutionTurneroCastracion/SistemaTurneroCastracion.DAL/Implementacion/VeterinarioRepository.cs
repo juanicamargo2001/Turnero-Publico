@@ -25,8 +25,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             try
             {
-                Veterinario veterinario = (Veterinario)await this.Consultar(v => v.Dni == dni);
-
+                Veterinario veterinario = await this.Obtener(v => v.Dni == dni);
 
                 return veterinario;
             }

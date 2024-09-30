@@ -38,7 +38,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
             catch
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
             }
         }
 
@@ -79,7 +79,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
             catch
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
             }
 
         }
@@ -99,7 +99,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
             }
             catch { 
-                return BadRequest(new ValidacionResultadosDTO { Success = true, Message = "Sucedio un error inesperado!", Result = "" }); 
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" }); 
             }
         }
 

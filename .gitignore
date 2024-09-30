@@ -1,4 +1,30 @@
-.vs/
+# Ignorar archivos de compilación
+bin/
+obj/
+Debug/
+
+# Ignorar archivos de configuración de usuario
+*.user
+*.suo
 .Frontend
-**/obj/
+
+# Ignorar archivos de depuración
+*.pdb
+*.exe
+*.dll
+*.cache
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar carpetas de Visual Studio
+.vs/
+
+# Ignorar archivos de backup
+*.bak
+
+# Ignorar otros archivos generados por el sistema
+Thumbs.db
+.DS_Store
+
 

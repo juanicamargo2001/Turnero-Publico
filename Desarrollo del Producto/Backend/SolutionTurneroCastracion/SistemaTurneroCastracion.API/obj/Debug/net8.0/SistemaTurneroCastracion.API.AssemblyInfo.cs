@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SistemaTurneroCastracion.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c980809356a133e0b529bfa735cde1421a61f649")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9c04f58a3e88998ee9262484aad0b4cf78f5f87d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SistemaTurneroCastracion.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SistemaTurneroCastracion.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
