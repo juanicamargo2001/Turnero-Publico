@@ -84,7 +84,7 @@ const Veterinarios = () => {
                         </td>
                         <td>{row.telefono}</td>
                         <td className="iconos">
-                        <a href='#' onClick={() => handleView(row)}><i title="Información" class="fa fa-edit" aria-hidden="true"></i></a>
+                        <a href='#' onClick={() => handleView(row)}><i title="Información" className="fa fa-edit" aria-hidden="true"></i></a>
                         </td>
                     </tr>
                     ))}
