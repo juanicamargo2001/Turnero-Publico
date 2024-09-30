@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SistemaTurneroCastracion.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c5493aaa52eedaecf2c0c9d6180752c162f26cf6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+69423de531646b810863096af7943029e806d3b6")]
 [assembly: System.Reflection.AssemblyProductAttribute("SistemaTurneroCastracion.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SistemaTurneroCastracion.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
