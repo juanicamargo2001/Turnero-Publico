@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\SistemaTurneroCastracion.API.props" />
-</Project>

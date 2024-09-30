@@ -27,10 +27,10 @@ namespace SistemaTurneroCastracion.API.Controllers
             {
                 List<MascotaDTO> mascotas = await _mascotaRepository.obtenerMascotasDueño();
 
-                if (mascotas == null)
+                if (mascotas.Count == 0)
                 {
 
-                    return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontro ninguna Mascota", Result = "" });
+                    return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontró ninguna Mascota", Result = "" });
                 }
 
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotas });
