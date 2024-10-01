@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/material_green.css';
+import 'flatpickr/dist/themes/light.css';
+import { Spanish } from "flatpickr/dist/l10n/es.js";
+import {veterinarioService} from "../../services/veterinario.service";
 
 const RegistroVeterinario = () => {
   const [nombre, setNombre] = useState('');
@@ -13,9 +15,38 @@ const RegistroVeterinario = () => {
   const [matricula, setMatricula] = useState('');
   const [telefono, setTelefono] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({ nombre, descripcion, edad, sexo, tamano });
+  
+    const nuevoVeterinario = { 
+      legajo,
+      matricula,
+      nombre,
+      //apellido,
+      telefono,
+      habilitado: true,
+      fecha,
+      domicilio,
+      dni, 
+      email 
+    };
+  
+    try {
+      await veterinarioService.Grabar(nuevoVeterinario);
+      alert("Mascota registrada con éxito");
+      // Limpiar el formulario
+      setNombre('');
+      setApellido('');
+      setDomicilio('');
+      setDNI('');
+      setEmail('');
+      setFecha('');
+      setLegajo('');
+      setMatricula('');
+      setTelefono('');
+    } catch (error) {
+      console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
+    }
   };
 
   return (
@@ -116,7 +147,10 @@ const RegistroVeterinario = () => {
             value={fecha}
             onChange={(date) => setFecha(date)}
             options={{ 
-              dateFormat: "d-m-Y"
+              altInput: true,
+              altFormat: "F j, Y",
+              dateFormat: "d-m-Y",
+              locale: Spanish,
             }}
             className="form-control"
             placeholder="Seleccione su fecha de nacimiento"

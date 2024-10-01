@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../Visual_Modificador';
+import {veterinarioService} from '../../services/veterinario.service';
 
 
 const Veterinarios = () => {
-    //const [data, setData] = useState([]);
+    const [data, setData] = useState([]);
 
     //EJEMPLO DE FILA DE DATOS
-    const data = [
+    data = [
         { legajo: '001', nombre: 'Juan', apellido: 'Pérez', email:'juanperes@gmail.com', dni:42642421 , habilitado:true, telefono:35131313131, matricula:400 },
         { legajo: '002', nombre: 'María', apellido: 'López', email:'juanperes@gmail.com', dni:42642421 , habilitado:true, telefono:35131313131, matricula:400 },
         { legajo: '003', nombre: 'Carlos', apellido: 'González', email:'juanperes@gmail.com', dni:42642421 , habilitado:false, telefono:35131313131, matricula:400 }
@@ -26,6 +27,14 @@ const Veterinarios = () => {
     };
 
     useEffect(() => {
+        const fetchVeterinarios = async () => {
+            try {
+              //const data = await veterinarioService.BuscarTodos();
+              //setData(data.result);
+            } catch (error) {
+              //setError("Error al cargar los sexos");
+            }
+        };
         /*fetch('https://api.ejemplo.com/data') // Cambia esta URL por tu query real
         .then(response => response.json())
         .then(result => setData(result))
@@ -34,6 +43,20 @@ const Veterinarios = () => {
     
     const handleView = (row) => {
         openModal(row);
+    };
+
+    const handleModalSubmitSort = async (formData) => {
+        console.log('Datos modificados de la entidad:', formData);
+        const orderedKeys = ['legajo', 'matricula', 'nombre', /*'apellido',*/ 'telefono', 'habilitado',
+            'fecha', 'domicilio', 'dni', 'email' ];
+        const jsonReordenado = {};
+        orderedKeys.forEach(key => {jsonReordenado[key] = formData[key];});
+        try {
+            await veterinarioService.Modificar(jsonReordenado);
+            alert("Veterinario modificado correctamente");
+        } catch (error) {
+            console.error("Error al modificar el veterinario:", error.response ? error.response.data : error);
+        }
     };
 
     return (
@@ -95,6 +118,7 @@ const Veterinarios = () => {
                 show={isModalOpen}
                 handleClose={closeModal}
                 item={selectedItem || {}}
+                onSubmitSort={handleModalSubmitSort}
             />
         </div>
     );

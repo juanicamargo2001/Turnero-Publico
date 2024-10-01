@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Modal = ({ show, handleClose, item }) => {
+const Modal = ({ show, handleClose, item, onSubmitSort }) => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
@@ -19,8 +19,7 @@ const Modal = ({ show, handleClose, item }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Datos modificados:', formData);
-    // Aquí puedes manejar la lógica para guardar los datos modificados
+    onSubmitSort(formData);
     handleClose(); // Cierra el modal después de modificar
   };
 
