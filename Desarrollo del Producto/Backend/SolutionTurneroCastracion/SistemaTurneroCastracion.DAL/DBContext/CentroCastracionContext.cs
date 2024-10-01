@@ -135,6 +135,10 @@ public partial class CentroCastracionContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("nombre");
             entity.Property(e => e.Telefono).HasColumnName("telefono");
+            entity.Property(e => e.Apellido)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("apellido");
         });
 
 

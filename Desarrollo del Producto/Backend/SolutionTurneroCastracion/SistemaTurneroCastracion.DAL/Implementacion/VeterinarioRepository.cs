@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.DAL.DBContext;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -20,14 +21,17 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _dbContext = dbContext;
         }
 
-        public async Task<Veterinario> buscarPorDocumento(int dni)
+        public async Task<List<Veterinario>> buscarPorDocumento(int dni)
         {
-
             try
             {
-                Veterinario veterinario = await this.Obtener(v => v.Dni == dni);
+                string dniParceado = dni.ToString();
 
-                return veterinario;
+                List<Veterinario> veterinarios = await _dbContext.Veterinarios
+                    .Where(v => v.Dni.ToString().Contains(dniParceado))
+                    .ToListAsync();
+
+                return veterinarios;
             }
             catch (Exception ex) { 
             

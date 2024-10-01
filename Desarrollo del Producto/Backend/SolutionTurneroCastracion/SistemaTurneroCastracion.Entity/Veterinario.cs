@@ -11,6 +11,8 @@ public partial class Veterinario
 
     public string? Nombre { get; set; }
 
+    public string? Apellido { get; set; }
+
     public long? Telefono { get; set; }
 
     public bool Habilitado { get; set; }
