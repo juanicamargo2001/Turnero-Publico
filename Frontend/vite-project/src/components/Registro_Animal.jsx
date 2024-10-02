@@ -3,51 +3,43 @@ import { mascotaService } from '../services/mascota.service';
 import { sexosService } from '../services/sexo.service';
 import { tamanoService } from '../services/tamano.service';
 import { tipoAnimalService } from '../services/tipoAnimal.service';
+import { useForm } from 'react-hook-form';
 
 const RegistroAnimal = () => {
   const [sexos, setSexos] = useState([]);
   const [tamanos, setTamanos] = useState([]);
   const [tiposAnimal, setTiposAnimal] = useState([]);
-  
-  const [vecino, setVecino] = useState(''); // Cambiar a string para permitir un campo de entrada
   const [error, setError] = useState(null);
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [edad, setEdad] = useState('');
-  const [sexo, setSexo] = useState('');
-  const [tamano, setTamano] = useState('');
-  const [tipoAnimal, setTipoAnimal] = useState('');
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-  
+
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = async (data) => {
     const nuevaMascota = {
-      edad: parseInt(edad), // Asegúrate de que sea un número
-      nombre,
-      descripcion,
-      sexo, // Esto debe ser la cadena correspondiente
-      tipoAnimal, // Esto también debe ser la cadena correspondiente
-      tamaño: tamano, // Esto debe ser la cadena correspondiente
-      vecino: parseInt(vecino) // Convertir a número si es necesario
+      edad: parseInt(data.edad),
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      sexo: data.sexo,
+      tipoAnimal: data.tipoAnimal,
+      tamaño: data.tamano,
+      vecino: parseInt(data.vecino) 
     };
   
     try {
       await mascotaService.Grabar(nuevaMascota);
       alert("Mascota registrada con éxito");
-      // Limpiar el formulario
-      setNombre('');
-      setDescripcion('');
-      setEdad('');
-      setSexo('');
-      setTamano('');
-      setTipoAnimal('');
-      setVecino('');
+      
+      Object.keys(data).forEach((key) => {
+        if (key !== 'edad' && key !== 'vecino') {
+          data[key] = ''; 
+        }
+      });
     } catch (error) {
       setError("Error al registrar la mascota. Por favor, inténtelo de nuevo.");
       console.error("Error al registrar la mascota:", error.response ? error.response.data : error);
     }
   };
-  
+
   useEffect(() => {
     const fetchSexos = async () => {
       try {
@@ -57,7 +49,7 @@ const RegistroAnimal = () => {
         setError("Error al cargar los sexos");
       }
     };
-  
+
     const fetchTamanos = async () => {
       try {
         const data = await tamanoService.Buscar();
@@ -66,7 +58,7 @@ const RegistroAnimal = () => {
         setError("Error al cargar los tamaños");
       }
     };
-  
+
     const fetchTiposAnimal = async () => {
       try {
         const data = await tipoAnimalService.Buscar();
@@ -75,7 +67,7 @@ const RegistroAnimal = () => {
         setError("Error al cargar los tipos de animales");
       }
     };
-  
+
     fetchSexos();
     fetchTamanos();
     fetchTiposAnimal();
@@ -84,7 +76,7 @@ const RegistroAnimal = () => {
   return (
     <div className="container mt-4">
       <h2 className="maven-pro-title">INGRESAR DATOS DE ANIMAL</h2>
-      <form onSubmit={handleSubmit} className="maven-pro-body">
+      <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
           <input
@@ -92,8 +84,7 @@ const RegistroAnimal = () => {
             className="form-control"
             id="nombre"
             placeholder="Escriba el nombre del animal (opcional)"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            {...register('nombre')}
           />
         </div>
         <div className="mb-3">
@@ -103,30 +94,28 @@ const RegistroAnimal = () => {
             id="descripcion"
             rows="4"
             placeholder="Escriba una descripción (opcional)"
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
+            {...register('descripcion')}
           />
         </div>
         <div className="mb-3">
           <label htmlFor="edad" className="form-label">Edad</label>
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${errors.edad ? 'is-invalid' : ''}`} 
             id="edad"
             placeholder="Ingrese la edad aproximada"
-            value={edad}
-            onChange={(e) => setEdad(e.target.value)}
-            required
+            {...register('edad', { required: 'La edad es requerida' })}
           />
+          {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 
         </div>
+
         <div className="mb-3">
           <label htmlFor="tipoAnimal" className="form-label">Tipo de Animal</label>
           <select
-            className="form-select"
+            className={`form-select ${errors.tipoAnimal ? 'is-invalid' : ''}`} 
             id="tipoAnimal"
-            value={tipoAnimal}
-            onChange={(e) => setTipoAnimal(e.target.value)}
-            required
+            defaultValue="" 
+            {...register('tipoAnimal', { required: 'El tipo de animal es requerido' })} 
           >
             <option value="" disabled>Seleccionar Tipo de animal</option>
             {tiposAnimal.map((tipo) => (
@@ -135,32 +124,34 @@ const RegistroAnimal = () => {
               </option>
             ))}
           </select>
+          {errors.tipoAnimal && <div className="invalid-feedback">{errors.tipoAnimal.message}</div>}
         </div>
+
         <div className="mb-3">
-          <label htmlFor="sexo" className="form-label">Sexo</label>
-          <select
-            className="form-select"
-            id="sexo"
-            value={sexo}
-            onChange={(e) => setSexo(e.target.value)}
-            required
-          >
-            <option value="" disabled>Seleccionar sexo</option>
-            {sexos.map(sexo => (
-              <option key={sexo.idSexos} value={sexo.sexoTipo}> {/* Cambia esto a sexo.sexoTipo */}
-                {sexo.sexoTipo}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-3">
+        <label htmlFor="sexo" className="form-label">Sexo</label>
+        <select
+          className={`form-select ${errors.sexo ? 'is-invalid' : ''}`} 
+          id="sexo"
+          defaultValue="" 
+          {...register('sexo', { required: 'El sexo es requerido' })} 
+        >
+          <option value="" disabled>Seleccionar sexo</option>
+          {sexos.map(sexo => (
+            <option key={sexo.idSexos} value={sexo.sexoTipo}>
+              {sexo.sexoTipo}
+            </option>
+          ))}
+        </select>
+        {errors.sexo && <div className="invalid-feedback">{errors.sexo.message}</div>} 
+      </div>
+
+      <div className="mb-3">
           <label htmlFor="tamano" className="form-label">Tamaño</label>
           <select
-            className="form-select"
+            className={`form-select ${errors.tamano ? 'is-invalid' : ''}`}
             id="tamano"
-            value={tamano}
-            onChange={(e) => setTamano(e.target.value)}
-            required
+            defaultValue="" 
+            {...register('tamano', { required: 'El tamaño es requerido' })} 
           >
             <option value="" disabled>Seleccionar tamaño</option>
             {tamanos.map((tamano) => (
@@ -169,17 +160,18 @@ const RegistroAnimal = () => {
               </option>
             ))}
           </select>
-        </div>
+          {errors.tamano && <div className="invalid-feedback">{errors.tamano.message}</div>} 
+     </div>
+
         <div className="mb-3">
           <label htmlFor="vecino" className="form-label">Número de Vecino</label>
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${errors.vecino ? 'is-invalid' : ''}`} 
             id="vecino"
-            value={vecino}
-            onChange={(e) => setVecino(e.target.value)}
-            required
+            {...register('vecino', { required: 'El número de vecino es requerido' })} 
           />
+          {errors.vecino && <div className="invalid-feedback">{errors.vecino.message}</div>}
         </div>
         <div className="d-flex justify-content-between">
           <button type="submit" className="btn btn-primary ms-auto confir">Confirmar</button>
