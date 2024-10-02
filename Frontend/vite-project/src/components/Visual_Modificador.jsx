@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/light.css';
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 
 const Modal = ({ show, handleClose, item, onSubmitSort }) => {
   const [formData, setFormData] = useState({});
@@ -9,11 +12,16 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
     }
   }, [item]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e, key) => {
+    let value = "";
+    console.log(e.target, key);
+    if (e[0] instanceof Date){value = e[0];} else {
+      key = e.target.id;
+      value = e.target.value;
+    }
     setFormData({
       ...formData,
-      [name]: value, // Actualiza el estado con el nuevo valor
+      [key]: value, // Actualiza el estado con el nuevo valor
     });
   };
 
@@ -71,13 +79,17 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
                         className="form-control"
                       />
                     ) : (
-                      <input
-                        type="date"
-                        name={key}
-                        id={key}
-                        value={formData[key].substring(0, 10)} // Asegúrate de que sea en formato YYYY-MM-DD
-                        onChange={handleInputChange}
+                      <Flatpickr
+                        value={formData[key]}
+                        onChange={(date) => handleInputChange(date, key)}
+                        options={{ 
+                          altInput: true,
+                          altFormat: "F j, Y",
+                          dateFormat: "YYYY-mm-ddThh:mm:ss",
+                          locale: Spanish,
+                        }}
                         className="form-control"
+                        placeholder={formData[key]}
                       />
                     )}
                   </li>

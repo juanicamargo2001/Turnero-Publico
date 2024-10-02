@@ -4,14 +4,9 @@ import {veterinarioService} from '../../services/veterinario.service';
 
 
 const Veterinarios = () => {
+    const [error, setError] = useState(null);
     const [data, setData] = useState([]);
-
-    //EJEMPLO DE FILA DE DATOS
-    data = [
-        { legajo: '001', nombre: 'Juan', apellido: 'Pérez', email:'juanperes@gmail.com', dni:42642421 , habilitado:true, telefono:35131313131, matricula:400 },
-        { legajo: '002', nombre: 'María', apellido: 'López', email:'juanperes@gmail.com', dni:42642421 , habilitado:true, telefono:35131313131, matricula:400 },
-        { legajo: '003', nombre: 'Carlos', apellido: 'González', email:'juanperes@gmail.com', dni:42642421 , habilitado:false, telefono:35131313131, matricula:400 }
-    ];
+    const [leg, setLegajo] = useState(null);
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,34 +21,41 @@ const Veterinarios = () => {
         setSelectedItem(null);
     };
 
+    const fetchVeterinarios = async () => {
+        try {
+          const data = await veterinarioService.BuscarTodos();
+          setData(data.result);
+        } catch (error) {
+          setError(error);
+        }
+    };
+
     useEffect(() => {
-        const fetchVeterinarios = async () => {
-            try {
-              //const data = await veterinarioService.BuscarTodos();
-              //setData(data.result);
-            } catch (error) {
-              //setError("Error al cargar los sexos");
-            }
-        };
-        /*fetch('https://api.ejemplo.com/data') // Cambia esta URL por tu query real
-        .then(response => response.json())
-        .then(result => setData(result))
-        .catch(error => console.error('Error fetching data:', error));*/
+        fetchVeterinarios();
     }, []);
     
     const handleView = (row) => {
-        openModal(row);
+        setLegajo(row.idLegajo);
+        //MANEJAR ESTO EN UN COMPONENTE ESPECIFICO
+        row.fNacimiento = new Date(row.fNacimiento);
+        const { idLegajo, ...newRow } = row;
+        openModal(newRow);
     };
 
     const handleModalSubmitSort = async (formData) => {
-        console.log('Datos modificados de la entidad:', formData);
-        const orderedKeys = ['legajo', 'matricula', 'nombre', /*'apellido',*/ 'telefono', 'habilitado',
+        /*ACA ORDENO EL JSON PERO NO HACE FALTA
+        const orderedKeys = ['matricula', 'nombre', 'apellido', 'telefono', 'habilitado',
             'fecha', 'domicilio', 'dni', 'email' ];
-        const jsonReordenado = {};
-        orderedKeys.forEach(key => {jsonReordenado[key] = formData[key];});
+        const jsonReordenado = {idLegajo: leg};
+        orderedKeys.forEach(key => {jsonReordenado[key] = formData[key];});*/
+        
+        formData.idLegajo = leg;
+        formData.fNacimiento = formData.fNacimiento.toISOString().split("T")[0] + "T00:00:00";
+
         try {
-            await veterinarioService.Modificar(jsonReordenado);
+            await veterinarioService.Modificar(formData);
             alert("Veterinario modificado correctamente");
+            fetchVeterinarios();
         } catch (error) {
             console.error("Error al modificar el veterinario:", error.response ? error.response.data : error);
         }
@@ -67,15 +69,15 @@ const Veterinarios = () => {
                     <button className="btn btn-primary confir">Crear Veterinario</button>
                 </a>
                 <div className="input-group w-25">
-                <input 
-                    type="text" 
-                    className="form-control" 
-                    placeholder="Buscar veterinario..." 
-                    aria-label="Buscar veterinario" 
-                />
-                <span className="input-group-text">
-                    <i className="fa fa-search"></i>
-                </span>
+                    <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Buscar veterinario..." 
+                        aria-label="Buscar veterinario" 
+                    />
+                    <span className="input-group-text">
+                        <i className="fa fa-search"></i>
+                    </span>
                 </div>
             </div>
             <table>
@@ -94,7 +96,7 @@ const Veterinarios = () => {
                 <tbody>
                     {data.map((row, index) => (
                     <tr key={index}>
-                        <td>{row.legajo}</td>
+                        <td>{row.idLegajo}</td>
                         <td>{row.nombre}</td>
                         <td>{row.apellido}</td>
                         <td>{row.dni}</td>

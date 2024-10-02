@@ -5,13 +5,13 @@ import { Spanish } from "flatpickr/dist/l10n/es.js";
 import {veterinarioService} from "../../services/veterinario.service";
 
 const RegistroVeterinario = () => {
+  const [error, setError] = useState(null);
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [domicilio, setDomicilio] = useState('');
   const [dni, setDNI] = useState('');
   const [email, setEmail] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [legajo, setLegajo] = useState('');
+  const [fecha, setFecha] = useState(null);
   const [matricula, setMatricula] = useState('');
   const [telefono, setTelefono] = useState('');
 
@@ -19,21 +19,21 @@ const RegistroVeterinario = () => {
     event.preventDefault();
   
     const nuevoVeterinario = { 
-      legajo,
-      matricula,
-      nombre,
-      //apellido,
-      telefono,
+      matricula: matricula,
+      nombre: nombre,
+      apellido: apellido,
+      telefono: telefono,
       habilitado: true,
-      fecha,
-      domicilio,
-      dni, 
-      email 
+      fNacimiento: fecha[0],
+      domicilio: domicilio,
+      dni: dni, 
+      email: email, 
     };
+
   
     try {
       await veterinarioService.Grabar(nuevoVeterinario);
-      alert("Mascota registrada con éxito");
+      alert("Veterinario registrado con éxito");
       // Limpiar el formulario
       setNombre('');
       setApellido('');
@@ -41,11 +41,11 @@ const RegistroVeterinario = () => {
       setDNI('');
       setEmail('');
       setFecha('');
-      setLegajo('');
       setMatricula('');
       setTelefono('');
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
+      setError(error);
     }
   };
 
@@ -98,17 +98,6 @@ const RegistroVeterinario = () => {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="legajo" className="form-label">Legajo *</label>
-          <input
-            type="number"
-            className="form-control"
-            id="legajo"
-            placeholder="Escriba su legajo "
-            value={legajo}
-            onChange={(e) => setLegajo(e.target.value)}
-          />
-        </div>
-        <div className="mb-3">
           <label htmlFor="matricula" className="form-label">Matricula *</label>
           <input
             type="number"
@@ -149,15 +138,18 @@ const RegistroVeterinario = () => {
             options={{ 
               altInput: true,
               altFormat: "F j, Y",
-              dateFormat: "d-m-Y",
+              dateFormat: "YYYY-mm-dd",
               locale: Spanish,
             }}
             className="form-control"
             placeholder="Seleccione su fecha de nacimiento"
           />
         </div>
-        <div className="d-flex justify-content-between">
-          <button type="submit" className="btn btn-primary ms-auto confir">Confirmar</button>
+        <div className="d-flex justify-content-end">
+          <a href='/modificar/veterinario'>
+              <button type='button' className="btn btn-primary me-2 ms-auto confir">Volver</button>
+          </a>
+          <button type="submit" className="btn btn-primary confir">Confirmar</button>
         </div>
       </form>
     </div>

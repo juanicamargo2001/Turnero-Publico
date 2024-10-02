@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://localhost:7245/api/Veterinario'; // Asegúrate de que esta URL sea correcta
+const API_URL = 'http://localhost:5265/api/Veterinario'; // Asegúrate de que esta URL sea correcta
 
 async function Grabar(nuevoVeterinario) {
     try {
@@ -12,9 +12,19 @@ async function Grabar(nuevoVeterinario) {
     }
 }
 
-/*async function BuscarTodos() {
+async function BuscarTodos() {
     try {
         const response = await axios.get(`${API_URL}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error al buscar el veterinario:", error.response ? error.response.data : error.message);
+        throw error;
+    }
+}
+
+/*async function BuscarPorDni(dni) {
+    try {
+        const response = await axios.get(`${API_URL}\{}`);
         return response.data;
     } catch (error) {
         console.error("Error al buscar el veterinario:", error.response ? error.response.data : error.message);
@@ -33,5 +43,5 @@ async function Modificar(nuevoVeterinario) {
 }
 
 export const veterinarioService = {
-    Grabar, Modificar
+    Grabar, Modificar, BuscarTodos
 };
