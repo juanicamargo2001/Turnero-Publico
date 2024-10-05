@@ -26,6 +26,10 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Veterinario> Veterinarios { get; set; }
 
+    public virtual DbSet<CentroCastracion> Centros { get; set; } 
+
+    public virtual DbSet<VeterinarioxCentro> VeterinarioxCentros { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
    
 
@@ -139,6 +143,49 @@ public partial class CentroCastracionContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("apellido");
+        });
+
+        modelBuilder.Entity<CentroCastracion>(entity =>
+        {
+            entity.HasKey(e => e.Id_centro_castracion).HasName("PK_CentrosCastracion");
+
+            entity.ToTable("centros_castracion");
+
+            entity.Property(e => e.Id_centro_castracion).HasColumnName("id_centro_castracion");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Barrio)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("barrio");
+            entity.Property(e => e.Calle)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("calle");
+            entity.Property(e => e.Altura)
+                .HasColumnName("altura");
+
+            entity.Property(e => e.Habilitado)
+                .HasDefaultValue(true)
+                .HasColumnName("habilitado");
+        });
+
+        modelBuilder.Entity<VeterinarioxCentro>(entity =>
+        {
+            entity.HasKey(vc => new { vc.Id_legajo , vc.Id_centro_castracion });
+
+            entity.ToTable("veterinarioxcentro");
+
+            entity.HasOne(vc => vc.Veterinario)
+            .WithMany(v => v.VeterinarioxCentros)
+            .HasForeignKey(vc => vc.Id_legajo);
+
+            entity.HasOne(vc => vc.CentroCastracion)
+            .WithMany(c => c.VeterinarioxCentros)
+            .HasForeignKey(vc => vc.Id_centro_castracion);
+
         });
 
 

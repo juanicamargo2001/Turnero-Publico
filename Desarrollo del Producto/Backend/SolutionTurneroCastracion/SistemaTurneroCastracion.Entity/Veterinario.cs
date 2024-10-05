@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SistemaTurneroCastracion.Entity;
 
@@ -24,4 +25,8 @@ public partial class Veterinario
     public int? Dni { get; set; }
 
     public string? Email { get; set; }
+
+    [JsonIgnore]
+    public ICollection<VeterinarioxCentro>? VeterinarioxCentros { get; set; } = new List<VeterinarioxCentro>();
+
 }

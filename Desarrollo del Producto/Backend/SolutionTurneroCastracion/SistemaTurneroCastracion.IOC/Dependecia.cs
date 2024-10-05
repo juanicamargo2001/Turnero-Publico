@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
+using SistemaTurneroCastracion.Entity;
 
 namespace SistemaTurneroCastracion.IOC
 {
@@ -32,6 +33,8 @@ namespace SistemaTurneroCastracion.IOC
             services.AddScoped<ITamañoRepository, TamañoRepository>();
 
             services.AddScoped<IVeterinarioRepository, VeterinarioRepository>();
+
+            services.AddScoped<ICentroCastracionRepository, CentroCastracionRepository >();
 
         }
     }
