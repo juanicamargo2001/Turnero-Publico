@@ -36,6 +36,8 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<ICentroCastracionRepository, CentroCastracionRepository >();
 
+            services.AddScoped<IVeterinarioXCentroRepository, VeterinarioXCentroRepository>();
+
         }
     }
 }
