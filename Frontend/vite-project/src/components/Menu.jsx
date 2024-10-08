@@ -38,6 +38,9 @@ function Menu() {
         <li className="nav-item">
           <a className="nav-link" href="/modificar/veterinario">Veterinarios</a>
         </li>
+        <li>
+          <a className="nav-link" href="/registrar/centro">Registrar Centro</a>
+        </li>
         <li className="nav-item dropdown">
           <a
             className="nav-link dropdown-toggle"
