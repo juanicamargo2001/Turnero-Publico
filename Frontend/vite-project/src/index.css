@@ -96,6 +96,7 @@ button:focus-visible {
   font-weight: 400; /* Peso más ligero para el cuerpo del texto */
   font-style: normal;
 }
+
 .maven-pro-title{
   color: #009EE2;
   font-weight: 900;
@@ -163,3 +164,88 @@ th, td {
   color: #009EE2;
 }
 
+
+/* Estilos para el contenedor del calendario */
+.calendar-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+/* Estilos generales del calendario */
+.custom-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #F3F2F5; /* Color por defecto de los días */
+  color: #333;
+}
+
+.custom-day:hover {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
+.Mui-selected {
+  background-color: #009EE2 !important; /* Color seleccionado */
+  color: rgb(255, 255, 255) !important; /* Texto blanco en fecha seleccionada */
+}
+
+.time-container {
+  padding: 20px !;
+  width: 250px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column; /* Una sola columna */
+  background-color: rgb(255, 255, 255); /* Fondo blanco para el time box */
+  border-radius: 15px; /* Bordes redondeados */
+  padding: 20px 40px !important;
+  box-shadow: 0 0px 3px rgba(0, 0, 0, 0.1);
+}
+
+.time-slot {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 10px;
+  background-color: #F3F2F5 !important; /* Color de fondo por defecto */
+  border: none; /* Sin borde */
+  transition: none; /* Transición para el cambio de color */
+}
+
+
+.time-slot.selected {
+  background-color: #009EE2 !important; /* Color de fondo si está seleccionado */
+  color: rgb(255, 255, 255); /* Color del texto si está seleccionado */
+}
+
+.time-slot.selected:hover {
+  background-color: #009EE2; /* Color de fondo si está seleccionado */
+  color: rgb(255, 255, 255); /* Azul más claro cuando pasas el mouse sobre el seleccionado */
+}
+
+.css-11a8txn-MuiStack-root {
+  padding: 20px;
+}
+
+.css-4k4mmf-MuiButtonBase-root-MuiPickersDay-root,
+.css-qct7wd-MuiButtonBase-root-MuiPickersDay-root,
+.css-1ayjnp4-MuiPickersDay-root,
+.css-17f9e7e-MuiTypography-root-MuiDayCalendar-weekDayLabel
+{
+  font-family: "Maven Pro", sans-serif !important;
+  margin: 0 10px;
+  width: 60px !important;
+  height: 30px !important;
+  border-radius: 2em !important;
+}
+
+.css-cyfsxc-MuiPickersCalendarHeader-labelContainer{
+  font-family: "Maven Pro", sans-serif !important;
+}
