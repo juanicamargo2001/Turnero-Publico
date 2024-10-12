@@ -1,140 +1,169 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import {veterinarioService} from "../../services/veterinario.service";
+import { useForm } from 'react-hook-form';
 
 const RegistroVeterinario = () => {
-  const [error, setError] = useState(null);
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [domicilio, setDomicilio] = useState('');
-  const [dni, setDNI] = useState('');
-  const [email, setEmail] = useState('');
-  const [fecha, setFecha] = useState(null);
-  const [matricula, setMatricula] = useState('');
-  const [telefono, setTelefono] = useState('');
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors },
+    setValue 
+  } = useForm();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-  
-    const nuevoVeterinario = { 
-      matricula: matricula,
-      nombre: nombre,
-      apellido: apellido,
-      telefono: telefono,
+  useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      fNacimiento: null,
+    }
+  });
+
+  useEffect(() => {
+    register('fNacimiento', { 
+      required: "La fecha de nacimiento es obligatoria" /*,
+      
+      CODIGO VALIDADOR DE EDAD>>>>>>>>>>>>>>>>>>>>>>
+
+      validate: {
+        mayorDe15: (value) => {
+          if (!value || !value[0]) return "La fecha de nacimiento es obligatoria";
+
+          const fechaNacimiento = new Date(value[0]);
+          const hoy = new Date();
+          const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+          const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+
+          // Ajustar si la fecha de cumpleaños aún no ha ocurrido este año
+          if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+            edad--;
+          }
+
+          return edad >= 15 || "El dueño debe ser mayor de 15 años";
+        }
+      }
+      */ 
+    });
+  }, [register]);
+
+  const onSubmit  = async (data) => {
+    const nuevoVeterinario = {
+      ...data,
       habilitado: true,
-      fNacimiento: fecha[0],
-      domicilio: domicilio,
-      dni: dni, 
-      email: email, 
     };
 
-  
+    nuevoVeterinario.fNacimiento = nuevoVeterinario.fNacimiento[0].toISOString().split("T")[0] + "T00:00:00";
+    console.log(nuevoVeterinario)
+
     try {
       await veterinarioService.Grabar(nuevoVeterinario);
       alert("Veterinario registrado con éxito");
-      // Limpiar el formulario
-      setNombre('');
-      setApellido('');
-      setDomicilio('');
-      setDNI('');
-      setEmail('');
-      setFecha('');
-      setMatricula('');
-      setTelefono('');
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
-      setError(error);
     }
   };
 
   return (
     <div className="container mt-4">
       <h2 className="maven-pro-title">REGISTRO DE VETERINARIO</h2>
-      <form onSubmit={handleSubmit} className="maven-pro-body">
+      <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre *</label>
+          <label htmlFor="nombre" className="form-label">Nombre</label>
           <input
             type="text"
             className="form-control"
             id="nombre"
-            placeholder="Escriba su nombre "
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Escriba su nombre"
+            {...register('nombre', { required: "El nombre es obligatorio" })}
           />
+          {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="apellido" className="form-label">Apellido *</label>
+          <label htmlFor="apellido" className="form-label">Apellido</label>
           <input
             type="text"
             className="form-control"
             id="apellido"
             placeholder="Escriba su apellido "
-            value={apellido}
-            onChange={(e) => setApellido(e.target.value)}
+            {...register('apellido', { required: "El apellido es obligatorio" })}
           />
+          {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email *</label>
+          <label htmlFor="email" className="form-label">Email</label>
           <input
             type="text"
             className="form-control"
             id="email"
             placeholder="Escriba su email "
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email', { 
+              required: "El email es obligatorio",
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "El formato del email es inválido"
+              }
+            })}
           />
+          {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="domicilio" className="form-label">Domicilio *</label>
+          <label htmlFor="domicilio" className="form-label">Domicilio</label>
           <input
             type="text"
             className="form-control"
             id="domicilio"
             placeholder="Escriba su domicilio "
-            value={domicilio}
-            onChange={(e) => setDomicilio(e.target.value)}
+            {...register('domicilio', { required: "El domicilio es obligatorio" })}
           />
+          {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="matricula" className="form-label">Matricula *</label>
+          <label htmlFor="matricula" className="form-label">Matricula</label>
           <input
             type="number"
             className="form-control"
             id="matricula"
             placeholder="Escriba su matricula "
-            value={matricula}
-            onChange={(e) => setMatricula(e.target.value)}
+            {...register('matricula', { 
+              required: "La matricula es obligatoria", 
+              setValueAs: value => parseInt(value, 10)
+            })}
           />
+          {errors.matricula && <p style={{ color: 'red' }}>{errors.matricula.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="telefono" className="form-label">Telefono *</label>
+          <label htmlFor="telefono" className="form-label">Telefono</label>
           <input
             type="number"
             className="form-control"
             id="telefono"
             placeholder="Escriba su telefono "
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
+            {...register('telefono', { 
+              required: "El telefono es obligatorio", 
+              setValueAs: value => parseInt(value, 10)
+            })}
           />
+          {errors.telefono && <p style={{ color: 'red' }}>{errors.telefono.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="dni" className="form-label">DNI *</label>
+          <label htmlFor="dni" className="form-label">DNI</label>
           <input
             type="number"
             className="form-control"
             id="dni"
             placeholder="Escriba su dni "
-            value={dni}
-            onChange={(e) => setDNI(e.target.value)}
+            {...register('dni', { 
+              required: "El dni es obligatorio", 
+              setValueAs: value => parseInt(value, 10) 
+            })}
           />
+          {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="fecha" className="form-label">Fecha de nacimiento *</label>
+          <label htmlFor="fecha" className="form-label">Fecha de nacimiento</label>
           <Flatpickr
-            value={fecha}
-            onChange={(date) => setFecha(date)}
+            onChange={(date) => setValue('fNacimiento', date, { shouldValidate: true })}
             options={{ 
               altInput: true,
               altFormat: "F j, Y",
@@ -144,6 +173,7 @@ const RegistroVeterinario = () => {
             className="form-control"
             placeholder="Seleccione su fecha de nacimiento"
           />
+          {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
         </div>
         <div className="d-flex justify-content-end">
           <a href='/modificar/veterinario'>

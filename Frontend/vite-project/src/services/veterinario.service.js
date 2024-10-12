@@ -32,15 +32,20 @@ async function BuscarTodos() {
     }
 }
 
-/*async function BuscarPorDni(dni) {
+async function BuscarPorDni(dni) {
     try {
-        const response = await axios.get(`${API_URL}\{}`);
+        const response = await axios.get(`${API_URL}/veterinario/${dni}`, {
+            headers: {
+              'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+              'Content-Type': 'application/json',
+            },
+          });
         return response.data;
     } catch (error) {
         console.error("Error al buscar el veterinario:", error.response ? error.response.data : error.message);
         throw error;
     }
-}*/
+}
 
 async function Modificar(nuevoVeterinario) {
     try {
@@ -58,5 +63,5 @@ async function Modificar(nuevoVeterinario) {
 }
 
 export const veterinarioService = {
-    Grabar, Modificar, BuscarTodos
+    Grabar, Modificar, BuscarTodos, BuscarPorDni
 };

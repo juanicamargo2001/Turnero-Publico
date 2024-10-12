@@ -12,16 +12,16 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
     }
   }, [item]);
 
-  const handleInputChange = (e, key) => {
-    let value = "";
-    console.log(e.target, key);
-    if (e[0] instanceof Date){value = e[0];} else {
-      key = e.target.id;
+  const handleInputChange = (e) => {
+    let value = null;
+    if (e[0] instanceof Date){value = e[0];} 
+    else if(e.target.tagName === 'SELECT') {value = e.target.value === 'true';}
+    else {
       value = e.target.value;
     }
     setFormData({
       ...formData,
-      [key]: value, // Actualiza el estado con el nuevo valor
+      [e.target.id]: value, // Actualiza el estado con el nuevo valor
     });
   };
 
@@ -53,12 +53,12 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
                       <select
                         name={key}
                         id={key}
-                        value={formData[key]} // Convertir boolean a string para select
+                        value={formData[key]}
                         onChange={handleInputChange}
                         className="form-control"
                       >
-                        <option value={true}>Sí</option>
-                        <option value={false}>No</option>
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
                       </select>
                     ) : typeof formData[key] === 'string' ? (
                       <input

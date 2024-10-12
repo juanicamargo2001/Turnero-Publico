@@ -7,6 +7,7 @@ const Veterinarios = () => {
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
     const [leg, setLegajo] = useState(null);
+    const [busqueda, setBusqueda] = useState("");
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +62,24 @@ const Veterinarios = () => {
         }
     };
 
+    const manejarBusqueda = async (e) => {
+        if (e.type === 'click' || (e.type === 'keydown' && e.key === 'Enter')) {
+            if (busqueda==="") {
+                fetchVeterinarios();
+            } else {
+                try {
+                    const data = await veterinarioService.BuscarPorDni(busqueda);
+                    //console.log(data.result);
+                    setData(data.result);
+                } catch (error) {
+                    alert("No se encontraron veterinarios con ese DNI")
+                    setError(error);
+                    console.error("Error al buscar veterinarios:", error);
+                }
+            }
+        }
+    };
+
     return (
         <div className="container mt-4">
             <h2 className="maven-pro-title">VETERINARIOS</h2>
@@ -70,12 +89,15 @@ const Veterinarios = () => {
                 </a>
                 <div className="input-group w-25">
                     <input 
-                        type="text" 
+                        type="number" 
                         className="form-control" 
-                        placeholder="Buscar veterinario..." 
-                        aria-label="Buscar veterinario" 
+                        placeholder="Ingrese dni del veterinario" 
+                        aria-label="Buscar veterinario"
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        onKeyDown={manejarBusqueda} 
                     />
-                    <span className="input-group-text">
+                    <span className="input-group-text" onClick={manejarBusqueda} style={{ cursor: 'pointer' }}>
                         <i className="fa fa-search"></i>
                     </span>
                 </div>
