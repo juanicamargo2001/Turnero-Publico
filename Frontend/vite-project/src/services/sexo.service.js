@@ -1,10 +1,15 @@
 import axios from "axios";
 
-const urlResource = "https://localhost:7245/api/Sexo";
+const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/sexo";
 
 async function Buscar() {
   try {
-    const resp = await axios.get(urlResource);
+    const resp = await axios.get(urlResource, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+      },
+    });
     return resp.data; // Asegúrate de que esta línea esté devolviendo la respuesta correctamente
   } catch (error) {
     console.error("Error al cargar los sexos:", error); // Captura cualquier error

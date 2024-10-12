@@ -53,12 +53,12 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
                       <select
                         name={key}
                         id={key}
-                        value={formData[key].toString()} // Convertir boolean a string para select
+                        value={formData[key]} // Convertir boolean a string para select
                         onChange={handleInputChange}
                         className="form-control"
                       >
-                        <option value="true">Sí</option>
-                        <option value="false">No</option>
+                        <option value={true}>Sí</option>
+                        <option value={false}>No</option>
                       </select>
                     ) : typeof formData[key] === 'string' ? (
                       <input

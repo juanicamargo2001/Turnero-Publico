@@ -10,6 +10,7 @@ const RegistroAnimal = () => {
   const [tamanos, setTamanos] = useState([]);
   const [tiposAnimal, setTiposAnimal] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
 
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -71,15 +72,16 @@ const RegistroAnimal = () => {
     fetchSexos();
     fetchTamanos();
     fetchTiposAnimal();
-  }, []);
 
+  }, []);
+  
   return (
     <div className="container mt-4">
-      <h2 className="maven-pro-title">INGRESAR DATOS DE ANIMAL</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
-        <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre</label>
-          <input
+       <h2 className="maven-pro-title">INGRESAR DATOS DE ANIMAL</h2>
+       <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
+         <div className="mb-3">
+           <label htmlFor="nombre" className="form-label">Nombre</label>
+           <input
             type="text"
             className="form-control"
             id="nombre"
@@ -180,5 +182,4 @@ const RegistroAnimal = () => {
     </div>
   );
 };
-
 export default RegistroAnimal;

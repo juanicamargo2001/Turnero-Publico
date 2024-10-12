@@ -13,20 +13,16 @@ const Registro_Centro = () => {
             nombre: data.nombre,
             barrio: data.barrio,
             calle: data.calle,
-            altura: parseInt(data.altura)
+            altura: parseInt(data.altura),
+            habilitado: true
         }
-
-        console.log(nuevoCentro) // Para ver data del centro
-        
-        //Descomentar esta parte cuando el service este funcionando bien
-        /*   
         try {
             await centroService.Grabar(nuevoCentro);
             alert("Centro registrado con exito!")
         } catch (error) {
             setError("Error al registrar el centro. Por favor, inténtelo de nuevo.");
             console.error("Error al registrar el centro:", error.response ? error.response.data : error); 
-        }*/
+        }
     }
 
   return (
