@@ -34,6 +34,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Feriados> Feriados { get; set; }
 
+    public virtual DbSet<Turnos> Turnos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
    
 
@@ -196,11 +198,13 @@ public partial class CentroCastracionContext : DbContext
         {
             entity.ToTable("agendas");
 
-            entity.HasKey(e => e.IdTurno).HasName("PK_agenda");
+            entity.HasKey(e => e.IdAgenda).HasName("PK_agenda");
+
+            entity.Property(e => e.IdAgenda).HasColumnName("id_agenda");
 
             entity.Property(e => e.Fecha_inicio)
             .HasColumnType("DATE")
-            .HasColumnName("fecha_fin");
+            .HasColumnName("fecha_inicio");
 
             entity.Property(e => e.Fecha_fin)
             .HasColumnType("DATE")
@@ -218,8 +222,7 @@ public partial class CentroCastracionContext : DbContext
             .HasDefaultValue(0)
             .HasColumnName("cant_turnos_emergencia");
 
-            entity.Property(e => e.IdTurno)
-            .HasColumnName("id_turno");
+            entity.Property(e => e.IdCentroCastracion).HasColumnName("id_centro_castracion");
 
             entity.HasOne(a => a.CentrosCastracion)
             .WithMany(c => c.Agendas)
@@ -246,8 +249,32 @@ public partial class CentroCastracionContext : DbContext
 
         });
 
+        modelBuilder.Entity<Turnos>(entity =>
+        {
+            entity.ToTable("turnos_castracion");
 
-        OnModelCreatingPartial(modelBuilder);
+            entity.HasKey(e => e.IdTurno).HasName("PK_turnos_castracion");
+
+            entity.Property(e => e.IdTurno).HasColumnName("id_turno");
+
+            entity.Property(e => e.Dia)
+            .HasColumnType("DATE")
+            .HasColumnName("dia");
+
+            entity.Property(e => e.Hora)
+            .HasColumnName("hora");
+
+            entity.Property(e => e.IdAgenda).HasColumnName("id_agenda");
+
+            entity.HasOne(t => t.Agenda)
+            .WithMany(a => a.Turnos)
+            .HasForeignKey(e => e.IdAgenda)
+            .HasConstraintName("FK_turnos_agenda");
+
+        });
+
+
+            OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

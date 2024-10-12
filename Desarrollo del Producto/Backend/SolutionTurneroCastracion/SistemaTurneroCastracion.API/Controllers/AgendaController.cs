@@ -21,9 +21,15 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost]
         public async Task<IActionResult> ObtenerFechasDisponibles([FromBody] AgendaDTO agendaPrevia)
         {
-            return Ok(agendaPrevia);
+            
+            bool agendaRegistrada= await _agendaRepository.RegistrarAgenda(agendaPrevia);
 
+            if (!agendaRegistrada) 
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al registrar las agendas", Result = ""});
+            }
 
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result= ""});
         }
 
       

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public class AgendaDTO
+    public class TurnoDTO
     {
-        public DateTime FechaInicio { get; set; }
-
-        public List<CentroAgendaDTO> CentroCastraciones{ get; set; }
-
+        public DateTime Dia { get; set; }
+        public string Hora { get; set; }
     }
 }

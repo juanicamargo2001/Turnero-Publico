@@ -25,10 +25,11 @@ namespace SistemaTurneroCastracion.Entity
 
         public int IdCentroCastracion { get; set; }
 
-        public int IdTurno { get; set; }
-
         [JsonIgnore]
         public virtual CentroCastracion CentrosCastracion { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Turnos>? Turnos { get; set; } = new List<Turnos>();
 
     }
 }
