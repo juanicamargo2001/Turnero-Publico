@@ -33,7 +33,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = centroCastracions });
         }
 
-        [HttpGet("/centroXveterinario")]
+        [HttpGet("centroXveterinario")]
         public async Task<IActionResult> obtenerCentrosXVeterinario(int idCentro)
         {
             CentroCastracionDTO centroCastracions = await _centroCastracionRepository.obtenerCentroVeterinarios(idCentro);
@@ -105,7 +105,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
 
-        [HttpDelete("/deshabilitar/{id}")]
+        [HttpDelete("deshabilitar/{id}")]
         public async Task<IActionResult> deshabilitarCentro(int id)
         {
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
@@ -114,7 +114,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (centroEliminar == null)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un centro de castración con ese id asociado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al querer deshabilitar el centro de castración!", Result = "" });
             }
             centroEliminar.Habilitado = false;
 
@@ -136,7 +136,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (centroHabilitar == null)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un centro de castración con ese id asociado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al querer habilitar el centro de castración!", Result = "" });
             }
             centroHabilitar.Habilitado = true;
 

@@ -30,6 +30,10 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<VeterinarioxCentro> VeterinarioxCentros { get; set; }
 
+    public virtual DbSet<Agenda> Agenda { get; set; }
+
+    public virtual DbSet<Feriados> Feriados { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
    
 
@@ -185,6 +189,60 @@ public partial class CentroCastracionContext : DbContext
             entity.HasOne(vc => vc.CentroCastracion)
             .WithMany(c => c.VeterinarioxCentros)
             .HasForeignKey(vc => vc.Id_centro_castracion);
+
+        });
+
+        modelBuilder.Entity<Agenda>(entity =>
+        {
+            entity.ToTable("agendas");
+
+            entity.HasKey(e => e.IdTurno).HasName("PK_agenda");
+
+            entity.Property(e => e.Fecha_inicio)
+            .HasColumnType("DATE")
+            .HasColumnName("fecha_fin");
+
+            entity.Property(e => e.Fecha_fin)
+            .HasColumnType("DATE")
+            .HasColumnName("fecha_fin");
+
+            entity.Property(e => e.CantidadTurnosGatos)
+            .HasDefaultValue(0)
+            .HasColumnName("cant_turnos_gatos");
+            
+            entity.Property(e => e.CantidadTurnosPerros)
+            .HasDefaultValue(0)
+            .HasColumnName("cant_turnos_perros"); 
+            
+            entity.Property(e => e.CantidadTurnosEmergencia)
+            .HasDefaultValue(0)
+            .HasColumnName("cant_turnos_emergencia");
+
+            entity.Property(e => e.IdTurno)
+            .HasColumnName("id_turno");
+
+            entity.HasOne(a => a.CentrosCastracion)
+            .WithMany(c => c.Agendas)
+            .HasForeignKey(e => e.IdCentroCastracion)
+            .HasConstraintName("FK_centro_castracion");
+
+        });
+
+        modelBuilder.Entity<Feriados>(entity =>
+        {
+            entity.ToTable("feriados");
+
+            entity.HasKey(e => e.IdFeriado).HasName("PK_feriado");
+
+            entity.Property(e => e.Fecha)
+            .HasColumnType("DATE")
+            .HasColumnName("fecha");
+
+            entity.Property(e => e.Nombre)
+            .HasColumnName("nombre");
+            
+            entity.Property(e => e.Tipo)
+            .HasColumnName("tipo");
 
         });
 

@@ -38,6 +38,8 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<IVeterinarioXCentroRepository, VeterinarioXCentroRepository>();
 
+            services.AddScoped<IAgendaRepository, AgendaRepository>();
+
         }
     }
 }

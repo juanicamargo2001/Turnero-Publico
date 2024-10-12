@@ -97,7 +97,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (veterinarioEliminar == null)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un veterinario con ese id asociado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al deshabilitar el veterinario!", Result = "" });
             }
 
             veterinarioEliminar.Habilitado = false;
@@ -120,7 +120,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (veterinarioHabilitar == null)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un veterinario con ese id asociado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al habilitar el veterinario!", Result = "" });
             }
 
             veterinarioHabilitar.Habilitado = true;
@@ -133,16 +133,16 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
-        [HttpGet("/veterinario/{dni}")]
+        [HttpGet("veterinario/{dni}")]
         public async Task<IActionResult> buscarVeterinario(int dni)
         {
             if (dni == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el dni o no es valido!", Result = "" });
 
             List<Veterinario> veterinariosBuscados = await _veterinarioRepository.buscarPorDocumento(dni); 
 
-            if (veterinariosBuscados == null)
+            if (veterinariosBuscados.Count() == 0)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró un veterinario con ese dni asociado!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al buscar por DNI!", Result = "" });
             }
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = veterinariosBuscados });

@@ -26,5 +26,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public ICollection<VeterinarioxCentro>? VeterinarioxCentros { get; set; } = new List<VeterinarioxCentro>();
 
+        [JsonIgnore]
+        public ICollection<Agenda>? Agendas { get; set; } = new List<Agenda>();
+
     }
 }
