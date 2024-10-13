@@ -4,7 +4,8 @@ import  RegistroAnimal  from "./components/Registro_Animal";
 import Veterinarios from "./components/Veterinario/Modificar_Veterinario";
 import { Menu } from "./components/Menu"; // Asegúrate de que la ruta sea correcta
 import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
-import Registro_Centro from "./components/Registro_Centro";
+import Registro_Centro from "./components/Centro/Registro_Centro";
+import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
             <Route path="/modificar/veterinario" element={<Veterinarios/>} />
             <Route path="/registrar/centro" element={<Registro_Centro/>} />
+            <Route path="/modificar/centro" element={<Modificar_Centro/>} />
             <Route path="/registrar/turno" element={<Turnero/>} />
           </Routes>
         </div>

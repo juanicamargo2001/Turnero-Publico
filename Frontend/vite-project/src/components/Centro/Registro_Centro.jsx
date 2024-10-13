@@ -1,6 +1,6 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { centroService } from '../services/centro.service';
+import { centroService } from '../../services/centro.service';
 import { useState } from 'react';
 
 const Registro_Centro = () => {
