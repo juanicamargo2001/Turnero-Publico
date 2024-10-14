@@ -39,7 +39,10 @@ function Menu() {
           <a className="nav-link" href="/modificar/veterinario">Veterinarios</a>
         </li>
         <li>
-          <a className="nav-link" href="/registrar/centro">Registrar Centro</a>
+          <a className="nav-link" href="/modificar/centro">Centros</a>
+        </li>
+        <li>
+          <a className="nav-link" href="/registrar/veterinarioXcentro">Asignar Centro</a>
         </li>
         <li>
           <a className="nav-link" href="/habilitar">Habilitar turnero</a>
