@@ -41,6 +41,9 @@ function Menu() {
         <li>
           <a className="nav-link" href="/modificar/centro">Centros</a>
         </li>
+        <li>
+          <a className="nav-link" href="/registrar/veterinarioXcentro">Asignar Centro</a>
+        </li>
         <li className="nav-item dropdown">
           <a
             className="nav-link dropdown-toggle"

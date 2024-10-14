@@ -7,6 +7,7 @@ import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
 import Registro_Centro from "./components/Centro/Registro_Centro";
 import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
+import RegistroVeterinarioXCentro from "./components/Veterinario/Asignar_Centro";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/registrar/centro" element={<Registro_Centro/>} />
             <Route path="/modificar/centro" element={<Modificar_Centro/>} />
             <Route path="/registrar/turno" element={<Turnero/>} />
+            <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
           </Routes>
         </div>
       </BrowserRouter>
