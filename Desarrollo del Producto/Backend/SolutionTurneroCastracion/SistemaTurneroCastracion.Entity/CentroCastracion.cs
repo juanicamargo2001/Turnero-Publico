@@ -22,6 +22,10 @@ namespace SistemaTurneroCastracion.Entity
 
         public bool Habilitado { get; set; }
 
+        public TimeSpan? HoraLaboralInicio { get; set; }
+
+        public TimeSpan? HoraLaboralFin {  get; set; }
+
 
         [JsonIgnore]
         public ICollection<VeterinarioxCentro>? VeterinarioxCentros { get; set; } = new List<VeterinarioxCentro>();

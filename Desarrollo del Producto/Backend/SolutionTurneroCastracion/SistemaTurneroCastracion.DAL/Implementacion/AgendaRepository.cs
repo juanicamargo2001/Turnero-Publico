@@ -62,10 +62,10 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                         IdCentroCastracion = centro.IdCentro
                     });
 
-
                     if (fechasHabilitadas.Any())
                     {
-                        bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(fechasHabilitadas, agendaCreada.IdAgenda);
+                        bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(fechasHabilitadas, agendaCreada.IdAgenda,
+                            agendaCreada.IdCentroCastracion, centro.CantidadTurnosGatos, centro.CantidadTurnosGatos);
 
                     }
                 }

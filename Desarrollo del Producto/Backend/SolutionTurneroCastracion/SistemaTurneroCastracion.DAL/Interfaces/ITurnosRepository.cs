@@ -10,7 +10,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface ITurnosRepository : IGenericRepository<Turnos>
     {
-        Task<bool> CrearTurnosAgenda(List<DateTime> turnosAgenda, int? IdAgenda);
+        Task<bool> CrearTurnosAgenda(List<DateTime> turnosAgenda, int? IdAgenda, int idCentroCastracion, int? cantidadTurnosGato, int? cantidadTurnosPerros);
 
         Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion);
 

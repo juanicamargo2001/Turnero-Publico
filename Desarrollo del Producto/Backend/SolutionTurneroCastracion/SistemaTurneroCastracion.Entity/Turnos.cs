@@ -13,12 +13,13 @@ namespace SistemaTurneroCastracion.Entity
 
         public DateTime Dia { get; set; }
 
-        public string? Hora {  get; set; }
-
         public int? IdAgenda { get; set; }
 
         [JsonIgnore]
         public virtual Agenda Agenda { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Horarios> Horarios { get; set; }
 
     }
 }

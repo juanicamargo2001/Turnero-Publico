@@ -36,6 +36,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Turnos> Turnos { get; set; }
 
+    public virtual DbSet<Horarios> Horarios { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
    
 
@@ -176,6 +178,13 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.Habilitado)
                 .HasDefaultValue(true)
                 .HasColumnName("habilitado");
+
+            entity.Property(e => e.HoraLaboralInicio)
+            .HasColumnName("horaLaboralInicio");
+            
+            entity.Property(e => e.HoraLaboralFin)
+            .HasColumnName("horaLaboralFin");
+
         });
 
         modelBuilder.Entity<VeterinarioxCentro>(entity =>
@@ -261,9 +270,6 @@ public partial class CentroCastracionContext : DbContext
             .HasColumnType("DATE")
             .HasColumnName("dia");
 
-            entity.Property(e => e.Hora)
-            .HasColumnName("hora");
-
             entity.Property(e => e.IdAgenda).HasColumnName("id_agenda");
 
             entity.HasOne(t => t.Agenda)
@@ -273,8 +279,42 @@ public partial class CentroCastracionContext : DbContext
 
         });
 
+        modelBuilder.Entity<Horarios>(entity =>
+        {
 
-            OnModelCreatingPartial(modelBuilder);
+            entity.ToTable("horarios");
+
+            entity.HasKey(e => e.IdHorario)
+            .HasName("PK_horarios");
+
+            entity.Property(e => e.IdHorario)
+            .HasColumnName("id_horario");
+
+
+            entity.Property(e => e.Hora)
+            .HasColumnType("time(7)")
+            .HasColumnName("hora");
+
+
+            entity.Property(e => e.Habilitado)
+            .HasDefaultValue(true)
+            .HasColumnName("habilitado");
+
+            entity.Property(e => e.TipoTurno)
+            .HasColumnName("tipo_turno");
+
+            entity.Property(e => e.IdTurno)
+            .HasColumnName("id_turno");
+
+            entity.HasOne(e => e.Turnos)
+                  .WithMany(t => t.Horarios)
+                  .HasForeignKey(e => e.IdTurno)
+                  .HasConstraintName("FK_horarios_turnos"); ;
+        });
+
+
+
+        OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

@@ -9,6 +9,6 @@ namespace SistemaTurneroCastracion.Entity.Dtos
     public class TurnoDTO
     {
         public DateTime Dia { get; set; }
-        public string Hora { get; set; }
+        public List<Horarios> Hora { get; set; }
     }
 }
