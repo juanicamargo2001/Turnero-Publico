@@ -2,6 +2,7 @@
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,70 +23,70 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<bool> crearHorarios(int idCentroCastracion, int idTurno, int? cantidadTurnosGato, int? cantidadTurnosPerro)
+        public async Task<bool> crearHorarios(HorarioCentroParametroDTO centro)
         {
-            var centro = await _dbContext.Centros
-                                  .Where(c => c.Id_centro_castracion == idCentroCastracion)
-                                  .Select(c => new
-                                  {
-                                      c.HoraLaboralInicio,
-                                      c.HoraLaboralFin
-                                  })
-                                  .FirstOrDefaultAsync();
 
-
-            if (centro == null)
-            {
-                throw new Exception("Centro de castración no encontrado.");
-            }
-
-            TimeSpan? inicio = centro.HoraLaboralInicio;
-            TimeSpan? fin = centro.HoraLaboralFin;
+            TimeSpan? inicio = centro.Inicio;
+            TimeSpan? fin = centro.Fin;
             TimeSpan? horaActual = inicio;
 
             var horariosGenerados = new List<Horarios>();
 
-            int? suma = cantidadTurnosGato + cantidadTurnosPerro;
+            int? suma = centro.CantidadTurnosGato + centro.CantidadTurnosPerro;
+
             bool esTurnoGato = true;
+            int iteracion = 0;
 
             while (horaActual < fin)
-            {
-                if (!(horaActual >= new TimeSpan(12, 0, 0) && horaActual < new TimeSpan(14, 0, 0)))
-                {
-                    if (esTurnoGato && cantidadTurnosGato > 0)
+            {               
+                if (esTurnoGato && centro.CantidadTurnosGato> 0)
+                { 
+                    horariosGenerados.Add(new Horarios
                     {
-                        horariosGenerados.Add(new Horarios
-                        {
-                            Hora = horaActual,
-                            TipoTurno = 0,
-                            IdTurno = idTurno,
-                            Habilitado = true
-                        });
-                        cantidadTurnosGato--;
-                    }
-                    else if (!esTurnoGato && cantidadTurnosPerro > 0)
-                    {
-                        horariosGenerados.Add(new Horarios
-                        {
-                            Hora = horaActual,
-                            TipoTurno = 1,
-                            IdTurno = idTurno, 
-                            Habilitado = true
-                        });
-                        cantidadTurnosPerro--;
-                    }
-
-                    if (cantidadTurnosGato > 0 && cantidadTurnosPerro > 0)
-                    {
-                        esTurnoGato = !esTurnoGato;
-                    }
-                    if (cantidadTurnosPerro == 0 && cantidadTurnosGato == 0)
-                    {
-                        break;
-                    }
+                        Hora = horaActual,
+                        TipoTurno = 0,
+                        IdTurno = centro.IdTurno,
+                        Habilitado = true
+                    });
+                    centro.CantidadTurnosGato--;
+                    iteracion++;
                 }
+                else if (!esTurnoGato && centro.CantidadTurnosPerro > 0)
+                {
+                    horariosGenerados.Add(new Horarios
+                    {
+                       Hora = horaActual,
+                       TipoTurno = 1,
+                       IdTurno = centro.IdTurno, 
+                       Habilitado = true
+                    });
+                    centro.CantidadTurnosPerro--;
+                    iteracion++;
+                }
+
+                if (centro.CantidadTurnosGato > 0 && centro.CantidadTurnosPerro > 0)
+                {
+                    esTurnoGato = !esTurnoGato;
+                }
+
+                else if (centro.CantidadTurnosGato == 0 && centro.CantidadTurnosPerro > 0)
+                {
+                    esTurnoGato = false;
+                }
+                else if (centro.CantidadTurnosPerro == 0 && centro.CantidadTurnosGato > 0)
+                {
+                    esTurnoGato = true;
+                }
+
+                if (suma == iteracion)
+                {
+                    break;
+                }
+
                 horaActual = horaActual?.Add(new TimeSpan(0, 30, 0));
             }
+                
+            
             try
             {
                 _dbContext.Horarios.AddRange(horariosGenerados);

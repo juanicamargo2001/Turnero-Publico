@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.DAL.DBContext;
+﻿using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -46,27 +47,50 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 fechaFin = fechaInicio.AddMonths(1).AddDays(DateTime.DaysInMonth(fechaInicio.Year, fechaInicio.Month + 1) - fechaInicio.Day);
             }
 
-            List<DateTime>? fechasHabilitadas = await this.FechasHabiles(fechaInicio, fechaFin);
+            List<DateTime>? fechasHabilitadas = await this.FechasHabiles(fechaInicio, fechaFin);      
 
             try
             {
                 foreach (var centro in agendaPrevia.CentroCastraciones)
                 {
-                    Agenda agendaCreada = await this.Crear(new Agenda
-                    {
-                        Fecha_inicio = fechaInicio,
-                        Fecha_fin = fechaFin,
-                        CantidadTurnosGatos = centro.CantidadTurnosGatos,
-                        CantidadTurnosPerros = centro.CantidadTurnosPerros,
-                        CantidadTurnosEmergencia = centro.CantidadTurnosEmergencia,
-                        IdCentroCastracion = centro.IdCentro
-                    });
+                    HorasLaboralesDTO centroHorarios = await this.obtenerHorasLaborales(centro.IdCentro);
 
-                    if (fechasHabilitadas.Any())
-                    {
-                        bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(fechasHabilitadas, agendaCreada.IdAgenda,
-                            agendaCreada.IdCentroCastracion, centro.CantidadTurnosGatos, centro.CantidadTurnosGatos);
+                    TimeSpan? inicio = centroHorarios.HoraLaboralInicio;
+                    TimeSpan? fin = centroHorarios.HoraLaboralFin;
 
+                    int maxTurnos = (int)((fin - inicio)?.TotalMinutes / 30)!;
+
+                    int? totalTurnosSolicitados = centro.CantidadTurnosGatos + centro.CantidadTurnosPerros;
+
+                    if (totalTurnosSolicitados <= maxTurnos)
+                    {
+                        Agenda agendaCreada = await this.Crear(new Agenda
+                        {
+                            Fecha_inicio = fechaInicio,
+                            Fecha_fin = fechaFin,
+                            CantidadTurnosGatos = centro.CantidadTurnosGatos,
+                            CantidadTurnosPerros = centro.CantidadTurnosPerros,
+                            CantidadTurnosEmergencia = centro.CantidadTurnosEmergencia,
+                            IdCentroCastracion = centro.IdCentro
+                        });
+
+                        if (fechasHabilitadas.Any())
+                        {
+                            bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(
+                                        new TurnoHorarioCentroDTO { 
+                                            TurnosAgenda = fechasHabilitadas, 
+                                            IdAgenda = agendaCreada.IdAgenda,
+                                            IdCentroCastracion = agendaCreada.IdCentroCastracion, 
+                                            CantidadTurnosGato = centro.CantidadTurnosGatos, 
+                                            CantidadTurnosPerros = centro.CantidadTurnosPerros,
+                                            Inicio = inicio,
+                                            Fin = fin
+                                        });
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
             } catch
@@ -111,5 +135,20 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
             return feriados;
         }
+
+        public async Task<HorasLaboralesDTO> obtenerHorasLaborales(int idCentroCastracion)
+        {
+            var centro = await _dbContext.Centros
+                                  .Where(c => c.Id_centro_castracion == idCentroCastracion)
+                                  .Select(c => new HorasLaboralesDTO
+                                  {
+                                      HoraLaboralInicio = c.HoraLaboralInicio,
+                                      HoraLaboralFin = c.HoraLaboralFin
+                                  })
+                                  .FirstOrDefaultAsync();
+            return centro;
+
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IHorariosRepository : IGenericRepository<Horarios>
     {
-        Task<bool> crearHorarios(int idCentroCastracion, int idTurno, int? cantidadTurnosGato, int? cantidadTurnosPerro);
+        Task<bool> crearHorarios(HorarioCentroParametroDTO centro);
 
     }
 }

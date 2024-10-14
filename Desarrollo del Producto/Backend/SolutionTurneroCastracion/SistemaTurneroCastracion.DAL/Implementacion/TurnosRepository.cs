@@ -25,14 +25,14 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _horariosRepository = horariosRepository;
         }
 
-        public async Task<bool> CrearTurnosAgenda(List<DateTime> turnosAgenda, int? IdAgenda, int idCentroCastracion, int? cantidadTurnosGato, int? cantidadTurnosPerros)
+
+        public async Task<bool> CrearTurnosAgenda(TurnoHorarioCentroDTO turnoHorarioDTO)
         {
             List<Turnos> turnoNuevo = new List<Turnos>();
 
-            int mes = turnosAgenda[0].Month;
+            int mes = turnoHorarioDTO.TurnosAgenda[0].Month;
 
-            List<DateTime> turnosFiltrados = turnosAgenda.Where(fecha => fecha.Month != mes).ToList();
-
+            List<DateTime> turnosFiltrados = turnoHorarioDTO.TurnosAgenda.Where(fecha => fecha.Month != mes).ToList();
 
 
             foreach (var turno in turnosFiltrados)
@@ -40,7 +40,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 turnoNuevo.Add( new Turnos
                 {
                     Dia = turno,
-                    IdAgenda = IdAgenda
+                    IdAgenda = turnoHorarioDTO.IdAgenda
                 });
             }
 
@@ -50,7 +50,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 _dbContext.SaveChanges();
 
                 for (int i = 0; i < turnosFiltrados.Count; i++) {
-                    await _horariosRepository.crearHorarios(idCentroCastracion, turnoNuevo[i].IdTurno, cantidadTurnosGato, cantidadTurnosPerros);
+                
+                    await _horariosRepository.crearHorarios(new HorarioCentroParametroDTO { 
+                                                                IdCentroCastracion = turnoHorarioDTO.IdCentroCastracion, 
+                                                                IdTurno = turnoNuevo[i].IdTurno, 
+                                                                CantidadTurnosGato = turnoHorarioDTO.CantidadTurnosGato, 
+                                                                CantidadTurnosPerro = turnoHorarioDTO.CantidadTurnosPerros,
+                                                                Inicio = turnoHorarioDTO.Inicio,
+                                                                Fin = turnoHorarioDTO.Fin
+                    });
                 }
 
             }
