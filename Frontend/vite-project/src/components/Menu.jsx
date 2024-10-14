@@ -28,7 +28,7 @@ function Menu() {
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul className="navbar-nav">
+      <ul className="navbar-nav ms-auto">
         <li className="nav-item">
           <a className="nav-link active " aria-current="page" href="/">Inicio</a>
         </li>
@@ -40,6 +40,9 @@ function Menu() {
         </li>
         <li>
           <a className="nav-link" href="/registrar/centro">Registrar Centro</a>
+        </li>
+        <li>
+          <a className="nav-link" href="/habilitar">Habilitar turnero</a>
         </li>
         <li className="nav-item dropdown">
           <a

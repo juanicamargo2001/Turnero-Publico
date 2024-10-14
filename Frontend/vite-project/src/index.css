@@ -67,7 +67,7 @@ button:focus-visible {
   }
 } */
 @import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 /* .navbar {
   margin: 0;
   padding: 0; 
@@ -91,9 +91,9 @@ button:focus-visible {
 }
 
 .maven-pro-body {
-  font-family: "Maven Pro", sans-serif;
+  font-family: "Albert Sans", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 400; /* Peso más ligero para el cuerpo del texto */
+  font-weight: 500; 
   font-style: normal;
 }
 
@@ -109,6 +109,12 @@ button:focus-visible {
   font-weight: 600;
   background-color: #009EE2;
   border-color: #009EE2;
+}
+.btn.confir2 {
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
 }
 
 /*ACA ABAJO ESTILO DE TABLAS*/
@@ -249,3 +255,32 @@ th, td {
 .css-cyfsxc-MuiPickersCalendarHeader-labelContainer{
   font-family: "Maven Pro", sans-serif !important;
 }
+
+.cct{
+  padding: 20px 20px 20px 0px;
+  font-weight: 600;
+}
+
+
+input, select, textarea {
+  border-radius: 15px !important; /* Borde redondeado para todos los inputs */
+}
+
+.navbar-nav .nav-link {
+  transition: background-color 0.3s, color 0.3s; /* Animación suave para el cambio */
+  margin: 2px;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: #ffffff; /* Color de fondo al pasar el cursor */
+  color: #009EE2 !important;
+  
+  
+}
+
+
+
+
+
