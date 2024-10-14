@@ -7,6 +7,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,13 +72,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return true;
         }
 
-        public async Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion)
+        public async Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia)
         {
             var turnos = (from C in _dbContext.Centros
                                 join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
                                 join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
                                 join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
-                                where C.Id_centro_castracion == IdCentroCastracion
+                                where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia
                                 group H by new { T.Dia } into g
                                 select new TurnoDTO
                                 {
@@ -87,6 +88,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return turnos;
         }
+
+        public async Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion)
+        {
+            var turnosDias = (from C in _dbContext.Centros
+                             join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
+                             join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
+                             join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
+                             where C.Id_centro_castracion == IdCentroCastracion
+                             select T.Dia
+                             ).Distinct().ToList();   
+            return turnosDias;
+        }
+
     }
 
 }

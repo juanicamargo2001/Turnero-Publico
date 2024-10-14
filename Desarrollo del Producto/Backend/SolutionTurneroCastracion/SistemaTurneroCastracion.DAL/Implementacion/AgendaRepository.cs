@@ -85,7 +85,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                             CantidadTurnosPerros = centro.CantidadTurnosPerros,
                                             Inicio = inicio,
                                             Fin = fin
-                                        });
+                                        }); 
                         }
                     }
                     else

@@ -12,7 +12,9 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<bool> CrearTurnosAgenda(TurnoHorarioCentroDTO turnoHorarioDTO);
 
-        Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion);
+        Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia);
+
+        Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion);
 
     }
 }
