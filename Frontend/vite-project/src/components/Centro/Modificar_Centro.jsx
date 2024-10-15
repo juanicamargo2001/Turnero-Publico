@@ -36,7 +36,14 @@ export default function Modificar_Centro() {
     };
 
     const handleModalSubmitSort = async (formData) => {
-        formData.id_centro_castracion = idCentro;     
+        if (!formData.nombre || !formData.barrio || !formData.calle) {
+            alert("Los campos nombre, barrio y calle son obligatorios.");
+            return; // Salir de la función si hay campos vacíos
+        }
+        formData.id_centro_castracion = idCentro;
+        if (formData.altura === null || formData.altura === "") {
+            formData.altura = "0";
+        }
         try {
             await centroService.Modificar(formData);
             alert("Centro modificado correctamente");
