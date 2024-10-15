@@ -8,13 +8,16 @@ import { agendaService } from '../../services/habilitar.service';
 const HabilitarTurnero = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [turnosPorDia, setTurnosPorDia] = useState({
-    laFrance: { total: 20, perros: 20, gatos: 20 },
-    alberdi: { total: 20, perros: 20, gatos: 20 },
-    villaAllende: { total: 20, perros: 20, gatos: 20 },
+    laFrance: { total: 20, perros: 8, gatos: 16 },
+    alberdi: { total: 20, perros: 8, gatos: 16 },
+    villaAllende: { total: 20, perros: 8, gatos: 16 },
   });
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    // Flatpickr returns an array, so we need to extract the first element
+    if (date && date.length > 0) {
+      setSelectedDate(new Date(date[0]));
+    }
   };
 
   const handleTurnosChange = (e, centro, tipo) => {
@@ -22,7 +25,7 @@ const HabilitarTurnero = () => {
       ...turnosPorDia,
       [centro]: {
         ...turnosPorDia[centro],
-        [tipo]: e.target.value,
+        [tipo]: Number(e.target.value),  // Convertir a número
       },
     });
   };
@@ -36,7 +39,7 @@ const HabilitarTurnero = () => {
           idCentro: 14,
           cantidadTurnosGatos: turnosPorDia.laFrance.gatos,
           cantidadTurnosPerros: turnosPorDia.laFrance.perros,
-          cantidadTurnosEmergencia: 0, // Emergencia fijo a 0
+          cantidadTurnosEmergencia: 0,
         },
         {
           idCentro: 15,
@@ -52,7 +55,7 @@ const HabilitarTurnero = () => {
         }
       ]
     };
-    //prueba
+
     console.log("Datos que se envían:", JSON.stringify(nuevaAgenda, null, 2)); 
     try {
       const response = await agendaService.Grabar(nuevaAgenda);
@@ -73,7 +76,7 @@ const HabilitarTurnero = () => {
           <Col sm={6}>
             <Flatpickr
               value={selectedDate}
-              onChange={(date) => handleDateChange(date)}
+              onChange={handleDateChange}
               options={{
                 altInput: true,
                 altFormat: "F j, Y",
