@@ -10,7 +10,8 @@ const RegistroVeterinarioXCentro = () => {
     const fetchVeterinarios = async () => {
         try {
           const data = await veterinarioService.BuscarTodos();
-          setData(data.result);
+          const habilitados = data.result.filter(c => c.habilitado);
+          setData(habilitados);
         } catch (error) {
           setError(error);
         }

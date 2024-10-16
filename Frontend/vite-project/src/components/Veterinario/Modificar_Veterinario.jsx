@@ -49,17 +49,28 @@ const Veterinarios = () => {
             'fecha', 'domicilio', 'dni', 'email' ];
         const jsonReordenado = {idLegajo: leg};
         orderedKeys.forEach(key => {jsonReordenado[key] = formData[key];});*/
-        
-        formData.idLegajo = leg;
-        formData.fNacimiento = formData.fNacimiento.toISOString().split("T")[0] + "T00:00:00";
-        console.log(formData)
-        try {
-            await veterinarioService.Modificar(formData);
-            alert("Veterinario modificado correctamente");
-            fetchVeterinarios();
-        } catch (error) {
-            console.error("Error al modificar el veterinario:", error.response ? error.response.data : error);
+
+        let c = 0;
+        Object.keys(formData).forEach((elemento) => {
+            if (formData[elemento] === "" || formData[elemento] === undefined || formData[elemento] === null) {
+                c = c+1;
+            }
+        });
+        if (c===0){
+            formData.idLegajo = leg;
+            formData.fNacimiento = formData.fNacimiento.toISOString().split("T")[0] + "T00:00:00";
+            try {
+                await veterinarioService.Modificar(formData);
+                alert("Veterinario modificado correctamente");
+                fetchVeterinarios();
+            } catch (error) {
+                console.error("Error al modificar el veterinario:", error.response ? error.response.data : error);
+            }
+        } else {
+            alert("Ningun atributo puede estar vacío");
         }
+
+        
     };
 
     const manejarBusqueda = async (e) => {
