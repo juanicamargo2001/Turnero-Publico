@@ -53,46 +53,54 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             {
                 foreach (var centro in agendaPrevia.CentroCastraciones)
                 {
-                    HorasLaboralesDTO centroHorarios = await this.obtenerHorasLaborales(centro.IdCentro);
-
-                    TimeSpan? inicio = centroHorarios.HoraLaboralInicio;
-                    TimeSpan? fin = centroHorarios.HoraLaboralFin;
-
-                    int maxTurnos = (int)((fin - inicio)?.TotalMinutes / 30)!;
-
-                    int? totalTurnosSolicitados = centro.CantidadTurnosGatos + centro.CantidadTurnosPerros;
-
-                    if (totalTurnosSolicitados <= maxTurnos)
+                    if (!await esAgendaCreada(fechaFin, centro.IdCentro))
                     {
-                        Agenda agendaCreada = await this.Crear(new Agenda
-                        {
-                            Fecha_inicio = fechaInicio,
-                            Fecha_fin = fechaFin,
-                            CantidadTurnosGatos = centro.CantidadTurnosGatos,
-                            CantidadTurnosPerros = centro.CantidadTurnosPerros,
-                            CantidadTurnosEmergencia = centro.CantidadTurnosEmergencia,
-                            IdCentroCastracion = centro.IdCentro
-                        });
+                        HorasLaboralesDTO centroHorarios = await this.obtenerHorasLaborales(centro.IdCentro);
 
-                        if (fechasHabilitadas.Any())
+                        TimeSpan? inicio = centroHorarios.HoraLaboralInicio;
+                        TimeSpan? fin = centroHorarios.HoraLaboralFin;
+
+                        int maxTurnos = (int)((fin - inicio)?.TotalMinutes / 30)!;
+
+                        int? totalTurnosSolicitados = centro.CantidadTurnosGatos + centro.CantidadTurnosPerros;
+
+                        if (totalTurnosSolicitados <= maxTurnos)
                         {
-                            bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(
-                                        new TurnoHorarioCentroDTO { 
-                                            TurnosAgenda = fechasHabilitadas, 
-                                            IdAgenda = agendaCreada.IdAgenda,
-                                            IdCentroCastracion = agendaCreada.IdCentroCastracion, 
-                                            CantidadTurnosGato = centro.CantidadTurnosGatos, 
-                                            CantidadTurnosPerros = centro.CantidadTurnosPerros,
-                                            Inicio = inicio,
-                                            Fin = fin
-                                        }); 
+                            Agenda agendaCreada = await this.Crear(new Agenda
+                            {
+                                Fecha_inicio = fechaInicio,
+                                Fecha_fin = fechaFin,
+                                CantidadTurnosGatos = centro.CantidadTurnosGatos,
+                                CantidadTurnosPerros = centro.CantidadTurnosPerros,
+                                CantidadTurnosEmergencia = centro.CantidadTurnosEmergencia,
+                                IdCentroCastracion = centro.IdCentro
+                            });
+
+                            if (fechasHabilitadas.Any())
+                            {
+                                bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(
+                                            new TurnoHorarioCentroDTO
+                                            {
+                                                TurnosAgenda = fechasHabilitadas,
+                                                IdAgenda = agendaCreada.IdAgenda,
+                                                IdCentroCastracion = agendaCreada.IdCentroCastracion,
+                                                CantidadTurnosGato = centro.CantidadTurnosGatos,
+                                                CantidadTurnosPerros = centro.CantidadTurnosPerros,
+                                                Inicio = inicio,
+                                                Fin = fin
+                                            });
+                            }
                         }
-                    }
-                    else
-                    {
+                        else
+                        {
+                            return false;
+                        }
+                    }else 
+                    {  
                         return false;
                     }
                 }
+                
             } catch
             {
                 return false;
@@ -147,6 +155,16 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   })
                                   .FirstOrDefaultAsync();
             return centro;
+
+        }
+
+        public async Task<bool> esAgendaCreada(DateTime fechaFin, int idCentro)
+        {
+            var agendaCreada = await this.Consultar(a => a.Fecha_fin == fechaFin && a.IdCentroCastracion == idCentro);
+
+            if (agendaCreada.Any()) { return true; }
+
+            return false;
 
         }
 

@@ -34,56 +34,65 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             int? suma = centro.CantidadTurnosGato + centro.CantidadTurnosPerro;
 
-            bool esTurnoGato = true;
+            //bool esTurnoGato = true;
             int iteracion = 0;
 
-            while (horaActual < fin)
-            {               
-                if (esTurnoGato && centro.CantidadTurnosGato> 0)
-                { 
-                    horariosGenerados.Add(new Horarios
-                    {
-                        Hora = horaActual,
-                        TipoTurno = 0,
-                        IdTurno = centro.IdTurno,
-                        Habilitado = true
-                    });
-                    centro.CantidadTurnosGato--;
-                    iteracion++;
-                }
-                else if (!esTurnoGato && centro.CantidadTurnosPerro > 0)
+            while (horaActual < fin && iteracion < suma)
+            {
+                horariosGenerados.Add(new Horarios
                 {
-                    horariosGenerados.Add(new Horarios
-                    {
-                       Hora = horaActual,
-                       TipoTurno = 1,
-                       IdTurno = centro.IdTurno, 
-                       Habilitado = true
-                    });
-                    centro.CantidadTurnosPerro--;
-                    iteracion++;
-                }
+                    Hora = horaActual,
+                    IdTurno = centro.IdTurno
+                });
 
-                if (centro.CantidadTurnosGato > 0 && centro.CantidadTurnosPerro > 0)
-                {
-                    esTurnoGato = !esTurnoGato;
-                }
+                horaActual = horaActual?.Add(new TimeSpan(0, 30, 0));
 
-                else if (centro.CantidadTurnosGato == 0 && centro.CantidadTurnosPerro > 0)
-                {
-                    esTurnoGato = false;
-                }
-                else if (centro.CantidadTurnosPerro == 0 && centro.CantidadTurnosGato > 0)
-                {
-                    esTurnoGato = true;
-                }
+                iteracion++;
+
+                //if (esTurnoGato && centro.CantidadTurnosGato> 0)
+                //{ 
+                //    horariosGenerados.Add(new Horarios
+                //    {
+                //        Hora = horaActual,
+                //        TipoTurno = 0,
+                //        IdTurno = centro.IdTurno,
+                //        Habilitado = true
+                //    });
+                //    centro.CantidadTurnosGato--;
+                //    iteracion++;
+                //}
+                //else if (!esTurnoGato && centro.CantidadTurnosPerro > 0)
+                //{
+                //    horariosGenerados.Add(new Horarios
+                //    {
+                //       Hora = horaActual,
+                //       TipoTurno = 1,
+                //       IdTurno = centro.IdTurno, 
+                //       Habilitado = true
+                //    });
+                //    centro.CantidadTurnosPerro--;
+                //    iteracion++;
+                //}
+
+                //if (centro.CantidadTurnosGato > 0 && centro.CantidadTurnosPerro > 0)
+                //{
+                //    esTurnoGato = !esTurnoGato;
+                //}
+
+                //else if (centro.CantidadTurnosGato == 0 && centro.CantidadTurnosPerro > 0)
+                //{
+                //    esTurnoGato = false;
+                //}
+                //else if (centro.CantidadTurnosPerro == 0 && centro.CantidadTurnosGato > 0)
+                //{
+                //    esTurnoGato = true;
+                //}
 
                 if (suma == iteracion)
                 {
                     break;
                 }
-
-                horaActual = horaActual?.Add(new TimeSpan(0, 30, 0));
+  
             }
                 
             
