@@ -1,80 +1,149 @@
 import * as React from 'react';
-import dayjs from 'dayjs';
 import 'dayjs/locale/es'; // Importa la localización en español
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { DateCalendar, PickersDay, DayCalendarSkeleton } from '@mui/x-date-pickers';
 import { styled } from '@mui/material/styles';
+import Tooltip from '@mui/material/Tooltip';
+import dayjs from 'dayjs';
+import { horarios } from '../../services/horarios.service'; // Importa el servicio de horarios
+import { turnosService } from '../../services/turnero.service'; // Importa el servicio de turnos
 
+export default function DateCalendarValue({ nombreCentro, turnoId }) {
+    const [value, setValue] = React.useState(null); // Fecha seleccionada
+    const [highlightedDates, setHighlightedDates] = React.useState([]); // Fechas resaltadas
+    const [showTimes, setShowTimes] = React.useState(false); // Para manejar la transición de mostrar los horarios
+    const [selectedTime, setSelectedTime] = React.useState(null); // Para almacenar la hora seleccionada
+    const [availableTimes, setAvailableTimes] = React.useState([]); // Horarios disponibles
+    const [isLoading, setIsLoading] = React.useState(true); // Controla el estado de carga de las fechas
+    const [error, setError] = React.useState(null); // Estado para manejar errores
+    const timesContainerRef = React.useRef(null); // Referencia al contenedor de horarios
 
-// Configura el idioma en español
-dayjs.locale('es');
+    React.useEffect(() => {
+        // Llamada a la API para obtener las fechas del turno por ID
+        const fetchDates = async () => {
+            try {
+                const fechas = await turnosService.Buscar(turnoId); // Obtener las fechas
+                const fechasResaltadas = fechas.map(fecha => dayjs(fecha)); // Convertir las fechas a objetos `dayjs`
+                setHighlightedDates(fechasResaltadas); // Almacenar las fechas completas
+                setIsLoading(false); // Una vez que se obtienen las fechas, detener la carga
+            } catch (error) {
+                console.error("Error al obtener los turnos:", error);
+                setError("No se pudieron cargar las fechas");
+                setIsLoading(false);
+            }
+        };
 
-// Componente de Calendario personalizado
-export default function DateCalendarValue({ nombreCentro }) {
-  const [value, setValue] = React.useState(null); // Por defecto, sin fecha seleccionada
-  const [showTimes, setShowTimes] = React.useState(false); // Para manejar la transición de mostrar los horarios
-  const [selectedTime, setSelectedTime] = React.useState(null); // Para almacenar la hora seleccionada
-  const availableTimes = ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00']; // Horarios disponibles
+        fetchDates();
+    }, [turnoId]); // Dependencia del ID del turno
 
-  const handleDateChange = (newValue) => {
-    setValue(newValue);
-    setShowTimes(true); // Mostrar los horarios al seleccionar la fecha
-  };
+    const handleDateChange = async (newValue) => {
+        setValue(newValue);
+        setShowTimes(true); // Mostrar los horarios al seleccionar la fecha
 
-  const handleTimeSelect = (time) => {
-    setSelectedTime(time); // Almacenar la hora seleccionada
-  };
+        // Obtener horarios disponibles para la fecha seleccionada
+        try {
+            const dia = newValue.format(); // Formato de fecha ISO 8601
+            const horariosObtenidos = await horarios.obtenerHorarios(turnoId, dia);
+            setAvailableTimes(horariosObtenidos); // Actualiza los horarios disponibles
+        } catch (error) {
+            console.error("Error al obtener los horarios:", error);
+            setError("No se pudieron cargar los horarios");
+        }
 
-  return (
-    <div className="container turnero mt-4">
-      <h1 className="maven-pro-title">Turnero {nombreCentro}</h1>
-      <div className="row" style={{ position: 'relative' }}>
-        <div className="col-md-6 calendar-container">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateCalendar', 'DateCalendar']}>
-              <DemoItem>
-                <StyledDateCalendar
-                  value={value}
-                  onChange={handleDateChange}
-                />
-              </DemoItem>
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>
+        // Desplazarse hacia abajo al contenedor de horarios
+        if (timesContainerRef.current) {
+            timesContainerRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
-        {/* Contenedor de horarios */}
-        {showTimes && (
-          <div className="col-md-6 time-container">
-            <h2>Elige la hora</h2>
-            <div className="time-box">
-              {availableTimes.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => handleTimeSelect(time)} // Maneja el clic en la hora
-                  className={`btn time-slot ${selectedTime === time ? 'selected' : ''}`} // Estilo de botón de Bootstrap
-                >
-                  {time}
-                </button>
-              ))}
+    const handleTimeSelect = (time) => {
+        setSelectedTime(time); // Almacenar la hora seleccionada
+    };
+
+    // Componente de renderizado personalizado para los días
+    function ServerDay(props) {
+        const { highlightedDates = [], day, outsideCurrentMonth, ...other } = props;
+
+        // Comprobar si la fecha está en la lista de fechas resaltadas
+        const isHighlighted = highlightedDates.some(highlightedDate =>
+            highlightedDate.isSame(day, 'day') // Verifica día, mes y año
+        );
+
+        return (
+            <Tooltip
+                title={!isHighlighted ? "No hay turnos disponibles" : ""}
+                arrow
+            >
+                <span>
+                    <PickersDay
+                        {...other}
+                        day={day}
+                        outsideCurrentMonth={outsideCurrentMonth}
+                        disabled={!isHighlighted} // Deshabilitar si no está resaltado
+                        className={isHighlighted ? 'highlighted-day' : 'disabled-day'} // Asignar clase CSS
+                    />
+                </span>
+            </Tooltip>
+        );
+    }
+
+    return (
+        <div className="container turnero mt-4">
+            <h1 className="maven-pro-title">Turnero {nombreCentro}</h1>
+            
+            <div className="calendar-time-row">
+                <h2 className='subtituloturnero'>Elige el día</h2>
+                <div className="calendar-container">
+                    
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <StyledDateCalendar
+                            value={value}
+                            onChange={handleDateChange}
+                            loading={isLoading} // Mostrar esqueleto si está cargando
+                            renderLoading={() => <DayCalendarSkeleton />}
+                            slots={{ day: ServerDay }}
+                            slotProps={{ day: { highlightedDates } }}
+                        />
+                    </LocalizationProvider>
+                </div>
+                
+                {/* Contenedor de horarios */}
+                {showTimes && (
+                    <div ref={timesContainerRef} className="time-container">
+                        <h2 className='subtituloturnero'>Elige la hora</h2>
+                        {error && <p className="error">{error}</p>} {/* Mostrar error si existe */}
+                        <div className="time-box">
+                            {availableTimes.length > 0 ? (
+                                availableTimes.map((time) => (
+                                    <button
+                                        key={time.idHorario}
+                                        onClick={() => time.habilitado && handleTimeSelect(time.hora)} // Solo permite selección si está habilitado
+                                        className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''} ${!time.habilitado ? 'disabled' : ''}`}
+                                        disabled={!time.habilitado} // Deshabilitar el botón si no está habilitado
+                                    >
+                                        {time.hora} {/* Mostrar solo la hora */}
+                                    </button>
+                                ))
+                            ) : (
+                                <p>No hay horarios disponibles.</p>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 // Estilos personalizados utilizando MUI styled()
 const StyledDateCalendar = styled(DateCalendar)(({ theme }) => ({
-  borderRadius: '15px',
-  boxShadow: '0 0px 20px rgba(0, 0, 0, 0.1)', // Aumentar el tamaño de la sombra
-  border: 'none',
-  width: '100%',
-  minWidth: '500px', // Aumentar el ancho mínimo del calendario
-  position: 'relative',
-  zIndex: 1,
-  padding: '20px', // Asegurarte de que haya padding interno para que la sombra no se corte
+    borderRadius: '15px',
+    boxShadow: '0 0px 20px rgba(0, 0, 0, 0.1)', // Aumentar el tamaño de la sombra
+    border: 'none',
+    width: '100%',
+    minWidth: '1em', // Ancho mínimo del calendario
+    position: 'center',
+    zIndex: 1,
+    padding: '20px', // Asegúrate de que haya padding interno para que la sombra no se corte
 }));
-

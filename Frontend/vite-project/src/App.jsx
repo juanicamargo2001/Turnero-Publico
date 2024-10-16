@@ -7,8 +7,11 @@ import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
 import Registro_Centro from "./components/Centro/Registro_Centro";
 import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
+
 import HabilitarTurnero from "./components/Turnero/HabilitarTurnero";
+
 import RegistroVeterinarioXCentro from "./components/Veterinario/Asignar_Centro";
+
 
 function App() {
   return (
@@ -22,9 +25,14 @@ function App() {
             <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
             <Route path="/modificar/veterinario" element={<Veterinarios/>} />
             <Route path="/registrar/centro" element={<Registro_Centro/>} />
+
             <Route path="/habilitar" element={<HabilitarTurnero/>}/>
+
             <Route path="/modificar/centro" element={<Modificar_Centro/>} />
-            <Route path="/registrar/turno" element={<Turnero/>} />
+
+            <Route path="/registrar/turno/alberdi" element={<Turnero nombreCentro={"Alberdi"} turnoId={14} />} />
+            <Route path="/registrar/turno/lafrance" element={<Turnero nombreCentro={"La France"} turnoId={15} />} />
+            <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
             <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
           </Routes>
         </div>

@@ -171,11 +171,37 @@ th, td {
 }
 
 
-/* Estilos para el contenedor del calendario */
+.subtituloturnero {
+  font-family: "Maven Pro", sans-serif !important;
+  font-size: 20px;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  width: 100%; /* Asegurarse de que ocupe todo el ancho */
+}
+
+/* Contenedor para centrar los títulos */
+.titles-container {
+  display: flex;
+  justify-content: space-between; /* Espaciado igual entre títulos */
+  align-items: center; /* Centrar verticalmente */
+  width: 100%; /* Ancho completo */
+}
+
+/* Estilos para la fila del calendario y horario */
+.calendar-time-row {
+  display: flex;
+  flex-direction: row; /* Cambiar a fila en pantallas grandes */
+  align-items: flex-start; /* Alinear los elementos al inicio */
+  justify-content: center; /* Centrar el contenido horizontalmente */
+  flex-wrap: wrap; /* Permitir que los elementos se ajusten en varias filas si es necesario */
+}
+
+/* Mantener la clase .calendar-container */
 .calendar-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center; /* Centra el calendario */
   padding: 20px;
+  width: 50%; /* Asegúrate de que ocupe el ancho completo */
 }
 
 /* Estilos generales del calendario */
@@ -200,11 +226,13 @@ th, td {
   color: rgb(255, 255, 255) !important; /* Texto blanco en fecha seleccionada */
 }
 
+/* Mantener la clase .time-container */
 .time-container {
-  padding: 20px !;
-  width: 250px !important;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 20px;
+  padding-top: 0;
+  width: 50%; /* Asegúrate de que ocupe el ancho completo */
+  max-width: 250px; /* Controlar el ancho máximo */
+  margin-top: 20px; /* Espacio entre el calendario y los horarios */
 }
 
 .time-box {
@@ -240,20 +268,76 @@ th, td {
   padding: 20px;
 }
 
-.css-4k4mmf-MuiButtonBase-root-MuiPickersDay-root,
-.css-qct7wd-MuiButtonBase-root-MuiPickersDay-root,
-.css-1ayjnp4-MuiPickersDay-root,
-.css-17f9e7e-MuiTypography-root-MuiDayCalendar-weekDayLabel
-{
-  font-family: "Maven Pro", sans-serif !important;
-  margin: 0 10px;
-  width: 60px !important;
-  height: 30px !important;
-  border-radius: 2em !important;
-}
+
 
 .css-cyfsxc-MuiPickersCalendarHeader-labelContainer{
   font-family: "Maven Pro", sans-serif !important;
+}
+
+.css-1rv8zyt-MuiStack-root{
+  overflow: visible !important;
+}
+
+/* Estilos para los días resaltados */
+.highlighted-day {
+  color: #69c706 ; /* Color del texto de los días resaltados */
+  pointer-events: all; /* Permitir clic solo en los días resaltados */
+}
+
+/* Estilo para los días que no tienen turnos */
+.disabled-day {
+  pointer-events: none; /* Deshabilitar clics */
+  opacity: 0.5; /* Hacer que los días no seleccionables se vean atenuados */
+}
+
+/* Estilo para el tooltip cuando el mouse pasa sobre días sin turnos */
+.disabled-day:hover::after {
+  content: "No hay turnos disponibles";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.css-4k4mmf-MuiButtonBase-root-MuiPickersDay-root,
+.css-17f9e7e-MuiTypography-root-MuiDayCalendar-weekDayLabel{
+  font-family: "Maven Pro" !important;
+}
+
+.calendar-header {
+  display: flex;
+  flex-direction: column; /* Cambiar a columna para que el h2 esté arriba */
+  align-items: center; /* Centrar horizontalmente */
+  width: 100%; /* Asegurarse de que ocupe todo el ancho */
+}
+
+
+/* Media Query para pantallas de 1150 o menos */
+@media (max-width: 3000px) {
+  .calendar-time-row {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    align-items: center; /* Centra horizontalmente */
+  }
+
+  .calendar-container, .time-container {
+    width: 50%; /* Ancho completo para ambos contenedores */
+    margin-top: 20px; /* Espacio entre calendario y horarios */
+  }
+}
+
+@media (max-width: 800px) {
+  .calendar-time-row {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    align-items: center; /* Centra horizontalmente */
+  }
+
+  .calendar-container, .time-container {
+    width: 100%; /* Ancho completo para ambos contenedores */
+    margin-top: 20px; /* Espacio entre calendario y horarios */
+  }
 }
 
 .cct{
