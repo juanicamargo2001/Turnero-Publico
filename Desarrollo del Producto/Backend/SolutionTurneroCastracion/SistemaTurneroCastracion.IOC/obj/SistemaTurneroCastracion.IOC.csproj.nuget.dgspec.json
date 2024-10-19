@@ -32,9 +32,6 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj": {
-                "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.DAL\\SistemaTurneroCastracion.DAL.csproj"
-              },
               "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
                 "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
               }
@@ -56,6 +53,16 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Tesseract": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -72,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.2.24474.11/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -104,6 +111,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj": {
+                "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj"
+              },
               "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj": {
                 "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.Entity\\SistemaTurneroCastracion.Entity.csproj"
               }
@@ -125,6 +135,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -141,7 +157,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.2.24474.11/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -218,7 +234,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.2.24474.11/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -290,7 +306,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.2.24474.11/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

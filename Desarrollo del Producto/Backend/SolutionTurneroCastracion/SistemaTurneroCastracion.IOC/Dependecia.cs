@@ -44,6 +44,10 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<IHorariosRepository, HorariosRepository>();
 
+            services.AddScoped<IVecinoRepository, VecinoRepository>();
+
+
+
         }
     }
 }

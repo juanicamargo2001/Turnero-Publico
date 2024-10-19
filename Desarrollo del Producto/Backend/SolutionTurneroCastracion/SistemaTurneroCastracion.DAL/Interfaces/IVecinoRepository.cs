@@ -1,0 +1,16 @@
+﻿using SistemaTurneroCastracion.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SistemaTurneroCastracion.DAL.Interfaces
+{
+    public interface IVecinoRepository : IGenericRepository<Vecino>
+    {
+        Task<bool> analizarDNIConReglas (string imageBytes);
+
+
+    }
+}

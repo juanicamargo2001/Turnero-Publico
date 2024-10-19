@@ -38,8 +38,10 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Horarios> Horarios { get; set; }
 
+    public virtual DbSet<Vecino> Vecinos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
-   
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,6 +80,12 @@ public partial class CentroCastracionContext : DbContext
                 .HasForeignKey(d => d.IdTipoAnimal)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_mascotas_tipo_animal");
+
+
+            entity.HasOne(m => m.Vecino)
+            .WithMany(v => v.Mascotas)
+            .HasForeignKey(e => e.IdVecino)
+            .HasConstraintName("FK_vecino");
         });
 
         modelBuilder.Entity<Sexo>(entity =>
@@ -181,7 +189,7 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.HoraLaboralInicio)
             .HasColumnName("horaLaboralInicio");
-            
+
             entity.Property(e => e.HoraLaboralFin)
             .HasColumnName("horaLaboralFin");
 
@@ -189,7 +197,7 @@ public partial class CentroCastracionContext : DbContext
 
         modelBuilder.Entity<VeterinarioxCentro>(entity =>
         {
-            entity.HasKey(vc => new { vc.Id_legajo , vc.Id_centro_castracion });
+            entity.HasKey(vc => new { vc.Id_legajo, vc.Id_centro_castracion });
 
             entity.ToTable("veterinarioxcentro");
 
@@ -222,11 +230,11 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.CantidadTurnosGatos)
             .HasDefaultValue(0)
             .HasColumnName("cant_turnos_gatos");
-            
+
             entity.Property(e => e.CantidadTurnosPerros)
             .HasDefaultValue(0)
-            .HasColumnName("cant_turnos_perros"); 
-            
+            .HasColumnName("cant_turnos_perros");
+
             entity.Property(e => e.CantidadTurnosEmergencia)
             .HasDefaultValue(0)
             .HasColumnName("cant_turnos_emergencia");
@@ -252,7 +260,7 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.Nombre)
             .HasColumnName("nombre");
-            
+
             entity.Property(e => e.Tipo)
             .HasColumnName("tipo");
 
@@ -312,7 +320,37 @@ public partial class CentroCastracionContext : DbContext
                   .HasConstraintName("FK_horarios_turnos"); ;
         });
 
+        modelBuilder.Entity<Vecino>(entity => {
 
+            entity.ToTable("vecinos");
+
+            entity.HasKey(e => e.Id_vecino)
+            .HasName("PK_id_vecino");
+
+            entity.Property(e => e.Id_vecino)
+            .HasColumnName("id_vecino");
+
+            entity.Property(e => e.F_nacimiento)
+            .HasColumnType("DATE")
+            .HasColumnName("f_nacimiento");
+
+            entity.Property(e => e.Domicilio)
+            .HasColumnName("domicilio");
+            
+            entity.Property(e => e.Dni)
+            .HasColumnName("dni");
+            
+            entity.Property(e => e.Email)
+            .HasColumnName("email");
+
+            entity.Property(e => e.Telefono)
+            .HasColumnName("telefono");
+
+            entity.Property(e => e.Id_usuario)
+            .HasColumnName("id_usuario");
+
+
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

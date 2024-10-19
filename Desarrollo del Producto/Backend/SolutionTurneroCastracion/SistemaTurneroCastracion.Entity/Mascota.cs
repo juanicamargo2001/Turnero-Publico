@@ -31,4 +31,8 @@ public partial class Mascota
 
     [JsonIgnore]
     public virtual TiposAnimal? IdTipoAnimalNavigation { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual Vecino Vecino { get; set; }
+
 }
