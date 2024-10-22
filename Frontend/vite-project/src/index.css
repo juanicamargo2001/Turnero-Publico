@@ -330,6 +330,23 @@ input, select, textarea {
   
 }
 
+/*Subir archivos*/
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+.upload-container:hover {
+  border-color: #009EE2;
+}
+
+.btn-upload {
+  background-color: #009EE2;
+  color: white;
+  margin-top: 10px;
+}
 
 
 

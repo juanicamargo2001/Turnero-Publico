@@ -33,6 +33,9 @@ function Menu() {
           <a className="nav-link active " aria-current="page" href="/">Inicio</a>
         </li>
         <li className="nav-item">
+          <a className="nav-link" href="/registrar/vecino">Registrar Vecino</a>
+        </li>
+        <li className="nav-item">
           <a className="nav-link" href="/turno">Turnos</a>
         </li>
         <li className="nav-item">

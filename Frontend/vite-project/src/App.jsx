@@ -7,6 +7,7 @@ import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
 import Registro_Centro from "./components/Centro/Registro_Centro";
 import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
+import Registro_Vecino from "./components/Vecino/Registro_Vecino";
 
 import HabilitarTurnero from "./components/Turnero/HabilitarTurnero";
 
@@ -28,7 +29,7 @@ function App() {
             <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
             <Route path="/modificar/veterinario" element={<Veterinarios/>} />
             <Route path="/registrar/centro" element={<Registro_Centro/>} />
-
+            <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
             <Route path="/habilitar" element={<HabilitarTurnero/>}/>
 
             <Route path="/modificar/centro" element={<Modificar_Centro/>} />
