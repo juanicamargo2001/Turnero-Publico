@@ -1,78 +1,5 @@
-/* :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */
 @import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap');
-/* .navbar {
-  margin: 0;
-  padding: 0; 
-  width: 100%; 
-} */
 .custom-menu-bg {
   background-color: #009EE2; /* Cambia a tu color preferido */
   color: white;
@@ -102,6 +29,7 @@ button:focus-visible {
   font-weight: 900;
   text-align: center;
 }
+/* BOTONES */
 .btn.confir {
   border-radius: 30px;
   font-size: 14px;
@@ -116,7 +44,45 @@ button:focus-visible {
   padding: 12px;
   font-weight: 600;
 }
+.obtn{
+  text-align: center;
+}
+.btn.obtenerTurno{
+  width: 14.30rem;
+  height: 2.83rem;
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
+}
+.btn.obtenerTurno:hover{
+  background-color: #ffffff; /* Color de fondo al pasar el cursor */
+  color: #009EE2 !important;
+}
 
+/* Tarjeta */
+.card.turno{
+  border: none;
+  box-shadow: 0 0 10px 0 rgba(97, 99, 100, 0.5);
+  border-radius: 10px ;
+}
+.card-body.turno{
+  padding: 30px 30px 30px 30px;
+}
+
+
+.tipoAnimal{
+  width: 348px;
+  height: 344px;
+}
+
+/* IMAGEN */
+/* .card-img-top{
+  width: 348px;
+  height: 344px;
+} */
 /*ACA ABAJO ESTILO DE TABLAS*/
 
 table {

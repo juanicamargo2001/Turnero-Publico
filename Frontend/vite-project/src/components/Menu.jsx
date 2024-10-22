@@ -33,7 +33,10 @@ function Menu() {
           <a className="nav-link active " aria-current="page" href="/">Inicio</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="/registrar/animal">Obtener Turnos</a>
+          <a className="nav-link" href="/turno">Turnos</a>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="/registrar/animal">Animal</a>
         </li>
         <li className="nav-item">
           <a className="nav-link" href="/modificar/veterinario">Veterinarios</a>
