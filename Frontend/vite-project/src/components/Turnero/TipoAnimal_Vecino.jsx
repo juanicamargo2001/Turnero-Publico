@@ -31,7 +31,26 @@ const TipoAnimal_Vecino = () => {
   };
 
   return (
-    
+    <div className="container text-center mt-5">
+      <h1 className="mb-4">{title}</h1>
+      <div className="row">
+        <div className="col-md-6 mb-4 ">
+          <div className="card tipoAnimal">
+            <img src={gatoImg} className="card-img-top" alt="Descripción de imagen 1" />
+            <div className="card-body">
+              <h5 className="card-title">GATO</h5>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6 mb-4 ">
+          <div className="card tipoAnimal">
+            <img src={perroImg} className="card-img-top" alt="Descripción de imagen 2" />
+            <div className="card-body">
+              <h5 className="card-title">PERRO</h5>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="d-flex justify-content-end p-2">
         <button type="button" className="btn btn-dark me-2 confir2" onClick={() => navigate(-1)}>
           Volver
