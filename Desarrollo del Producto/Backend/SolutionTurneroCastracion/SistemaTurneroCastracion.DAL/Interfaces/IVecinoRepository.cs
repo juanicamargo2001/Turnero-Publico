@@ -10,7 +10,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IVecinoRepository : IGenericRepository<Vecino>
     {
-        Task<string> AnalizarDNIConReglas (string imageBytes);
+        Task<bool> AnalizarDNIConReglas (string imageBytes);
         Task<bool> RegistrarSinFoto(ImagenRequest request);
 
     }

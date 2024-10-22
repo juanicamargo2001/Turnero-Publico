@@ -43,10 +43,10 @@ namespace SistemaTurneroCastracion.API.Controllers
         {
             if (!string.IsNullOrEmpty(imagenDorso))
             {
-                string textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(imagenDorso);
+                bool textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(imagenDorso);
 
-                if (string.IsNullOrEmpty(textoExtraido)) { 
-                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al procesar la imagen!", Result = "" });
+                if (!textoExtraido) { 
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "El vecino no es de Córdoba, si lo es, intente de nuevo!", Result = "" });
                 }
 
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = textoExtraido });

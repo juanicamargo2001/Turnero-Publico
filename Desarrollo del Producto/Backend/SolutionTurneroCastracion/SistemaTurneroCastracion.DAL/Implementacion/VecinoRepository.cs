@@ -29,7 +29,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<string> AnalizarDNIConReglas(string imageBytes)
+        public async Task<bool> AnalizarDNIConReglas(string imageBytes)
         {
             string? direccion;
             string apiKey = _configuration["OCRService:ApiKey"];
@@ -53,30 +53,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 
                 bool esCordoba = esDeCordoba(parsedText);
 
-
-                string pattern = @"DOMICILIO:\s*(.*\d{1,5}.*)";
-
-                // Realizar la búsqueda en el input
-                Match match = Regex.Match(parsedText, pattern);
-
-                if (match.Success)
-                {
-                    direccion = match.Groups[1].Value;
+                if (esCordoba) {
+                    return true;
                 }
                 else
                 {
-                    direccion = null;
+                    return false;
                 }
-
-                if (esCordoba) {   
-                    //implementar logica de pagos
-                }
-                else
-                {
-                    //implementar logica de pagos
-                }
-
-                return direccion;
 
             }
 
@@ -87,8 +70,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             if (!string.IsNullOrEmpty(textoParseado))
             {
-                Console.WriteLine(textoParseado);
-
                 if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     return true;
