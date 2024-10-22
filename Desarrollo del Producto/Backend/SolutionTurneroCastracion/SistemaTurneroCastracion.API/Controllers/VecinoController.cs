@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaTurneroCastracion.DAL.Interfaces;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
+using System.Diagnostics.Eventing.Reader;
 
 
 namespace SistemaTurneroCastracion.API.Controllers
@@ -20,17 +22,39 @@ namespace SistemaTurneroCastracion.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> ProcesarImagen([FromBody] ImagenRequest request)
+        public async Task<IActionResult> RegistrarVecino([FromBody] ImagenRequest request)
         {
-            if (string.IsNullOrEmpty(request.ImagenBase64))
+            if (request != null)
             {
-                return BadRequest("La imagen no fue proporcionada.");
-            }
+                bool vecinoCreado = await _vecinoRepository.RegistrarSinFoto(request);
 
-            bool textoExtraido = await _vecinoRepository.analizarDNIConReglas(request.ImagenBase64);
+                if (!vecinoCreado) {
 
-                return Ok(new { texto = true });
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+                }
+                return NoContent();
             }
+            return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+
+        }
+
+        [HttpPost("procesarImagen")]
+        public async Task<IActionResult> ProcesarImagen([FromBody] string imagenDorso)
+        {
+            if (!string.IsNullOrEmpty(imagenDorso))
+            {
+                string textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(imagenDorso);
+
+                if (string.IsNullOrEmpty(textoExtraido)) { 
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al procesar la imagen!", Result = "" });
+                }
+
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = textoExtraido });
+   
+            }
+            return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al procesar la imagen!", Result = "" });
+
+        }
     }
 }
 

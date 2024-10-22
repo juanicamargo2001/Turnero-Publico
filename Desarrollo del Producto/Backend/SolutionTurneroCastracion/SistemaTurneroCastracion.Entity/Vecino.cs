@@ -11,13 +11,13 @@ namespace SistemaTurneroCastracion.Entity
 {
     public partial class Vecino
     {
-        public int Id_vecino { get; set; }
+        public int? Id_vecino { get; set; }
 
 	    public DateTime F_nacimiento {  get; set; }
 
         public string Domicilio {  get; set; }
 
-        public int Dni {  get; set; }
+        public long Dni {  get; set; }
 
         public string Email {  get; set; }
 

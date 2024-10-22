@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 using Azure.Core;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
+using SistemaTurneroCastracion.Entity.Dtos;
+using System.Runtime.CompilerServices;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -27,9 +29,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<bool> analizarDNIConReglas(string imageBytes)
+        public async Task<string> AnalizarDNIConReglas(string imageBytes)
         {
-
+            string? direccion;
             string apiKey = _configuration["OCRService:ApiKey"];
             string base64Image = imageBytes;
             string ocrUrl = "https://api.ocr.space/parse/image";
@@ -48,29 +50,101 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 string parsedText = jsonResponse["ParsedResults"]?[0]?["ParsedText"]?.ToString();
 
-                if (!string.IsNullOrEmpty(parsedText))
-                {
-                    Console.WriteLine(parsedText);
+                
+                bool esCordoba = esDeCordoba(parsedText);
 
-                    if (parsedText.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        Console.WriteLine("Se encontró la palabra 'Córdoba' en el texto.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No se encontró la palabra 'Córdoba' en el texto.");
-                    }
+
+                string pattern = @"DOMICILIO:\s*(.*\d{1,5}.*)";
+
+                // Realizar la búsqueda en el input
+                Match match = Regex.Match(parsedText, pattern);
+
+                if (match.Success)
+                {
+                    direccion = match.Groups[1].Value;
                 }
                 else
                 {
-                    Console.WriteLine("No se detectó ningún texto en la imagen.");
+                    direccion = null;
                 }
 
-            return true;
+                if (esCordoba) {   
+                    //implementar logica de pagos
+                }
+                else
+                {
+                    //implementar logica de pagos
+                }
+
+                return direccion;
 
             }
 
-           
+
+        }
+
+        public bool esDeCordoba(string textoParseado)
+        {
+            if (!string.IsNullOrEmpty(textoParseado))
+            {
+                Console.WriteLine(textoParseado);
+
+                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<bool> RegistrarSinFoto(ImagenRequest request)
+        {
+            var dniRepetido = await this.Consultar(v => v.Dni == request.DNI);
+
+            if (!dniRepetido.Any() && DniValido(request.DNI)) {
+                Vecino vecinoCreado = await this.Crear(new Vecino
+                {
+                    F_nacimiento = request.F_Nacimiento,
+                    Domicilio = request.Domicilio,
+                    Dni = request.DNI,
+                    Email = request.Email,
+                    Telefono = request.Telefono,
+                    Id_usuario = request.Id_Usuario
+                });
+
+                if (vecinoCreado != null) { 
+                
+                    return true;
+                }
+                return false;
+            
+            }
+            return false;
+        }
+
+        public bool DniValido(long dni)
+        {
+            string pattern = @"^[\d]{1,3}\.?[\d]{3,3}\.?[\d]{3,3}$";
+            Regex regex = new (pattern);
+
+            if (regex.IsMatch(dni.ToString()))
+            {
+                return true;
+            }
+            else
+            {
+                return false; 
+            }
         }
     }
+
+   
 }

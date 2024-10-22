@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SistemaTurneroCastracion.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ca26dca09a835831c02b1d8ccf0d9ec729eea7a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+500e7d1f891144f6b062a92f9776192e80f4b276")]
 [assembly: System.Reflection.AssemblyProductAttribute("SistemaTurneroCastracion.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SistemaTurneroCastracion.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

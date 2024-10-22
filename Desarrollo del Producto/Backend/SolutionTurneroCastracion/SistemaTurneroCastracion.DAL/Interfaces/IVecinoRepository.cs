@@ -1,4 +1,5 @@
 ﻿using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IVecinoRepository : IGenericRepository<Vecino>
     {
-        Task<bool> analizarDNIConReglas (string imageBytes);
-
+        Task<string> AnalizarDNIConReglas (string imageBytes);
+        Task<bool> RegistrarSinFoto(ImagenRequest request);
 
     }
 }
