@@ -7,7 +7,7 @@ import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
 import Registro_Centro from "./components/Centro/Registro_Centro";
 import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
-import Registro_Vecino from "./components/Vecino/Registro_Vecino";
+import Registro_Vecino from "./components/Vecino/Registro_Vecino2";
 
 import HabilitarTurnero from "./components/Turnero/HabilitarTurnero";
 

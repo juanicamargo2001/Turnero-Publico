@@ -382,6 +382,9 @@ input, select, textarea {
   margin-top: 10px;
 }
 
-
+/*Datos personales*/
+.progress-bar {
+  color: #009EE2;
+}
 
 

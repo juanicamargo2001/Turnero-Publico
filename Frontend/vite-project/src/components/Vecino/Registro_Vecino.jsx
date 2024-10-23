@@ -4,7 +4,7 @@ import { centroService } from '../../services/centro.service';
 import { useState } from 'react';
 import uploadImage from '../../imgs/upload2.png';
 
-const Registro_Vecino = () => {
+const Registro = () => {
     const {register, handleSubmit, formState: { errors } } = useForm();
     const {error, setError} = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -134,4 +134,4 @@ const Registro_Vecino = () => {
   )
 }
 
-export default Registro_Vecino;
+export default Registro;
