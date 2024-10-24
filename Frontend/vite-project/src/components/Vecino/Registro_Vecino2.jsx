@@ -3,10 +3,51 @@ import { useForm } from 'react-hook-form';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
+import uploadImage from '../../imgs/upload2.png';
+import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
 const RegistroDatos = () => {
   const [step, setStep] = useState(1);
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const [showOtherOption, setShowOtherOption] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [scanResult, setScanResult] = useState('');
+  const codeReader = new BrowserMultiFormatReader();
+
+  const handleOtherOptionClick = () => {
+    setShowOtherOption(!showOtherOption);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageElement = document.createElement('img');
+      imageElement.src = URL.createObjectURL(file);
+
+      imageElement.onload = () => {
+        codeReader.decodeFromImage(imageElement)
+          .then(result => {
+            setScanResult(result.text);
+          })
+          .catch(err => {
+            if (err instanceof NotFoundException) {
+              console.log('No se encontró ningún código en la imagen.');
+            } else {
+              console.error('Error al decodificar la imagen:', err);
+            }
+          });
+      };
+    }
+  };
+
+  const handleScanData = (e) => {
+    console.log(scanResult);
+    if (scanResult===''){
+      alert("Debe subir un archivo");
+    } else {
+      handleOtherOptionClick();
+    }
+  }
 
   const onSubmit = (data) => {
     console.log(data);
@@ -34,6 +75,54 @@ const RegistroDatos = () => {
         {step === 1 && (
           <div>
             <h2 className="maven-pro-title">INGRESAR DATOS PERSONALES</h2>
+            {showOtherOption ? (
+              <div>
+                <h3>Registro automático con DNI</h3>
+                <label htmlFor="docPrimerPic" className="form-label">Sube una foto del FRENTE de tu documento</label>
+                <div className='upload-container mb-3'>
+                    {selectedFile ? (
+                        <div className="mb-3">
+                            <img
+                            src={URL.createObjectURL(selectedFile)}
+                            alt="preview"
+                            className="img-thumbnail"
+                            style={{ width: '200px', height: '150px', objectFit: 'cover' }}
+                            />
+                        </div>
+                    ) : (
+                        <div className="mb-3">
+                          <img
+                            src={uploadImage}
+                            alt="subir archivo"
+                            style={{ width: '200px', height: '150px' }}
+                          />
+                        </div>
+                    )}
+                    <input
+                        className='form-control'
+                        type="file"
+                        id="fileInput"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button type="button" className="btn btn-secondary confir" onClick={handleOtherOptionClick}>
+                    Volver
+                  </button>
+                  <button type="submit" className="btn btn-success ms-auto confir" onClick={handleScanData}>
+                    Continuar
+                  </button>
+                </div>
+              </div>
+            ) : (
+            <div>
+            <div className="d-flex justify-content-end mt-3">
+                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick}>
+                    <span className="me-2">Registro automático con DNI</span>
+                    <img src="path/to/your/image.png" alt="Icono" style={{ width: '30px', height: '30px' }} />
+                </button>
+            </div>
             <form className="maven-pro-body" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-3">
                 <label htmlFor="dni" className="form-label">DNI</label>
@@ -41,7 +130,7 @@ const RegistroDatos = () => {
                   type="text"
                   className="form-control"
                   id="dni"
-                  placeholder="123456789"
+                  placeholder={scanResult.split("@")[4] || "Escriba su DNI"}
                   {...register('dni', { required: 'El DNI es obligatorio' })}
                 />
                 {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
@@ -53,7 +142,7 @@ const RegistroDatos = () => {
                   type="text"
                   className="form-control"
                   id="nombre"
-                  placeholder="Andrew"
+                  placeholder={scanResult.split("@")[2] || "Escriba su nombre"}
                   {...register('nombre', { required: 'El nombre es obligatorio' })}
                 />
                 {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
@@ -65,7 +154,7 @@ const RegistroDatos = () => {
                   type="text"
                   className="form-control"
                   id="apellido"
-                  placeholder="Andrew"
+                  placeholder={scanResult.split("@")[1] || "Escriba su apellido"}
                   {...register('apellido', { required: 'El apellido es obligatorio' })}
                 />
                 {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
@@ -82,7 +171,7 @@ const RegistroDatos = () => {
                     locale: Spanish,
                     }}
                     className="form-control"
-                    placeholder="Seleccione su fecha de nacimiento"
+                    placeholder={scanResult.split("@")[6] || "Seleccione fecha"}
                 />
                 {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
               </div>
@@ -93,7 +182,8 @@ const RegistroDatos = () => {
                   type="text"
                   className="form-control"
                   id="domicilio"
-                  placeholder="Av. Sarmiento 1022, Córdoba"
+                  placeholder="VERIFICAR DOMICILIO CORDOBÉS"
+                  readOnly 
                   {...register('domicilio', { required: 'El domicilio es obligatorio' })}
                 />
                 {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
@@ -105,6 +195,8 @@ const RegistroDatos = () => {
                 </button>
               </div>
             </form>
+            </div>
+            )}
           </div>
         )}
 
