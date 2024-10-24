@@ -12,13 +12,17 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public int IdTurno {  get; set; }
 
-        public int? CantidadTurnosGato  { get; set; }
+        public TimeSpan HoraInicio { get; set; }
 
-        public int? CantidadTurnosPerro { get; set; }
+        public TimeSpan HoraFin {  get; set; }
 
-        public TimeSpan? Inicio { get; set; }
+        public int Cantidad { get; set; }
 
-        public TimeSpan? Fin { get; set; }
+        public int IdTipoTurno { get; set; }
+
+        public TimeSpan? InicioTrabajo { get; set; }
+
+        public TimeSpan? FinTrabajo { get; set; }
 
     }
 }

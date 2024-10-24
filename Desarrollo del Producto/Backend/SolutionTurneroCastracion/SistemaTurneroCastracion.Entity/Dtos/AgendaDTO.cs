@@ -9,8 +9,9 @@ namespace SistemaTurneroCastracion.Entity.Dtos
     public class AgendaDTO
     {
         public DateTime FechaInicio { get; set; }
+        public TimeSpan HoraHabilitado { get; set; }
 
-        public List<CentroAgendaDTO> CentroCastraciones{ get; set; }
+        public CentroAgendaDTO CentroCastracion { get; set; }
 
     }
 }

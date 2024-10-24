@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public class TurnoDTO
+    public class HoraTurnoResponseDTO
     {
-        public DateTime Dia { get; set; }
-        public List<HoraTurnoResponseDTO>? Hora { get; set; }
+        public TimeSpan? Hora { get; set; }
+        public string TipoTurno {  get; set; }
+
     }
 }

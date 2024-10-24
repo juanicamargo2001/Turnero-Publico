@@ -6,6 +6,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,9 +34,14 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> RegistrarAgenda(AgendaDTO agendaPrevia)
         {
-            DateTime fechaInicio = agendaPrevia.FechaInicio;
+            DateTime fechaInicio = new DateTime(agendaPrevia.FechaInicio.Year,
+                                                agendaPrevia.FechaInicio.Month,
+                                                agendaPrevia.FechaInicio.Day, agendaPrevia.HoraHabilitado.Hours, agendaPrevia.HoraHabilitado.Minutes, 0,
+                                                DateTimeKind.Utc);
 
             DateTime fechaFin;
+
+            int cantidadPerrosAtender = 0, cantidadGatosAtender = 0;
 
             if (fechaInicio.Month == 12)
             {
@@ -47,61 +53,64 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 fechaFin = fechaInicio.AddMonths(1).AddDays(DateTime.DaysInMonth(fechaInicio.Year, fechaInicio.Month + 1) - fechaInicio.Day);
             }
 
-            List<DateTime>? fechasHabilitadas = await this.FechasHabiles(fechaInicio, fechaFin);      
+            List<DateTime>? fechasHabilitadas = await this.FechasHabiles(fechaInicio, fechaFin);
 
             try
             {
-                foreach (var centro in agendaPrevia.CentroCastraciones)
+
+                if (!await esAgendaCreada(fechaFin, agendaPrevia.CentroCastracion.IdCentro))
                 {
-                    if (!await esAgendaCreada(fechaFin, centro.IdCentro))
+                    HorasLaboralesDTO centroHorarios = await this.obtenerHorasLaborales(agendaPrevia.CentroCastracion.IdCentro);
+
+                    TimeSpan? inicio = centroHorarios.HoraLaboralInicio;
+                    TimeSpan? fin = centroHorarios.HoraLaboralFin;
+
+                    foreach (var franjas in agendaPrevia.CentroCastracion.franjasHorarias)
                     {
-                        HorasLaboralesDTO centroHorarios = await this.obtenerHorasLaborales(centro.IdCentro);
+                        string? tipoTurno = this.obtenerTipoTurno(franjas.IdTipoTurno);
 
-                        TimeSpan? inicio = centroHorarios.HoraLaboralInicio;
-                        TimeSpan? fin = centroHorarios.HoraLaboralFin;
-
-                        int maxTurnos = (int)((fin - inicio)?.TotalMinutes / 30)!;
-
-                        int? totalTurnosSolicitados = centro.CantidadTurnosGatos + centro.CantidadTurnosPerros;
-
-                        if (totalTurnosSolicitados <= maxTurnos)
+                        Console.WriteLine(tipoTurno);
+                        if (tipoTurno == "PERRO")
                         {
-                            Agenda agendaCreada = await this.Crear(new Agenda
-                            {
-                                Fecha_inicio = fechaInicio,
-                                Fecha_fin = fechaFin,
-                                CantidadTurnosGatos = centro.CantidadTurnosGatos,
-                                CantidadTurnosPerros = centro.CantidadTurnosPerros,
-                                CantidadTurnosEmergencia = centro.CantidadTurnosEmergencia,
-                                IdCentroCastracion = centro.IdCentro
-                            });
-
-                            if (fechasHabilitadas.Any())
-                            {
-                                bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(
-                                            new TurnoHorarioCentroDTO
-                                            {
-                                                TurnosAgenda = fechasHabilitadas,
-                                                IdAgenda = agendaCreada.IdAgenda,
-                                                IdCentroCastracion = agendaCreada.IdCentroCastracion,
-                                                CantidadTurnosGato = centro.CantidadTurnosGatos,
-                                                CantidadTurnosPerros = centro.CantidadTurnosPerros,
-                                                Inicio = inicio,
-                                                Fin = fin
-                                            });
-                            }
+                            cantidadPerrosAtender += franjas.Cantidad;
                         }
-                        else
+                        else if (tipoTurno == "GATO")
                         {
-                            return false;
+                            cantidadGatosAtender += franjas.Cantidad;
                         }
-                    }else 
-                    {  
-                        return false;
                     }
+
+                    Agenda agendaCreada = await this.Crear(new Agenda
+                    {
+                        Fecha_inicio = fechaInicio,
+                        Fecha_fin = fechaFin,
+                        CantidadTurnosGatos = cantidadGatosAtender,
+                        CantidadTurnosPerros = cantidadPerrosAtender,
+                        CantidadTurnosEmergencia = 0, //se implementara en un futuro
+                        IdCentroCastracion = agendaPrevia.CentroCastracion.IdCentro
+                    });
+
+                    if (fechasHabilitadas.Any())
+                    {
+                        bool turnosRegistrados = await _turnosRepository.CrearTurnosAgenda(
+                                    new TurnoHorarioCentroDTO
+                                    { 
+                                        TurnosAgenda = fechasHabilitadas,
+                                        IdAgenda = agendaCreada.IdAgenda,
+                                        IdCentroCastracion = agendaCreada.IdCentroCastracion,
+                                        FranjasHorarias = agendaPrevia.CentroCastracion.franjasHorarias,
+                                        Inicio = inicio,
+                                        Fin = fin
+                                    });
+                    }
+
                 }
-                
-            } catch
+                else
+                {
+                    return false;
+                }
+            }
+            catch
             {
                 return false;
             }
@@ -119,7 +128,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             {
                 fechaInicio = fechaInicio.AddDays(1);
 
-                if (!this.EsFinDeSemana(fechaInicio) && !feriados.Contains(fechaInicio))
+                if (!this.EsFinDeSemana(fechaInicio) && !feriados.Select(f => f.Date).Contains(fechaInicio.Date))
                 {
                     fechasHabiles.Add(fechaInicio);
                 }
@@ -133,12 +142,12 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             var ctx = _dbContext;
 
+            fechaInicio = new DateTime(fechaInicio.Year, fechaInicio.Month, fechaInicio.Day, 0, 0, 0);
+
             var feriados = ctx.Feriados.Where(f => f.Fecha >= fechaInicio && f.Fecha <= fechaFin)
                            .Select(f => f.Fecha)
                            .ToList();
-
-            if (!feriados.Any()) {
-
+            if (feriados.Count == 0) {
                 return null;
             }
             return feriados;
@@ -167,6 +176,17 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
 
         }
+
+        public string? obtenerTipoTurno(int idTipoTurno)
+        {
+            TipoTurno tipoTurnoEncontrado = _dbContext.TipoTurnos.Where(e => e.TipoId == idTipoTurno).FirstOrDefault()!;
+
+            if (tipoTurnoEncontrado == null) {
+                return null;
+
+            }
+            return tipoTurnoEncontrado?.NombreTipo;
+        } 
 
     }
 }

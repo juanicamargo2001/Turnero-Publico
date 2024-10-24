@@ -22,5 +22,9 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public Turnos Turnos { get; set; }
 
+        [JsonIgnore]
+        public virtual TipoTurno? IdTipoTurnoNavigation { get; set; }
+
+
     }
 }

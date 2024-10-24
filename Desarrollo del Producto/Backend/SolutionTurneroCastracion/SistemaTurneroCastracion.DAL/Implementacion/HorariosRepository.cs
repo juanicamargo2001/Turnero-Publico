@@ -26,76 +26,35 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         public async Task<bool> crearHorarios(HorarioCentroParametroDTO centro)
         {
 
-            TimeSpan? inicio = centro.Inicio;
-            TimeSpan? fin = centro.Fin;
+            TimeSpan? inicio = centro.InicioTrabajo;
+            TimeSpan? fin = centro.FinTrabajo;
             TimeSpan? horaActual = inicio;
 
             var horariosGenerados = new List<Horarios>();
 
-            int? suma = centro.CantidadTurnosGato + centro.CantidadTurnosPerro;
-
-            //bool esTurnoGato = true;
             int iteracion = 0;
 
-            while (horaActual < fin && iteracion < suma)
+            if (centro.HoraInicio >= inicio && centro.HoraFin < fin)
             {
-                horariosGenerados.Add(new Horarios
+
+                while (iteracion < centro.Cantidad)
                 {
-                    Hora = horaActual,
-                    IdTurno = centro.IdTurno
-                });
+                    horariosGenerados.Add(new Horarios
+                    {
+                        Hora = centro.HoraInicio,
+                        IdTurno = centro.IdTurno,
+                        TipoTurno = centro.IdTipoTurno
+                    });
 
-                horaActual = horaActual?.Add(new TimeSpan(0, 30, 0));
+                    iteracion++;
 
-                iteracion++;
+                    if (centro.Cantidad == iteracion)
+                    {
+                        break;
+                    }
 
-                //if (esTurnoGato && centro.CantidadTurnosGato> 0)
-                //{ 
-                //    horariosGenerados.Add(new Horarios
-                //    {
-                //        Hora = horaActual,
-                //        TipoTurno = 0,
-                //        IdTurno = centro.IdTurno,
-                //        Habilitado = true
-                //    });
-                //    centro.CantidadTurnosGato--;
-                //    iteracion++;
-                //}
-                //else if (!esTurnoGato && centro.CantidadTurnosPerro > 0)
-                //{
-                //    horariosGenerados.Add(new Horarios
-                //    {
-                //       Hora = horaActual,
-                //       TipoTurno = 1,
-                //       IdTurno = centro.IdTurno, 
-                //       Habilitado = true
-                //    });
-                //    centro.CantidadTurnosPerro--;
-                //    iteracion++;
-                //}
-
-                //if (centro.CantidadTurnosGato > 0 && centro.CantidadTurnosPerro > 0)
-                //{
-                //    esTurnoGato = !esTurnoGato;
-                //}
-
-                //else if (centro.CantidadTurnosGato == 0 && centro.CantidadTurnosPerro > 0)
-                //{
-                //    esTurnoGato = false;
-                //}
-                //else if (centro.CantidadTurnosPerro == 0 && centro.CantidadTurnosGato > 0)
-                //{
-                //    esTurnoGato = true;
-                //}
-
-                if (suma == iteracion)
-                {
-                    break;
                 }
-  
             }
-                
-            
             try
             {
                 _dbContext.Horarios.AddRange(horariosGenerados);

@@ -40,6 +40,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Vecino> Vecinos { get; set; }
 
+    public virtual DbSet<TipoTurno> TipoTurnos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
 
@@ -220,7 +222,7 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.IdAgenda).HasColumnName("id_agenda");
 
             entity.Property(e => e.Fecha_inicio)
-            .HasColumnType("DATE")
+            .HasColumnType("DATETIME")
             .HasColumnName("fecha_inicio");
 
             entity.Property(e => e.Fecha_fin)
@@ -317,7 +319,13 @@ public partial class CentroCastracionContext : DbContext
             entity.HasOne(e => e.Turnos)
                   .WithMany(t => t.Horarios)
                   .HasForeignKey(e => e.IdTurno)
-                  .HasConstraintName("FK_horarios_turnos"); ;
+                  .HasConstraintName("FK_horarios_turnos");
+
+            entity.HasOne(h => h.IdTipoTurnoNavigation)
+                  .WithMany(t => t.Horarios)
+                  .HasForeignKey(e => e.TipoTurno)
+                  .HasConstraintName("FK_horarios_tipo");
+
         });
 
         modelBuilder.Entity<Vecino>(entity => {
@@ -351,6 +359,21 @@ public partial class CentroCastracionContext : DbContext
 
 
         });
+
+        modelBuilder.Entity<TipoTurno>(entity => {
+
+            entity.ToTable("tipo_turno");
+
+            entity.HasKey(e => e.TipoId).HasName("PK_tipo_turno");
+
+            entity.Property(e => e.TipoId)
+            .HasColumnName("id_tipo_turno");
+
+            entity.Property(e => e.NombreTipo)
+            .HasColumnName("tipo");
+
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

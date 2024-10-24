@@ -51,22 +51,27 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 _dbContext.SaveChanges();
 
                 for (int i = 0; i < turnosFiltrados.Count; i++) {
-                
-                    await _horariosRepository.crearHorarios(new HorarioCentroParametroDTO { 
-                                                                IdCentroCastracion = turnoHorarioDTO.IdCentroCastracion, 
-                                                                IdTurno = turnoNuevo[i].IdTurno, 
-                                                                CantidadTurnosGato = turnoHorarioDTO.CantidadTurnosGato, 
-                                                                CantidadTurnosPerro = turnoHorarioDTO.CantidadTurnosPerros,
-                                                                Inicio = turnoHorarioDTO.Inicio,
-                                                                Fin = turnoHorarioDTO.Fin
-                    });
+                    foreach (var franja in turnoHorarioDTO.FranjasHorarias)
+                    {
+                        await _horariosRepository.crearHorarios(new HorarioCentroParametroDTO
+                        {
+                            IdCentroCastracion = turnoHorarioDTO.IdCentroCastracion,
+                            IdTurno = turnoNuevo[i].IdTurno,
+                            IdTipoTurno = franja.IdTipoTurno,
+                            Cantidad = franja.Cantidad,
+                            InicioTrabajo = turnoHorarioDTO.Inicio,
+                            FinTrabajo = turnoHorarioDTO.Fin,
+                            HoraInicio = franja.HoraInicio,
+                            HoraFin = franja.HorarioFin
+                        });
+                    }
+
+                    
                 }
 
             }
             catch (Exception ex)
             { 
-                Console.WriteLine(ex.Message);
-
                 return false;
             }
             return true;
@@ -78,12 +83,17 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
                                 join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
                                 join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
+                                join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                                 where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia
-                                group H by new { T.Dia } into g
+                                group new { H, TT } by new { T.Dia } into g
                                 select new TurnoDTO
                                 {
                                     Dia = g.Key.Dia,
-                                    Hora = g.ToList()
+                                    Hora = g.Select(h => new HoraTurnoResponseDTO
+                                    {
+                                        Hora = h.H.Hora,
+                                        TipoTurno = h.TT.NombreTipo
+                                    }).ToList()
                                 }).ToList();
 
             return turnos;
