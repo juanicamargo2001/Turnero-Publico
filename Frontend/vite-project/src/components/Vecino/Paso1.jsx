@@ -5,12 +5,19 @@ import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import uploadImage from '../../imgs/upload2.png';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
+import { vecinoService } from '../../services/vecino.service';
 
 const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const codeReader = new BrowserMultiFormatReader();
     const [showOtherOption, setShowOtherOption] = useState(false);
+    const [showOtherOption2, setShowOtherOption2] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [scanResult, setScanResult] = useState('');
+    const [selectedFile2, setSelectedFile2] = useState(null);
+
+    const handleFileChange2 = (event) => {
+        setSelectedFile2(event.target.files[0]);
+    };
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
@@ -22,6 +29,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     }, [formData, setValue]);
 
     const onFormSubmit = (data) => {
+        if (!formData.domicilio) {return;}
         updateFormData(data);
         nextStep();
     };
@@ -73,10 +81,45 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         setShowOtherOption(!showOtherOption);
     };
 
+    const handleOtherOptionClick2 = () => {
+      setShowOtherOption2(!showOtherOption2);
+    };
+
+    const handleDomicilioFoto = async ()=> {
+      if (selectedFile2===null){
+        alert("Debe subir un archivo");
+      } else {
+        try {
+          const base64Image = await convertImageToBase64(selectedFile2);
+          try {
+            const response = await vecinoService.ProcesarImagen(base64Image);
+            console.log(response);
+            alert("Imagen procesada con exito");
+            updateFormData({domicilio: true});
+            handleOtherOptionClick2();
+          } catch (error) {
+            alert("Error al procesar imagen. Por favor, inténtelo de nuevo.");
+            console.error("Error al procesar imagen:", error.response ? error.response.data : error); 
+          }
+        } catch (error) {
+          console.error("Error al convertir la imagen:", error);
+        }
+      }
+    }
+
+    function convertImageToBase64(file) {
+      return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+      });
+    }
+
     return(
         <div>
             <h2 className="maven-pro-title">INGRESAR DATOS PERSONALES</h2>
-            {showOtherOption ? (
+            {showOtherOption &&(
               <div>
                 <h3>Registro automático con DNI</h3>
                 <label htmlFor="docPrimerPic" className="form-label">Sube una foto del FRENTE de tu documento</label>
@@ -116,7 +159,8 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   </button>
                 </div>
               </div>
-            ) : (
+            )}
+            {!showOtherOption&&!showOtherOption2 &&(
             <div>
             <div className="d-flex justify-content-end mt-3">
                 <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick}>
@@ -181,17 +225,19 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
               </div>
 
               <div className="mb-3">
-                <label htmlFor="domicilio" className="form-label">Domicilio</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="domicilio"
-                  placeholder="VERIFICAR DOMICILIO CORDOBÉS"
-                  defaultValue={formData.domicilio}
-                  //readOnly 
-                  {...register('domicilio', { required: 'El domicilio es obligatorio' })}                  
-                />
+                <div>
+                    {formData.domicilio ? (
+                        <p style={{ color: 'green' }}>Domicilio verificado</p>
+                    ) : (
+                        <p style={{ color: 'red' }}>Domicilio no verificado</p>
+                    )}
+                </div>
                 {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
+              </div>
+              <div className="d-flex mt-3">
+                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick2}>
+                    <span className="me-2">Verificar domicilio con DNI</span>
+                </button>
               </div>
 
               <div className="d-flex justify-content-between">
@@ -201,6 +247,47 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
               </div>
             </form>
             </div>
+            )}
+
+            {showOtherOption2 &&(
+              <div>
+                <label htmlFor="docSegundaPic" className="form-label">Sube una foto del DORSO del documento</label>
+                <div className='upload-container mb-3'>
+                    {selectedFile2 ? (
+                        <div className="mb-3">
+                            <img
+                            src={URL.createObjectURL(selectedFile2)}
+                            alt="preview"
+                            className="img-thumbnail"
+                            style={{ width: '200px', height: '150px', objectFit: 'cover' }}
+                            />
+                        </div>
+                    ) : (
+                        <div className="mb-3">
+                          <img
+                            src={uploadImage}
+                            alt="subir archivo"
+                            style={{ width: '200px', height: '150px' }}
+                          />
+                        </div>
+                    )}
+                    <input
+                        class='form-control'
+                        type="file"
+                        id="fileInput"
+                        accept="image/*"
+                        onChange={handleFileChange2}
+                    />
+                </div>
+                <div className="d-flex justify-content-between">
+                  <button type="button" className="btn btn-secondary confir" onClick={handleOtherOptionClick2}>
+                    Volver
+                  </button>
+                  <button type="submit" className="btn btn-success ms-auto confir" onClick={handleDomicilioFoto}>
+                    Continuar
+                  </button>
+                </div>
+              </div>
             )}
         </div>
     )
