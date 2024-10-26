@@ -13,7 +13,9 @@ const RegistroAnimal = () => {
   const [loading, setLoading] = useState(true);
 
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    mode: 'onChange', 
+  });
 
   const onSubmit = async (data) => {
     const nuevaMascota = {
@@ -106,10 +108,17 @@ const RegistroAnimal = () => {
             className={`form-control ${errors.edad ? 'is-invalid' : ''}`} 
             id="edad"
             placeholder="Ingrese la edad aproximada"
-            {...register('edad', { required: 'La edad es requerida' })}
+            {...register('edad', {
+              required: 'La edad es requerida',
+              max: {
+                value: 20,
+                message: 'La edad no puede ser mayor a 20 años',
+              },
+            })}
           />
           {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 
         </div>
+
 
         <div className="mb-3">
           <label htmlFor="tipoAnimal" className="form-label">Tipo de Animal</label>
@@ -171,7 +180,7 @@ const RegistroAnimal = () => {
             type="number"
             className={`form-control ${errors.vecino ? 'is-invalid' : ''}`} 
             id="vecino"
-            {...register('vecino', { required: 'El número de vecino es requerido' })} 
+            
           />
           {errors.vecino && <div className="invalid-feedback">{errors.vecino.message}</div>}
         </div>

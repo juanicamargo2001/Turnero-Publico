@@ -72,10 +72,15 @@
   padding: 30px 30px 30px 30px;
 }
 
-
+.tarjeta{
+  display: flex;
+}
 .tipoAnimal{
-  width: 348px;
-  height: 344px;
+  width: 320px;
+  height: 310px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
 }
 
 /* IMAGEN */
@@ -353,4 +358,4 @@ input, select, textarea {
   color: #009EE2;
 }
 
-
+/* SELECTOR */

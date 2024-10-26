@@ -32,19 +32,19 @@ const TipoAnimal_Vecino = () => {
 
   return (
     <div className="container text-center mt-5">
-      <h1 className="mb-4">{title}</h1>
+      <h1 className="mb-4 maven-pro-title">{title}</h1>
       <div className="row">
-        <div className="col-md-6 mb-4 ">
-          <div className="card tipoAnimal">
-            <img src={gatoImg} className="card-img-top" alt="Descripción de imagen 1" />
+        <div className="col-md-6 mb-4 d-flex justify-content-center">
+          <div className="card tipoAnimal text-center">
+            <img src={gatoImg} className="card-img-top" alt="gato" />
             <div className="card-body">
               <h5 className="card-title">GATO</h5>
             </div>
           </div>
         </div>
-        <div className="col-md-6 mb-4 ">
-          <div className="card tipoAnimal">
-            <img src={perroImg} className="card-img-top" alt="Descripción de imagen 2" />
+        <div className="col-md-6 mb-4 d-flex justify-content-center ">
+          <div className="card tipoAnimal text-center">
+            <img src={perroImg} className="card-img-top" alt="perro" />
             <div className="card-body">
               <h5 className="card-title">PERRO</h5>
             </div>
