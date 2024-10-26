@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Paso2Visual from './Paso2';
+import Paso3Visual from './Paso3';
 import { useStepForm } from './useStepForm';
 import Paso1Visual from './Paso1';
 
@@ -62,24 +63,12 @@ const RegistroDatos = () => {
 
         {/* Renderizado del paso 3: Datos de Cuenta */}
         {currentStep === 3 && (
-          <div>
-            <h2 className="maven-pro-title">DATOS DE CUENTA</h2>
-            <form className="maven-pro-body" onSubmit={()=>{}}>
-              {/*ACA VA LA PARTE DE EL USUARIO QUE VA EN OTRA SPRINT*/}
-              <div className="d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="btn btn-secondary confir"
-                  onClick={prevStep}
-                >
-                  Volver
-                </button>
-                <button type="submit" className="btn btn-success confir">
-                  Finalizar
-                </button>
-              </div>
-            </form>
-          </div>
+          <Paso3Visual
+            formData={formData}
+            updateFormData={updateFormData}
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
         )}
       </div>
     </div>
