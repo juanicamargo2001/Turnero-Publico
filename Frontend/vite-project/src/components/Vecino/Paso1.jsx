@@ -56,13 +56,21 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         }
     };
 
+    const parsearFecha = (f) => {
+      const s = f.split("/");
+      const parse = s[2] + "-" + s[1] + "-" + s[0];
+      console.log(parse);
+      return parse;
+    }
+
     const armarJson = (string) => {
         const partes = string.split('@')
+        const fechaParseada = parsearFecha(partes[6]);
         const jsonObject = {
             nombre: partes[2],
             apellido: partes[1],
             dni: parseInt(partes[4]),
-            fNacimiento: partes[6]
+            fNacimiento: fechaParseada
         };
         return jsonObject;
     }
@@ -215,15 +223,22 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                     options={{ 
                     altInput: true,
                     altFormat: "F j, Y",
-                    dateFormat: "YYYY-mm-dd",
+                    dateFormat: "Y-m-d",
                     locale: Spanish,
                     }}
                     className="form-control"
-                    placeholder={scanResult.split("@")[6] || "Seleccione fecha"}
+                    placeholder={"Seleccione fecha"}
+                    value={formData.fNacimiento}
+                    {...register('fNacimiento', { required: 'La fecha de nacimiento es obligatoria' })}
                 />
                 {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
               </div>
 
+              <div className="d-flex mt-3">
+                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick2}>
+                    <span className="me-2">Verificar domicilio con DNI</span>
+                </button>
+              </div>
               <div className="mb-3">
                 <div>
                     {formData.domicilio ? (
@@ -233,11 +248,6 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                     )}
                 </div>
                 {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
-              </div>
-              <div className="d-flex mt-3">
-                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick2}>
-                    <span className="me-2">Verificar domicilio con DNI</span>
-                </button>
               </div>
 
               <div className="d-flex justify-content-between">
