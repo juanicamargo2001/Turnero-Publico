@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Vecino'; // Asegúrate de que esta URL sea correcta
+const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/vecino'; // Asegúrate de que esta URL sea correcta
 
 async function Grabar(nuevoVecino) {
     try {
@@ -12,8 +12,8 @@ async function Grabar(nuevoVecino) {
       });
     return response.data;
     } catch (error) {
-    console.error("Error al grabar el vecino:", error.response ? error.response.data : error.message);
-    throw error; 
+        console.error("Error al grabar el vecino:", error.response ? error.response.data : error.message);
+        throw error; 
     }
 }
 

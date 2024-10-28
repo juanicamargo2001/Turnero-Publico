@@ -23,7 +23,6 @@ const RegistroDatos = () => {
     // Actualiza el estado de formData combinando los datos nuevos
     setFormData(prevData => {
       const updatedData = { ...prevData, ...data };
-      console.log('formActualizado: ', updatedData);
       return updatedData; 
     });
   };  

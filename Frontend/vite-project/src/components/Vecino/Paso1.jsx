@@ -59,7 +59,6 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const parsearFecha = (f) => {
       const s = f.split("/");
       const parse = s[2] + "-" + s[1] + "-" + s[0];
-      console.log(parse);
       return parse;
     }
 

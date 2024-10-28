@@ -5,9 +5,21 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onFormSubmit = (data) => {
-        //Hacer el registro del vecino
-        console.log(formData)
-        vecinoService.Grabar(formData);
+        try {
+            if (!formData.fNacimiento.includes("T")) {
+                formData.f_Nacimiento = formData.fNacimiento;
+                delete formData.fNacimiento;
+            }
+            formData.domicilio = "";
+            formData.id_Usuario = 0;
+            
+            vecinoService.Grabar(formData);
+            alert("Vecino registrado correctamente");
+            
+        } catch (error) {
+            console.error("Error al enviar el formulario:", error);
+            alert("Ocurrió un error al enviar los datos. Por favor, inténtelo de nuevo.");
+        }
     };
 
     return(
