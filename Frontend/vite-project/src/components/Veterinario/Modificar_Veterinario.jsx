@@ -102,7 +102,7 @@ const Veterinarios = () => {
                     <input 
                         type="number" 
                         className="form-control" 
-                        placeholder="Ingrese dni del veterinario" 
+                        placeholder="Ingrese DNI del veterinario" 
                         aria-label="Buscar veterinario"
                         value={busqueda}
                         onChange={(e) => setBusqueda(e.target.value)}

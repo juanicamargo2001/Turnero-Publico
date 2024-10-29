@@ -48,7 +48,7 @@ const Modal = ({ show, handleClose, item, onSubmitSort }) => {
               <ul className="list-unstyled">
               {Object.keys(formData).map((key) => (
                   <li key={key}>
-                    <label htmlFor={key}>{key}:</label>
+                    <label htmlFor={key}>{key[0].toUpperCase() + key.substring(1)}:</label>
                     {typeof formData[key] === 'boolean' ? (
                       <select
                         name={key}

@@ -49,7 +49,7 @@ const RegistroVeterinarioXCentro = () => {
 
     return (
         <div className="container mt-4">
-            <h2 className="maven-pro-title">ASIGNAR CENTRO DE CASTRACION A VETERINARIO</h2>
+            <h2 className="maven-pro-title">ASIGNAR CENTRO DE CASTRACIÓN A VETERINARIO</h2>
             <table>
                 <thead>
                     <tr>

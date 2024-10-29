@@ -57,7 +57,7 @@ const Registro_Vecino = () => {
           {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
         </div>
         <div className='mb-3'>
-        <label htmlFor="telefono" className="form-label">Telefono</label>
+        <label htmlFor="telefono" className="form-label">Teléfono</label>
           <input
             type="number"
             className="form-control"

@@ -36,14 +36,41 @@ export default function Modificar_Centro() {
     };
 
     const handleModalSubmitSort = async (formData) => {
-        if (!formData.nombre || !formData.barrio || !formData.calle) {
-            alert("Los campos nombre, barrio y calle son obligatorios.");
+        if (!formData.nombre || !formData.barrio || !formData.calle || !formData.horaLaboralInicio || !formData.horaLaboralFin) {
+            alert("Hay campos sin completar.");
             return; // Salir de la función si hay campos vacíos
         }
-        formData.id_centro_castracion = idCentro;
+    
         if (formData.altura === null || formData.altura === "") {
             formData.altura = "0";
         }
+        
+        // Validar formato de hora entre 07:00:00 y 19:00:00
+        const horaRegex = /^(0[7-9]|1[0-8]|19):([0-5]\d):([0-5]\d)$/; // Formato hh:mm:ss de 07:00:00 a 19:00:00
+
+        if (!horaRegex.test(formData.horaLaboralInicio)) {
+            alert("El formato debe ser 'hh:mm:ss' que se encuentre entre las 07HS y las 19HS");
+            return;
+        }
+
+        if (!horaRegex.test(formData.horaLaboralFin)) {
+            alert("El formato debe ser 'hh:mm:ss' que se encuentre entre las 07HS y las 19HS");
+            return;
+        }
+
+        // Asegúrate de que la hora de fin sea después de la hora de inicio (opcional)
+        const [inicioHoras] = formData.horaLaboralInicio.split(':');
+        const [finHoras] = formData.horaLaboralFin.split(':');
+
+        if (parseInt(finHoras) <= parseInt(inicioHoras)) {
+            alert("La hora de fin debe ser posterior a la hora de inicio.");
+            return;
+        }
+
+        formData.id_centro_castracion = idCentro;
+        
+        //console.log(formData)
+        
         try {
             await centroService.Modificar(formData);
             alert("Centro modificado correctamente");
@@ -59,10 +86,10 @@ export default function Modificar_Centro() {
 
   return (
     <div className="container mt-4">
-            <h2 className="maven-pro-title">CENTROS DE CASTRACION</h2>
+            <h2 className="maven-pro-title">CENTROS DE CASTRACIÓN</h2>
             <div className="d-flex justify-content-between mb-3">
                 <a href='/registrar/centro'>
-                    <button className="btn btn-primary confir">Crear centro de castracion</button>
+                    <button className="btn btn-primary confir">Crear centro de castración</button>
                 </a>
             </div>
             <table>
@@ -74,6 +101,7 @@ export default function Modificar_Centro() {
                     <th>Calle</th>
                     <th>Altura</th>
                     <th>Habilitado</th>
+                    <th>Horario Laboral</th>
                     <th>Acciones</th>
                     </tr>
                 </thead>
@@ -97,6 +125,8 @@ export default function Modificar_Centro() {
                                 <span style={{ color: 'red' }}>✗</span>
                             }
                         </td>
+                        <td>{row.horaLaboralInicio ? row.horaLaboralInicio.split(':')[0] : 'N/A'} HS- 
+                        {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS</td>
                         <td className="iconos">
                         <a href='#' onClick={() => handleView(row)}><i title="Información" className="fa fa-edit" aria-hidden="true"></i></a>
                         </td>

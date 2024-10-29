@@ -4,6 +4,7 @@ import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import {veterinarioService} from "../../services/veterinario.service";
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 const RegistroVeterinario = () => {
   const { 
@@ -12,6 +13,10 @@ const RegistroVeterinario = () => {
     formState: { errors },
     setValue 
   } = useForm();
+
+  const today = new Date();
+  const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); // Resta 6570 días o 18 años
+  const navigate = useNavigate();
 
   useForm({
     mode: 'onSubmit',
@@ -26,7 +31,7 @@ const RegistroVeterinario = () => {
       
       CODIGO VALIDADOR DE EDAD>>>>>>>>>>>>>>>>>>>>>>
 
-      validate: {
+      validate:
         mayorDe15: (value) => {
           if (!value || !value[0]) return "La fecha de nacimiento es obligatoria";
 
@@ -59,6 +64,7 @@ const RegistroVeterinario = () => {
     try {
       await veterinarioService.Grabar(nuevoVeterinario);
       alert("Veterinario registrado con éxito");
+      navigate("/modificar/veterinario");
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
     }
@@ -127,21 +133,30 @@ const RegistroVeterinario = () => {
             placeholder="Escriba su matricula "
             {...register('matricula', { 
               required: "La matricula es obligatoria", 
-              setValueAs: value => parseInt(value, 10)
+              setValueAs: value => parseInt(value, 10),
+              validate: value => value > 0 || "La matricula debe ser mayor que 0"
             })}
           />
           {errors.matricula && <p style={{ color: 'red' }}>{errors.matricula.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="telefono" className="form-label">Telefono</label>
+          <label htmlFor="telefono" className="form-label">Teléfono</label>
           <input
             type="number"
             className="form-control"
             id="telefono"
             placeholder="Escriba su telefono "
             {...register('telefono', { 
-              required: "El telefono es obligatorio", 
-              setValueAs: value => parseInt(value, 10)
+              required: "El telefono es obligatorio",
+              minLength: {
+                value: 10,
+                message: "El teléfono debe tener al menos 10 dígitos"
+              },
+              pattern: {
+                  value: /^[0-9]*$/,
+                  message: "El teléfono solo puede contener números"
+              }, 
+              validate: value => value > 0 || "El telefono debe ser mayor que 0"
             })}
           />
           {errors.telefono && <p style={{ color: 'red' }}>{errors.telefono.message}</p>}
@@ -154,8 +169,20 @@ const RegistroVeterinario = () => {
             id="dni"
             placeholder="Escriba su dni "
             {...register('dni', { 
-              required: "El dni es obligatorio", 
-              setValueAs: value => parseInt(value, 10) 
+              required: "El DNI es obligatorio", 
+              minLength: {
+                value: 8,
+                message: "El DNI debe tener exactamente 8 dígitos"
+                },
+                maxLength: {
+                    value: 8,
+                    message: "El DNI debe tener exactamente 8 dígitos"
+                },
+                pattern: {
+                    value: /^[0-9]*$/,
+                    message: "El DNI solo puede contener números"
+                },
+              validate: value => value > 0 || "El DNI debe ser mayor que 0"
             })}
           />
           {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
@@ -169,6 +196,7 @@ const RegistroVeterinario = () => {
               altFormat: "F j, Y",
               dateFormat: "YYYY-mm-dd",
               locale: Spanish,
+              maxDate: maxDate
             }}
             className="form-control"
             placeholder="Seleccione su fecha de nacimiento"
