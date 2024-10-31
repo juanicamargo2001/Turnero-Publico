@@ -9,11 +9,13 @@ import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
 import Registro_Vecino from "./components/Vecino/Registro_Vecino";
 
-import HabilitarTurnero from "./components/Turnero/HabilitarTurnero";
+import HabilitarTurneroAlberi from "./components/Turnero/HabilitarTurnero_Alberdi";
 
 import RegistroVeterinarioXCentro from "./components/Veterinario/Asignar_Centro";
 import CentrosCastracionList from "./components/Turnero/Centro_Vecino";
 import TipoAnimal_Vecino from "./components/Turnero/TipoAnimal_Vecino";
+import HabilitarTurneroLafrance from "./components/Turnero/HabilitarTurneri_Lafrance.jsx";
+import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.jsx";
 
 
 function App() {
@@ -30,7 +32,10 @@ function App() {
             <Route path="/modificar/veterinario" element={<Veterinarios/>} />
             <Route path="/registrar/centro" element={<Registro_Centro/>} />
             <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
-            <Route path="/habilitar" element={<HabilitarTurnero/>}/>
+            
+            <Route path="/habilitar/alberdi" element={<HabilitarTurneroAlberi/>}/>
+            <Route path="/habilitar/lafrance" element={<HabilitarTurneroLafrance/>}/>
+            <Route path="/habilitar/villallende" element={<HabilitarTurneroVilla/>}/>
 
             <Route path="/modificar/centro" element={<Modificar_Centro/>} />
 

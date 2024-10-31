@@ -12,18 +12,29 @@ const horarios = {
             
             // Verificar si la respuesta es exitosa
             if (response.data.success) {
-                // Extraer y devolver solo los horarios habilitados
-                return response.data.result[0].hora.map(hora => ({
-                    idHorario: hora.idHorario,
-                    hora: hora.hora,
-                    habilitado: hora.habilitado
-                }));
+                // Crear un mapa para evitar horarios duplicados
+                const uniqueHorarios = new Map();
+
+                // Filtrar horarios únicos y extraer tipoTurno sin habilitado
+                response.data.result[0].hora.forEach(hora => {
+                    const key = `${hora.hora}-${hora.tipoTurno}`;
+                    if (!uniqueHorarios.has(key)) {
+                        uniqueHorarios.set(key, {
+                            idHorario: hora.idHorario,
+                            hora: hora.hora,
+                            tipoTurno: hora.tipoTurno
+                        });
+                    }
+                });
+
+                // Convertir el mapa a un array y devolver
+                return Array.from(uniqueHorarios.values());
             } else {
                 throw new Error(response.data.message);
             }
         } catch (error) {
             console.error("Error al obtener los horarios:", error);
-            throw error; // Lanza el error para que se maneje donde se llame
+            throw error;
         }
     }
 };

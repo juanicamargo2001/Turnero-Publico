@@ -93,8 +93,9 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
             <h1 className="maven-pro-title">Turnero {nombreCentro}</h1>
             
             <div className="calendar-time-row">
-                <h2 className='subtituloturnero'>Elige el día</h2>
+                
                 <div className="calendar-container">
+                    <h2 className='subtituloturnero'>Elige el día</h2>
                     
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <StyledDateCalendar
@@ -113,25 +114,51 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
                     <div ref={timesContainerRef} className="time-container">
                         <h2 className='subtituloturnero'>Elige la hora</h2>
                         {error && <p className="error">{error}</p>} {/* Mostrar error si existe */}
+                
                         <div className="time-box">
-                            {availableTimes.length > 0 ? (
-                                availableTimes.map((time) => (
-                                    <button
-                                        key={time.idHorario}
-                                        onClick={() => time.habilitado && handleTimeSelect(time.hora)} // Solo permite selección si está habilitado
-                                        className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''} ${!time.habilitado ? 'disabled' : ''}`}
-                                        disabled={!time.habilitado} // Deshabilitar el botón si no está habilitado
-                                    >
-                                        {time.hora} {/* Mostrar solo la hora */}
-                                    </button>
-                                ))
-                            ) : (
-                                <p>No hay horarios disponibles.</p>
-                            )}
+                            <div className="time-section">
+                                <h3>Mañana</h3>
+                                <div className="time-slots">
+                                    {availableTimes.filter(time => time.hora < '12:00').map((time) => (
+                                        <button
+                                            key={time.idHorario}
+                                            onClick={() => handleTimeSelect(time.hora)}
+                                            className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''}`}
+                                        >
+                                            {time.hora}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                
+                            <div className="time-section">
+                                <h3>Tarde</h3>
+                                <div className="time-slots">
+                                    {availableTimes.filter(time => time.hora >= '12:00').map((time) => (
+                                        <button
+                                            key={time.idHorario}
+                                            onClick={() => handleTimeSelect(time.hora)}
+                                            className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''}`}
+                                        >
+                                            {time.hora}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
+
+            <div className="d-flex justify-content-end p-2">
+                <button type="button" className="btn btn-dark me-2 confir2" onClick={() => window.history.back()}>
+                Volver
+                </button>
+                <button type="button" className="btn btn-primary confir">
+                Confirmar
+                </button>
+            </div>
+
         </div>
     );
 }

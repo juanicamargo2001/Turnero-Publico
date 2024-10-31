@@ -72,10 +72,15 @@
   padding: 30px 30px 30px 30px;
 }
 
-
+.tarjeta{
+  display: flex;
+}
 .tipoAnimal{
-  width: 348px;
-  height: 344px;
+  width: 320px;
+  height: 310px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
 }
 
 /* IMAGEN */
@@ -145,6 +150,8 @@ th, td {
   width: 100%; /* Asegurarse de que ocupe todo el ancho */
 }
 
+
+
 /* Contenedor para centrar los títulos */
 .titles-container {
   display: flex;
@@ -156,16 +163,15 @@ th, td {
 /* Estilos para la fila del calendario y horario */
 .calendar-time-row {
   display: flex;
-  flex-direction: row; /* Cambiar a fila en pantallas grandes */
-  align-items: flex-start; /* Alinear los elementos al inicio */
-  justify-content: center; /* Centrar el contenido horizontalmente */
-  flex-wrap: wrap; /* Permitir que los elementos se ajusten en varias filas si es necesario */
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Add gap between calendar and time sections */
 }
 
 /* Mantener la clase .calendar-container */
 .calendar-container {
-  display: flex;
-  justify-content: center; /* Centra el calendario */
   padding: 20px;
   width: 50%; /* Asegúrate de que ocupe el ancho completo */
 }
@@ -203,20 +209,43 @@ th, td {
 
 .time-box {
   display: flex;
-  flex-direction: column; /* Una sola columna */
+  flex-direction: row; /* Una sola columna */
+  justify-content: space-between; /* Espacio entre las columnas */
   background-color: rgb(255, 255, 255); /* Fondo blanco para el time box */
   border-radius: 15px; /* Bordes redondeados */
-  padding: 20px 40px !important;
+  padding: 20px 10px !important;
   box-shadow: 0 0px 3px rgba(0, 0, 0, 0.1);
+  gap: 20px; /* Espacio entre las columnas */
+  width: 100%; /* Ajustar el ancho completo del contenedor */
+}
+
+/* Contenedor de cada sección de horarios (Mañana y Tarde) */
+.time-section {
+  display: flex;
+  flex-direction: column;
+  width: 70%; /* Asigna espacio equitativo a cada columna */
+}
+
+.time-section h3 {
+  font-family: "Maven Pro", sans-serif;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
 }
 
 .time-slot {
-  padding: 10px;
+  padding: 10px ;
   margin: 5px 0;
   border-radius: 10px;
   background-color: #F3F2F5 !important; /* Color de fondo por defecto */
   border: none; /* Sin borde */
-  transition: none; /* Transición para el cambio de color */
+  
 }
 
 
@@ -281,20 +310,18 @@ th, td {
 }
 
 
-/* Media Query para pantallas de 1150 o menos */
-@media (max-width: 3000px) {
-  .calendar-time-row {
-    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
-    align-items: center; /* Centra horizontalmente */
+@media (max-width: 600px) {
+  .time-box {
+    flex-direction: column; /* Cambia a columnas apiladas en pantallas pequeñas */
+    gap: 10px;
   }
 
-  .calendar-container, .time-container {
-    width: 50%; /* Ancho completo para ambos contenedores */
-    margin-top: 20px; /* Espacio entre calendario y horarios */
+  .time-section {
+    width: 100%; /* Ancho completo en pantallas pequeñas */
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .calendar-time-row {
     flex-direction: column; /* Cambia a columna en pantallas pequeñas */
     align-items: center; /* Centra horizontalmente */
@@ -348,6 +375,9 @@ input, select, textarea {
   margin-top: 10px;
 }
 
+/*Datos personales*/
+.progress-bar {
+  color: #009EE2;
+}
 
-
-
+/* SELECTOR */

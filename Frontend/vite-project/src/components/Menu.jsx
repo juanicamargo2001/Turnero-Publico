@@ -51,7 +51,7 @@ function Menu() {
           <a className="nav-link" href="/registrar/veterinarioXcentro">Asignar Centro</a>
         </li>
         <li>
-          <a className="nav-link" href="/habilitar">Habilitar turnero</a>
+          <a className="nav-link" href="/habilitar/alberdi">Habilitar turnero</a>
         </li>
         <li className="nav-item dropdown">
           <a
