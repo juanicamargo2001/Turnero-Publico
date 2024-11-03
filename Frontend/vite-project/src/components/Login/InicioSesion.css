@@ -1,0 +1,144 @@
+/* Contenedor principal para dar un único padding curvo a ambos bloques */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.login-container {
+    display: flex;
+    width: 800px;
+    max-width: 90%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.login-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    color: #00a4e4; /* Texto en celeste */
+}
+
+.welcome-text h2 {
+    color: #00a4e4; /* Celeste */
+    text-align: center;
+    font-size: 24px;
+}
+
+.welcome-text p {
+    color: #00a4e4;
+    text-align: center;
+    font-size: 16px;
+}
+
+.login-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* La imagen ocupa todo el ancho sin distorsión */
+    max-height: 100%; /* Asegura que la imagen crezca al agrandar la pantalla */
+    align-self: flex-end;
+    margin-top: auto; /* Pegado a la parte inferior del contenedor */
+}
+
+.login-box {
+    flex: 1;
+    padding: 40px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center; /* Centrado */
+}
+
+.login-form label {
+    font-size: 14px;
+    color: #333;
+    margin-top: 15px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.forgot-password {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.9em;
+    margin-top: 10px;
+    align-self: flex-end;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.register-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #00a4e4; /* Color celeste */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Bordes más redondeados */
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.login-form button:hover {
+    background-color: #007bb3;
+}
+
+/* Media Query para dispositivos móviles */
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .login-image {
+        display: none; /* Oculta el contenedor de imagen en dispositivos móviles */
+    }
+
+    .login-box {
+        padding: 20px;
+    }
+
+    .welcome-text {
+        display: block;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+.error-message {
+    color: #ff0000; /* Color rojo para el mensaje de error */
+    font-size: 0.9em;
+    margin-top: 10px;
+  }

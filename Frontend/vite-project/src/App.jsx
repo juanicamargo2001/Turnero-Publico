@@ -17,6 +17,7 @@ import TipoAnimal_Vecino from "./components/Turnero/TipoAnimal_Vecino";
 import HabilitarTurneroLafrance from "./components/Turnero/HabilitarTurneri_Lafrance.jsx";
 import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.jsx";
 
+import InicioSesion from "./components/Login/InicioSesion.jsx"
 
 function App() {
   return (
@@ -48,6 +49,9 @@ function App() {
             <Route path="/registrar/turno/lafrance" element={<Turnero nombreCentro={"La France"} turnoId={15} />} />
             <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
             <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
+
+            <Route path="/login" element={<InicioSesion />} />
+
           </Routes>
         </div>
       </BrowserRouter>
