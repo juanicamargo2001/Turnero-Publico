@@ -6,9 +6,6 @@ const Paso2Visual = ({updateFormData, nextStep, prevStep, formData}) => {
     const onFormSubmit = (data) => {
         updateFormData(data);
 
-        //Hacer el registro del vecino
-        console.log(formData)
-
         nextStep();
     };
 

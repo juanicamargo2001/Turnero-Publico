@@ -6,6 +6,8 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
 
     const onFormSubmit = (data) => {
         try {
+            formData.contraseña = data.contraseña;
+            console.log("FORMDATA: ", formData);
             if (!formData.fNacimiento.includes("T")) {
                 formData.f_Nacimiento = formData.fNacimiento;
                 delete formData.fNacimiento;
@@ -26,8 +28,19 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
         <div>
             <h2 className="maven-pro-title">DATOS DE CUENTA</h2>
             <form className="maven-pro-body" onSubmit={handleSubmit(onFormSubmit)}>
-                {/*ACA VA LA PARTE DE EL USUARIO QUE VA EN OTRA SPRINT*/}
-                <div className="d-flex justify-content-between">
+              <div className="mb-3">
+                <label htmlFor="contraseña" className="form-label">Contraseña</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="contraseña"
+                  placeholder={"Escriba su contraseña"}
+                  defaultValue={formData.contraseña}
+                  {...register('contraseña', { required: 'La contraseña es obligatoria' })}                  
+                />
+                {errors.contraseña && <p style={{ color: 'red' }}>{errors.contraseña.message}</p>}
+              </div>
+              <div className="d-flex justify-content-between">
                     <button
                     type="button"
                     className="btn btn-secondary confir"
@@ -38,7 +51,7 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
                     <button type="submit" className="btn btn-success confir">
                     Finalizar
                     </button>
-                </div>
+              </div>
             </form>
         </div>
     )
