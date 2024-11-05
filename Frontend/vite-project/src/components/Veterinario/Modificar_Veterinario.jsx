@@ -96,7 +96,7 @@ const Veterinarios = () => {
             <h2 className="maven-pro-title">VETERINARIOS</h2>
             <div className="d-flex justify-content-between mb-3">
                 <a href='/registrar/veterinario'>
-                    <button className="btn btn-primary confir">Crear Veterinario</button>
+                    <button className="btn btn-primary confir2">Crear Veterinario</button>
                 </a>
                 <div className="input-group w-25">
                     <input 
@@ -142,7 +142,7 @@ const Veterinarios = () => {
                         </td>
                         <td>{row.telefono}</td>
                         <td className="iconos">
-                        <a href='#' onClick={() => handleView(row)}><i title="Información" className="fa fa-edit" aria-hidden="true"></i></a>
+                        <a href='#' onClick={() => handleView(row)}><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
                         </td>
                     </tr>
                     ))}

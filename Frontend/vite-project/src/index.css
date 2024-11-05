@@ -44,6 +44,8 @@
   font-size: 14px;
   padding: 12px;
   font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
 }
 .obtn{
   text-align: center;
@@ -62,6 +64,11 @@
   background-color: #ffffff; /* Color de fondo al pasar el cursor */
   color: #009EE2 !important;
 }
+
+.btn.btn-separator {
+  margin-right: 1px;  /* Ajusta este valor según el espacio que desees */
+}
+
 
 /* Tarjeta */
 .card.turno{

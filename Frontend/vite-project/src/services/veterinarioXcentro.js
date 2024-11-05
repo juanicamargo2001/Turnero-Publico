@@ -4,7 +4,7 @@ const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/VeterinarioXCent
 
 async function AsignarCentro(legajo, centro) {
     try {
-        const response = await axios.get(`${API_URL}`, {legajo:legajo, centroNombre:centro},{
+        const response = await axios.post(`${API_URL}`, {legajo:legajo, centroNombre:centro},{
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
                 'Content-Type': 'application/json',

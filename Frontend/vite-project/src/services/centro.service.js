@@ -46,6 +46,21 @@ async function Modificar(nuevoCentro) {
     }
 }
 
+async function BuscarVetxCentro(idCentro){
+  try {
+    const response = await axios.get(`${API_URL}/centroXveterinario?idCentro=${idCentro}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+      },
+    });
+   return response.data
+  } catch (error) {
+    console.error(`Error al buscar los vetrinarios del centro ${idCentro}: `, error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
 export const centroService={
-    Grabar, BuscarTodos, Modificar
+    Grabar, BuscarTodos, Modificar, BuscarVetxCentro
 }

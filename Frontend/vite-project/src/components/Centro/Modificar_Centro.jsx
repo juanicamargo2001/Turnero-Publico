@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../Visual_Modificador';
 import { centroService } from '../../services/centro.service';
+import Informacion_VxC from './Informacion_VxC.JSX';
 
 export default function Modificar_Centro() {
     const [error, setError] = useState(null);
@@ -9,6 +10,10 @@ export default function Modificar_Centro() {
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [nombreCentro, setNombreCentro] = useState([]);
+    const [veterinarios, setVeterinarios] = useState([]); 
+    const [showVeterinarios, setShowVeterinarios] = useState(false); 
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -29,6 +34,26 @@ export default function Modificar_Centro() {
         }
     };
 
+    const handleInfo = async (row) =>{
+        const centroId = row.id_centro_castracion
+        const centroName = row.nombre
+        try{
+            const data = await centroService.BuscarVetxCentro(centroId);
+            setVeterinarios(data.result.veterinarios);
+            setNombreCentro(centroName)
+            setShowVeterinarios(true);
+            //console.log(veterinarios)
+        }catch (error){
+            setError(error)
+        }
+        
+      }
+    
+    const handleCloseInfo = () =>{
+        setShowVeterinarios(false);
+        setVeterinarios([]);
+    }
+
     const handleView = (row) => {
         setIdCentro(row.id_centro_castracion);
         const { idCentro, ...newRow } = row;
@@ -38,15 +63,14 @@ export default function Modificar_Centro() {
     const handleModalSubmitSort = async (formData) => {
         if (!formData.nombre || !formData.barrio || !formData.calle || !formData.horaLaboralInicio || !formData.horaLaboralFin) {
             alert("Hay campos sin completar.");
-            return; // Salir de la función si hay campos vacíos
+            return; 
         }
     
         if (formData.altura === null || formData.altura === "") {
             formData.altura = "0";
         }
         
-        // Validar formato de hora entre 07:00:00 y 19:00:00
-        const horaRegex = /^(0[7-9]|1[0-8]|19):([0-5]\d):([0-5]\d)$/; // Formato hh:mm:ss de 07:00:00 a 19:00:00
+        const horaRegex = /^(0[7-9]|1[0-8]|19):([0-5]\d):([0-5]\d)$/;
 
         if (!horaRegex.test(formData.horaLaboralInicio)) {
             alert("El formato debe ser 'hh:mm:ss' que se encuentre entre las 07HS y las 19HS");
@@ -58,7 +82,6 @@ export default function Modificar_Centro() {
             return;
         }
 
-        // Asegúrate de que la hora de fin sea después de la hora de inicio (opcional)
         const [inicioHoras] = formData.horaLaboralInicio.split(':');
         const [finHoras] = formData.horaLaboralFin.split(':');
 
@@ -89,7 +112,7 @@ export default function Modificar_Centro() {
             <h2 className="maven-pro-title">CENTROS DE CASTRACIÓN</h2>
             <div className="d-flex justify-content-between mb-3">
                 <a href='/registrar/centro'>
-                    <button className="btn btn-primary confir">Crear centro de castración</button>
+                    <button className="btn btn-primary confir2">Crear centro de castración</button>
                 </a>
             </div>
             <table>
@@ -128,7 +151,8 @@ export default function Modificar_Centro() {
                         <td>{row.horaLaboralInicio ? row.horaLaboralInicio.split(':')[0] : 'N/A'} HS- 
                         {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS</td>
                         <td className="iconos">
-                        <a href='#' onClick={() => handleView(row)}><i title="Información" className="fa fa-edit" aria-hidden="true"></i></a>
+                        <a href='#' onClick={() => handleView(row)} className='btn btn-separator'><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
+                        <a onClick={() => handleInfo(row)}><i className="fa fa-info-circle" title="Informacion" aria-hidden="true"></i></a>
                         </td>
                     </tr>
                     ))}
@@ -141,6 +165,16 @@ export default function Modificar_Centro() {
                 item={selectedItem || {}}
                 onSubmitSort={handleModalSubmitSort}
             />
+
+            {showVeterinarios && 
+            <div>
+                <Informacion_VxC 
+                veterinarios={veterinarios} 
+                nombreCentro={nombreCentro}
+                />
+                <button className="btn btn-secondary mt-3" onClick={handleCloseInfo}>Cerrar</button>
+            </div>
+            }
         </div>
   )
 }

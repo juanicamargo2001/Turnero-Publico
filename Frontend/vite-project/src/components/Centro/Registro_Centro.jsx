@@ -1,21 +1,36 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { centroService } from '../../services/centro.service';
+import { provinciaService } from '../../services/provinciasService';
 import { useState } from 'react';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import {useNavigate} from "react-router-dom"
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import dayjs from 'dayjs';
+
 
 
 const Registro_Centro = () => {
 
     const {register, handleSubmit, formState: { errors } } = useForm();
     const [error, setError] = useState(null);
-    const horasDisponibles = [
-      '07:00', '08:00', '09:00', '10:00', '11:00', 
-      '12:00', '13:00', '14:00', '15:00', '16:00', 
-      '17:00', '18:00', '19:00'
-    ];
+    const [horaInicio, setHoraInicio] = useState(dayjs().set('hour', 7).set('minute', 0).set('second', 0));
+    const [horaFin, setHoraFin] = useState(dayjs().set('hour', 19).set('minute', 0).set('second', 0));
+    //const [pattern, setPattern] = useState("YOFRE");
     const navigate = useNavigate();
+
+
+    /*const fetchBarrios = async(pattern) => {
+      try{
+          const data = await provinciaService.getBarriosCba(pattern);
+          console.log(data)
+      } catch(error){
+          setError(error)
+      }
+  }*/
     
     const onSubmit = async (data) =>{
         const nuevoCentro = {
@@ -24,20 +39,24 @@ const Registro_Centro = () => {
             calle: data.calle,
             altura: parseInt(data.altura),
             habilitado: true,
-            horaLaboralInicio: data.horaInicio + ":00",
-            horaLaboralFin: data.horaFin + ":00"
+            horaLaboralInicio: horaInicio.format("hh:mm:ss"),
+            horaLaboralFin: horaFin.format("H:mm:ss")
         }
         
-        console.log(nuevoCentro)
-        /*try {
+        //console.log(nuevoCentro)
+        try {
             await centroService.Grabar(nuevoCentro);
             alert("Centro registrado con exito!")
             navigate("/modificar/centro")
         } catch (error) {
             setError("Error al registrar el centro. Por favor, inténtelo de nuevo.");
             console.error("Error al registrar el centro:", error.response ? error.response.data : error); 
-        }*/
+        }
     }
+
+    /*useEffect(()=>{
+      fetchBarrios(pattern);
+    }, [])*/
 
   return (
     <div className='container mt-4'>
@@ -77,7 +96,7 @@ const Registro_Centro = () => {
             {errors.calle && <div className="invalid-feedback">{errors.calle.message}</div>}
         </div>
         <FormControl className="mb-3" fullWidth sx={{ mb: 2 }}>
-        <div>
+        <div className="mb-3">
             <label htmlFor="altura" className="form-label">Altura</label>
             <input
               type="number"
@@ -90,44 +109,36 @@ const Registro_Centro = () => {
             />
             {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
         </div>
-        </FormControl> 
+        </FormControl>
         <div className="mb-3">
-          <label className="form-label">Horarios</label>
+        <label htmlFor="horariosLaborales" className='form-label'>Horarios Laborales</label>
         </div>
-        <div className="mb-3">
-        <FormControl className="mb-3" fullWidth error={!!errors.horaInicio}>
-          <InputLabel>Seleccionar hora de inicio laboral</InputLabel>
-          <Select
-              label="Hora de Inicio"
-              {...register("horaInicio", { required: "La hora de inicio es requerida" })}
-              onChange={(e) => setValue("horaInicio", e.target.value)}
-              defaultValue={"07:00"}
-          >
-              {horasDisponibles.map((hora) => (
-                  <MenuItem key={hora} value={hora}>
-                      {hora}
-                  </MenuItem>
-              ))}
-          </Select>
-          {errors.horaInicio && <div className="invalid-feedback">{errors.horaInicio.message}</div>}
-        </FormControl>
-
-        <FormControl className="mb-3" fullWidth error={!!errors.horaFin}>
-          <InputLabel>Seleccionar hora de fin laboral</InputLabel>
-          <Select
-              label="Hora de Fin"
-              {...register("horaFin", { required: "La hora de fin es requerida" })}
-              onChange={(e) => setValue("horaFin", e.target.value)}
-              defaultValue={"19:00"}
-          >
-              {horasDisponibles.map((hora) => (
-                  <MenuItem key={hora} value={hora}>
-                      {hora}
-                  </MenuItem>
-              ))}
-          </Select>
-          {errors.horaFin && <div className="invalid-feedback">{errors.horaFin.message}</div>}
-        </FormControl>
+        <div>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <TimePicker
+            label="Horario Inicio"
+            minTime={dayjs().set('hour', 6).startOf("hour")} 
+            defaultValue={horaInicio}
+            onChange={(nuevaHoraInicio) => setHoraInicio(nuevaHoraInicio)}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+              seconds: renderTimeViewClock,
+            }}
+          />
+          <span style={{ margin: '0 10px' }}>//</span>
+          <TimePicker
+            label="Horario Fin"
+            maxTime={dayjs().set('hour', 21).startOf("hour")}
+            defaultValue={horaFin}
+            onChange={(nuevaHoraFin) => setHoraFin(nuevaHoraFin)}
+            viewRenderers={{
+              hours: renderTimeViewClock,
+              minutes: renderTimeViewClock,
+              seconds: renderTimeViewClock,
+            }}
+          />
+        </LocalizationProvider>
         </div>
         <div className="d-flex justify-content-between">
           <button type="submit" className="btn btn-primary ms-auto confir">Confirmar</button>
