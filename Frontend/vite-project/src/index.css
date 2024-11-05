@@ -24,13 +24,14 @@
   font-style: normal;
 }
 
-.maven-pro-title{
-  color: #009EE2;
+.maven-pro-title2{
+  color: #ffffff;
   font-weight: 900;
   text-align: center;
 }
 /* BOTONES */
 .btn.confir {
+  width: 100px;
   border-radius: 30px;
   font-size: 14px;
   padding: 12px;

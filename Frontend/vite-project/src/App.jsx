@@ -26,7 +26,7 @@ function App() {
         <Menu />
         <div className="divBody">
           <Routes>
-            <Route path="/" element={<h1>Bienvenido a la aplicación</h1>} />
+            {/* <Route path="/" element={<h1>Bienvenido a la aplicación</h1>} /> */}
             <Route path="/turno" element={<CentrosCastracionList/>}/>
             <Route path="/registrar/animal" element={<RegistroAnimal/>} />
             <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
@@ -50,7 +50,7 @@ function App() {
             <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
             <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
 
-            <Route path="/login" element={<InicioSesion />} />
+            <Route path="/" element={<InicioSesion />} />
 
           </Routes>
         </div>

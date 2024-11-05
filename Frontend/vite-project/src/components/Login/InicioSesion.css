@@ -1,98 +1,120 @@
-/* Contenedor principal para dar un único padding curvo a ambos bloques */
+/* Contenedor Principal */
+
 .login-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Mueve el componente hacia arriba */
     height: 100vh;
-    padding: 20px;
-    background-color: #f5f5f5;
+    background-color: #ffffff; /* Fondo blanco */
+    padding-top: 30px; /* Ajusta este valor según necesites espacio desde arriba */
+    margin-top: 10px;
 }
 
+
+/* Contenedor de Login */
 .login-container {
     display: flex;
-    width: 800px;
-    max-width: 90%;
+    width: 80%;
+    max-width: 1000px;
+    background-color: #fff;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    min-height: 450px;
 }
 
+/* Sección de la Imagen */
 .login-image {
     flex: 1;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../imgs/inicio.jpeg');
+    background-size: cover;
+    background-position: center;
+    color: white;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 20px;
-    background-color: white;
-    color: #00a4e4; /* Texto en celeste */
+}
+
+.welcome-text {
+    text-align: center;
+    color: #ffffff;
+    max-width: 80%;
 }
 
 .welcome-text h2 {
-    color: #00a4e4; /* Celeste */
-    text-align: center;
     font-size: 24px;
+    margin-bottom: 10px;
 }
 
 .welcome-text p {
-    color: #00a4e4;
-    text-align: center;
     font-size: 16px;
 }
 
-.login-image img {
-    width: 100%;
-    height: auto;
-    object-fit: cover; /* La imagen ocupa todo el ancho sin distorsión */
-    max-height: 100%; /* Asegura que la imagen crezca al agrandar la pantalla */
-    align-self: flex-end;
-    margin-top: auto; /* Pegado a la parte inferior del contenedor */
-}
-
+/* Sección del Formulario */
 .login-box {
     flex: 1;
-    padding: 40px;
-    background-color: #ffffff;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+.login-form {
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+}
+
 .login-form h3 {
-    font-size: 20px;
-    color: #333;
+    font-size: 24px;
     margin-bottom: 20px;
-    text-align: center; /* Centrado */
-}
-
-.login-form label {
-    font-size: 14px;
     color: #333;
-    margin-top: 15px;
 }
 
-.login-form input {
+.form-group {
+    margin-bottom: 15px;
+}
+
+.custom-input {
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: none;
+    border-bottom: 2px solid #4a2e2e;
+    outline: none;
     font-size: 16px;
+    color: #333;
+    background-color: transparent;
+    transition: border-color 0.3s ease;
+    box-shadow: none;
+    border-radius: 0px !important;
 }
 
-.forgot-password {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 0.9em;
-    margin-top: 10px;
-    align-self: flex-end;
+.custom-input:focus {
+    border-bottom: 2px solid #007bff;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
 }
 
 .register-link {
-    text-align: center;
     margin-top: 20px;
-    font-size: 0.9em;
+    font-size: 14px;
+    text-align: center;
+    color: #333;
 }
 
 .register-link a {
@@ -100,45 +122,6 @@
     text-decoration: none;
 }
 
-.login-form button {
-    width: 100%;
-    padding: 12px;
-    background-color: #00a4e4; /* Color celeste */
-    color: white;
-    border: none;
-    border-radius: 8px; /* Bordes más redondeados */
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 16px;
+.register-link a:hover {
+    text-decoration: underline;
 }
-
-.login-form button:hover {
-    background-color: #007bb3;
-}
-
-/* Media Query para dispositivos móviles */
-@media (max-width: 768px) {
-    .login-container {
-        flex-direction: column;
-    }
-
-    .login-image {
-        display: none; /* Oculta el contenedor de imagen en dispositivos móviles */
-    }
-
-    .login-box {
-        padding: 20px;
-    }
-
-    .welcome-text {
-        display: block;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-}
-
-.error-message {
-    color: #ff0000; /* Color rojo para el mensaje de error */
-    font-size: 0.9em;
-    margin-top: 10px;
-  }
