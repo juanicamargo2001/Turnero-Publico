@@ -202,7 +202,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   type="text"
                   className="form-control"
                   id="dni"
-                  placeholder={scanResult.split("@")[4] || "Escriba su DNI"}
+                  placeholder={"Escriba su DNI"}
                   defaultValue={formData.dni}
                   {...register('dni', { required: 'El DNI es obligatorio' })}
                   onChange={handleInputChange}
@@ -216,7 +216,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   type="text"
                   className="form-control"
                   id="nombre"
-                  placeholder={scanResult.split("@")[2] || "Escriba su nombre"}
+                  placeholder={"Escriba su nombre"}
                   defaultValue={formData.nombre}
                   {...register('nombre', { required: 'El nombre es obligatorio' })}     
                   onChange={handleInputChange}             
