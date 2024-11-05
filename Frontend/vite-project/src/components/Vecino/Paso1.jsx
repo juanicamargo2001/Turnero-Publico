@@ -26,6 +26,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         for (const key in formData) {
             setValue(key, formData[key]);
         }
+        console.log(formData);
     }, [formData, setValue]);
 
     const onFormSubmit = (data) => {
@@ -56,6 +57,21 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         }
     };
 
+    const handleDateChange = (date) => {
+      const fech = parsearFechaDate(date[0]);
+      updateFormData({f_Nacimiento: fech});
+    };
+
+    const parsearFechaDate = (f) => {
+      const s = f.getFullYear() + "-" + (f.getMonth()+1) + "-" + f.getDate();
+      return s;
+    }
+    
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      updateFormData({[e.target.id]: value});
+    };
+
     const parsearFecha = (f) => {
       const s = f.split("/");
       const parse = s[2] + "-" + s[1] + "-" + s[0];
@@ -69,14 +85,14 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
             nombre: partes[2],
             apellido: partes[1],
             dni: parseInt(partes[4]),
-            fNacimiento: fechaParseada
+            f_Nacimiento: fechaParseada
         };
         return jsonObject;
     }
 
     const handleScanData = (e) => {
         if (scanResult===''){
-            alert("Debe subir un archivo");
+            alert("Debe subir un archivo correcto");
         } else {
             const data = armarJson(scanResult);
             updateFormData(data);
@@ -89,12 +105,17 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     };
 
     const handleOtherOptionClick2 = () => {
+      /*updateFormData({
+        dni: document.getElementById("dni").value, 
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value
+      })*/
       setShowOtherOption2(!showOtherOption2);
     };
 
     const handleDomicilioFoto = async ()=> {
       if (selectedFile2===null){
-        alert("Debe subir un archivo");
+        alert("Debe subir un archivo correcto");
       } else {
         try {
           const base64Image = await convertImageToBase64(selectedFile2);
@@ -172,7 +193,6 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
             <div className="d-flex justify-content-end mt-3">
                 <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick}>
                     <span className="me-2">Registro automático con DNI</span>
-                    <img src="path/to/your/image.png" alt="Icono" style={{ width: '30px', height: '30px' }} />
                 </button>
             </div>
             <form className="maven-pro-body" onSubmit={handleSubmit(onFormSubmit)}>
@@ -185,6 +205,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   placeholder={scanResult.split("@")[4] || "Escriba su DNI"}
                   defaultValue={formData.dni}
                   {...register('dni', { required: 'El DNI es obligatorio' })}
+                  onChange={handleInputChange}
                 />
                 {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
               </div>
@@ -197,7 +218,8 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   id="nombre"
                   placeholder={scanResult.split("@")[2] || "Escriba su nombre"}
                   defaultValue={formData.nombre}
-                  {...register('nombre', { required: 'El nombre es obligatorio' })}                  
+                  {...register('nombre', { required: 'El nombre es obligatorio' })}     
+                  onChange={handleInputChange}             
                 />
                 {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
               </div>
@@ -210,7 +232,8 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   id="apellido"
                   placeholder={"Escriba su apellido"}
                   defaultValue={formData.apellido}
-                  {...register('apellido', { required: 'El apellido es obligatorio' })}                  
+                  {...register('apellido', { required: 'El apellido es obligatorio' })}   
+                  onChange={handleInputChange}               
                 />
                 {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
               </div>
@@ -218,17 +241,18 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
               <div className="mb-3">
                 <label htmlFor="fecha" className="form-label">Fecha de nacimiento</label>
                 <Flatpickr
-                    //onChange={(date) => setValue('fNacimiento', date, { shouldValidate: true })}
                     options={{ 
                     altInput: true,
                     altFormat: "F j, Y",
                     dateFormat: "Y-m-d",
                     locale: Spanish,
                     }}
+                    id="fNacimiento"
                     className="form-control"
                     placeholder={"Seleccione fecha"}
-                    value={formData.fNacimiento}
-                    {...register('fNacimiento', { required: 'La fecha de nacimiento es obligatoria' })}
+                    value={formData.f_Nacimiento}
+                    onChange={(date) => handleDateChange(date)}
+                    //{...register('f_Nacimiento', { required: 'La fecha de nacimiento es obligatoria' })}
                 />
                 {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
               </div>

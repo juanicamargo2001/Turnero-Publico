@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import Paso2Visual from './Paso2';
 import Paso3Visual from './Paso3';
 import { useStepForm } from './useStepForm';
@@ -11,7 +11,7 @@ const RegistroDatos = () => {
     dni: null,
     nombre: "",
     apellido: "",
-    fNacimiento: "",
+    f_Nacimiento: "",
     domicilio: false,
     email: "",
     telefono: null

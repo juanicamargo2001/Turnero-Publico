@@ -8,10 +8,10 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
         try {
             formData.contraseña = data.contraseña;
             console.log("FORMDATA: ", formData);
-            if (!formData.fNacimiento.includes("T")) {
+            /*if (!formData.fNacimiento.includes("T")) {
                 formData.f_Nacimiento = formData.fNacimiento;
                 delete formData.fNacimiento;
-            }
+            }*/
             formData.domicilio = "";
             formData.id_Usuario = 0;
             
