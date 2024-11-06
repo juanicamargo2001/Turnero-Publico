@@ -28,5 +28,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public ICollection<Mascota>? Mascotas { get; set; } = new List<Mascota>();
 
+        [JsonIgnore]
+        public virtual Usuario Usuario { get; set; }
+
     }
 }

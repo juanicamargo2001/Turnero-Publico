@@ -13,6 +13,8 @@ using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System.Runtime.CompilerServices;
+using Microsoft.Identity.Client;
+using Microsoft.EntityFrameworkCore;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -20,12 +22,14 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
     {
         private readonly IConfiguration _configuration;
         protected readonly CentroCastracionContext _dbContext;
+        private readonly IUsuarioRepository _usuarioRepository;
 
 
-        public VecinoRepository(CentroCastracionContext dbContext, IConfiguration configuration) : base(dbContext)
+        public VecinoRepository(CentroCastracionContext dbContext, IConfiguration configuration, IUsuarioRepository usuarioRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _configuration = configuration;
+            _usuarioRepository = usuarioRepository;
 
         }
 
@@ -50,10 +54,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 string parsedText = jsonResponse["ParsedResults"]?[0]?["ParsedText"]?.ToString();
 
-                
+
                 bool esCordoba = esDeCordoba(parsedText);
 
-                if (esCordoba) {
+                if (esCordoba)
+                {
                     return true;
                 }
                 else
@@ -70,7 +75,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             if (!string.IsNullOrEmpty(textoParseado))
             {
-                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0 && textoParseado.IndexOf("capital", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     return true;
                 }
@@ -90,23 +95,31 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             var dniRepetido = await this.Consultar(v => v.Dni == request.DNI);
 
-            if (!dniRepetido.Any() && DniValido(request.DNI)) {
-                Vecino vecinoCreado = await this.Crear(new Vecino
-                {
-                    F_nacimiento = request.F_Nacimiento,
-                    Domicilio = request.Domicilio,
-                    Dni = request.DNI,
-                    Email = request.Email,
-                    Telefono = request.Telefono,
-                    Id_usuario = request.Id_Usuario
-                });
+            if (!dniRepetido.Any() && DniValido(request.DNI))
+            {
 
-                if (vecinoCreado != null) { 
-                
-                    return true;
+                int? creadoUsuario = await _usuarioRepository.crearCuentaVecino(request.Nombre, request.Apellido, request.Contraseña);
+
+                if (creadoUsuario > 0)
+                {
+                    Vecino vecinoCreado = await this.Crear(new Vecino
+                    {
+                        F_nacimiento = request.F_Nacimiento,
+                        Domicilio = request.Domicilio,
+                        Dni = request.DNI,
+                        Email = request.Email,
+                        Telefono = request.Telefono,
+                        Id_usuario = creadoUsuario
+                    });
+
+                    if (vecinoCreado != null)
+                    {
+                        return true;
+                    }
                 }
+
                 return false;
-            
+
             }
             return false;
         }
@@ -114,7 +127,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         public bool DniValido(long dni)
         {
             string pattern = @"^[\d]{1,3}\.?[\d]{3,3}\.?[\d]{3,3}$";
-            Regex regex = new (pattern);
+            Regex regex = new(pattern);
 
             if (regex.IsMatch(dni.ToString()))
             {
@@ -122,10 +135,56 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
             else
             {
-                return false; 
+                return false;
             }
         }
-    }
 
-   
+
+        public VecinoDTO? ConsultarVecino(long dniVecino)
+        {
+            using (var ctx = _dbContext)
+            {
+                var query = from v in ctx.Vecinos
+                            join m in ctx.Mascotas on v.Id_vecino equals m.IdVecino into mascotasGroup
+                            from m in mascotasGroup.DefaultIfEmpty()
+                            join s in ctx.Sexos on m.IdSexo equals s.IdSexos into sexoGroup
+                            from s in sexoGroup.DefaultIfEmpty()
+                            join t in ctx.Tamaños on m.IdTamaño equals t.IdTamaño into tipoGroup
+                            from t in tipoGroup.DefaultIfEmpty()
+                            join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo into tiposAnimalsGroup
+                            from ta in tiposAnimalsGroup.DefaultIfEmpty()
+                            where v.Dni == dniVecino
+                            group new { m, s, t, ta } by new { v.Id_vecino, v.F_nacimiento, v.Domicilio, v.Dni, v.Email, v.Telefono } into vecinoGroup
+                            select new VecinoDTO
+                            {
+                                F_nacimiento = vecinoGroup.Key.F_nacimiento,
+                                Domicilio = vecinoGroup.Key.Domicilio,
+                                Dni = vecinoGroup.Key.Dni,
+                                Email = vecinoGroup.Key.Email,
+                                Telefono = vecinoGroup.Key.Telefono,
+                                Mascotas = vecinoGroup
+                                .Where(g => g.m != null)
+                                .Select(g => new MascotaDTO
+                                {
+                                    idMascota = g.m.IdMascota,
+                                    Edad = g.m.Edad,
+                                    Descripcion = g.m.Descripcion,
+                                    Nombre = g.m.Nombre,
+                                    Sexo = g.s.SexoTipo,
+                                    Tamaño = g.t.TamañoTipo,
+                                    TipoAnimal = g.ta.TipoAnimal,
+                                    Vecino = g.m.IdVecino
+                                }).ToList()
+                            };
+
+                return query.FirstOrDefault();
+
+                
+
+            }
+
+
+        }
+
+    }
 }

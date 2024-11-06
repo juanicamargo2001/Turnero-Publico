@@ -46,5 +46,8 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnos });
         }
+
+
+
     }
 }

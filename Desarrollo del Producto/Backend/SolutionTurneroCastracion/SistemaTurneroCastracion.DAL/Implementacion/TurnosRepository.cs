@@ -85,12 +85,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
                                 join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                                 where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia
-                                group new { H, TT } by new { T.Dia } into g
+                                group new { H, TT } by new { T.Dia} into g
                                 select new TurnoDTO
                                 {
                                     Dia = g.Key.Dia,
                                     Hora = g.Select(h => new HoraTurnoResponseDTO
                                     {
+                                        IdHorario = h.H.IdHorario,
                                         Hora = h.H.Hora,
                                         TipoTurno = h.TT.NombreTipo
                                     }).ToList()
@@ -110,6 +111,14 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                              ).Distinct().ToList();   
             return turnosDias;
         }
+
+
+        //public async Task<bool> SacarTurno(int IdTurnoHorario)
+        //{
+
+
+
+        //}
 
     }
 

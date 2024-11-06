@@ -45,16 +45,32 @@ namespace SistemaTurneroCastracion.API.Controllers
             {
                 bool textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(imagenDorso);
 
-                if (!textoExtraido) { 
+                if (!textoExtraido) {
                     return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "El vecino no es de Córdoba, si lo es, intente de nuevo!", Result = "" });
                 }
 
                 return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = textoExtraido });
-   
+
             }
             return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al procesar la imagen!", Result = "" });
 
         }
+
+        [HttpGet("{dni}")]
+        public IActionResult ConsultarVecino(long dni)
+        {
+            VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni);
+
+            Console.WriteLine(vecinoConsulta?.Dni.ToString());   
+
+            if (vecinoConsulta == null) {
+
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+
+            }
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = vecinoConsulta });
+        }
+
     }
 }
 

@@ -10,5 +10,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
     {
         public DateTime Dia { get; set; }
         public List<HoraTurnoResponseDTO>? Hora { get; set; }
+        
+
     }
 }

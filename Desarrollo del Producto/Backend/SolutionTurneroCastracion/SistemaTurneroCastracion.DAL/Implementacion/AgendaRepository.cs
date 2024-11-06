@@ -69,7 +69,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     {
                         string? tipoTurno = this.obtenerTipoTurno(franjas.IdTipoTurno);
 
-                        Console.WriteLine(tipoTurno);
                         if (tipoTurno == "PERRO")
                         {
                             cantidadPerrosAtender += franjas.Cantidad;

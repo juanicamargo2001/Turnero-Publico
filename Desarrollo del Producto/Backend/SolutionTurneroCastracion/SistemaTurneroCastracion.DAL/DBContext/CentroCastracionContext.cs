@@ -42,6 +42,11 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<TipoTurno> TipoTurnos { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
+    public virtual DbSet<Rol> Roles { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
 
@@ -357,7 +362,11 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.Id_usuario)
             .HasColumnName("id_usuario");
 
-
+            entity.HasOne(v => v.Usuario)              
+                  .WithOne(u => u.Vecino)
+                  .HasForeignKey<Vecino>(v => v.Id_usuario)
+                  .HasConstraintName("FK_vecinos_usuarios")
+                  .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<TipoTurno>(entity => {
@@ -374,6 +383,42 @@ public partial class CentroCastracionContext : DbContext
 
         });
 
+
+        modelBuilder.Entity<Rol>(entity =>
+        {
+            entity.ToTable("roles");
+
+            entity.HasKey(e => e.IdRol).HasName("PK_roles");
+
+            entity.Property(e => e.IdRol).HasColumnName("id_rol");
+
+            entity.Property(e => e.Nombre).HasColumnName("nombre");
+
+
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("usuarios");
+
+            entity.HasKey(e => e.IdUsuario).HasName("PK_usuarios");
+
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+
+            entity.Property(e => e.Nombre).HasColumnName("nombre");
+
+            entity.Property(e => e.Apellido).HasColumnName("apellido");
+
+            entity.Property(e => e.Contraseña).HasColumnName("contraseña");
+
+            entity.Property(e => e.RolId).HasColumnName("id_rol");
+
+            entity.HasOne(u => u.Rol)
+                  .WithMany(r => r.Usuarios)
+                  .HasForeignKey(u => u.RolId)
+                  .HasConstraintName("FK_usuarios_roles");
+
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

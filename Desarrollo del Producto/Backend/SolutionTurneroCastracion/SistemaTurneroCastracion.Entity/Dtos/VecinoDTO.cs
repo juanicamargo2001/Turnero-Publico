@@ -6,26 +6,18 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public class ImagenRequest
+    public class VecinoDTO
     {
-        public string Nombre { get; set; }
-
-        public string Apellido { get; set; }
-
-        public DateTime F_Nacimiento { get; set; }
+        public DateTime F_nacimiento { get; set; }
 
         public string Domicilio { get; set; }
 
-        public long DNI { get; set; }
+        public long Dni { get; set; }
 
         public string Email { get; set; }
 
         public long Telefono { get; set; }
 
-        public string Contraseña {  get; set; }
-
-        //public int Id_Usuario {  get; set; }
-
-
+        public List<MascotaDTO>? Mascotas { get; set; }
     }
 }
