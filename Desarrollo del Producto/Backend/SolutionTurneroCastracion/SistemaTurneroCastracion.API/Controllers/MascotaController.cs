@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -13,16 +15,30 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
 
         private readonly IMascotaRepository _mascotaRepository;
+        private readonly Validaciones _validaciones;
 
-
-        public MascotaController(IMascotaRepository mascotarepository)
+        public MascotaController(IMascotaRepository mascotarepository, Validaciones validaciones)
         {
             _mascotaRepository = mascotarepository;
+            _validaciones = validaciones;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ObtenerMascotas()
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             try
             {
                 List<MascotaDTO> mascotas = await _mascotaRepository.obtenerMascotasDueño();
@@ -42,9 +58,22 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CrearMascota([FromBody] MascotaDTO mascota)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             try
             {
                 Mascota mascotaCreada = await _mascotaRepository.crearMascota(mascota);
@@ -63,9 +92,22 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> obtenerMascotaPorId(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             try
             {
                 MascotaDTO mascotaId = await _mascotaRepository.obtenerMascotasDueñoById(id);
@@ -83,9 +125,23 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
 
         }
+
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> EditarMascota(MascotaDTO mascotaDto)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             try
             {
                 bool resultado = await _mascotaRepository.editarMascotaPorId(mascotaDto);

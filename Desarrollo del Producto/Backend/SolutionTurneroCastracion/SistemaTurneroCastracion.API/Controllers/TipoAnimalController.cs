@@ -2,26 +2,43 @@
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 using SistemaTurneroCastracion.Entity;
+using Microsoft.AspNetCore.Authorization;
+using SistemaTurneroCastracion.DAL.Implementacion;
 
 
 namespace SistemaTurneroCastracion.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TipoAnimalController : ControllerBase
     {
         private readonly ITipoAnimalRepository _tipoAnimalRepository;
+        private readonly Validaciones _validaciones;
 
-        public TipoAnimalController(ITipoAnimalRepository tipoAnimalRepository)
+        public TipoAnimalController(ITipoAnimalRepository tipoAnimalRepository, Validaciones validaciones)
         {
-
             _tipoAnimalRepository = tipoAnimalRepository;
+            _validaciones = validaciones;
 
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> obtenerTipoAnimal()
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             List<TiposAnimal> tiposAnimales= await _tipoAnimalRepository.ObtenerTodos();
 
             if (tiposAnimales.Count == 0)
@@ -37,6 +54,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> obtenerTipoAnimalById(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             TiposAnimal tiposAnimal = await _tipoAnimalRepository.ObtenerPorId(id);
 
             if (tiposAnimal == null)
@@ -52,6 +80,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost]
         public async Task<IActionResult> crearTipoAnimal([FromBody] TiposAnimal tiposAnimalCrear)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (tiposAnimalCrear == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -73,6 +112,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPut]
         public async Task<IActionResult> editarTipoAnimal([FromBody] TiposAnimal tiposAnimalEditar)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (tiposAnimalEditar == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -93,6 +143,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> borrarTipoAnimal(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             TiposAnimal tipoAnimalEliminar = await _tipoAnimalRepository.ObtenerPorId(id);

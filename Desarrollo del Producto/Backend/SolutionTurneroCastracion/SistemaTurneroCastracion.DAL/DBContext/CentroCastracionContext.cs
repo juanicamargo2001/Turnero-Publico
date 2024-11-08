@@ -46,6 +46,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Rol> Roles { get; set; }
 
+    public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -419,6 +421,28 @@ public partial class CentroCastracionContext : DbContext
                   .HasConstraintName("FK_usuarios_roles");
 
         });
+
+        modelBuilder.Entity<HistorialRefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.IdHistorialToken).HasName("PK_HistorialToken");
+
+            entity.ToTable("historial_Refresh_Token");
+
+            entity.Property(e => e.EsActivo).HasComputedColumnSql("(case when [FechaExpiracion]<GETUTCDATE() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.RefreshToken)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Token)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistorialRefreshTokens)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_HistorialRefresh_Usuario");
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

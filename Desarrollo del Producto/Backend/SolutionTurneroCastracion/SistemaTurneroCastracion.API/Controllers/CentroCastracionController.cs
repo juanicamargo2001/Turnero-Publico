@@ -3,6 +3,8 @@ using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.DAL.Implementacion;
+using Microsoft.AspNetCore.Authorization;
+using SistemaTurneroCastracion.BLL;
 
 
 namespace SistemaTurneroCastracion.API.Controllers
@@ -12,11 +14,13 @@ namespace SistemaTurneroCastracion.API.Controllers
     public class CentroCastracionController : ControllerBase
     {
         private readonly ICentroCastracionRepository _centroCastracionRepository;
+        private readonly Validaciones _validaciones;
 
-        public CentroCastracionController(ICentroCastracionRepository centroCastracionRepository)
+        public CentroCastracionController(ICentroCastracionRepository centroCastracionRepository, Validaciones validaciones)
         {
 
             _centroCastracionRepository = centroCastracionRepository;
+            _validaciones = validaciones;
         }
 
         [HttpGet]
@@ -33,9 +37,23 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = centroCastracions });
         }
 
+        [Authorize]
         [HttpGet("centroXveterinario")]
         public async Task<IActionResult> obtenerCentrosXVeterinario(int idCentro)
         {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"] );
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             CentroCastracionDTO centroCastracions = await _centroCastracionRepository.obtenerCentroVeterinarios(idCentro);
 
             if (centroCastracions == null)
@@ -48,10 +66,22 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> obtenerCentroId(int id)
         {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             CentroCastracion centro= await _centroCastracionRepository.ObtenerPorId(id);
 
             if (centro == null)
@@ -63,10 +93,23 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> crearCentroCastracion([FromBody] CentroCastracion centroCastracion)
         {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             if (centroCastracion == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -84,10 +127,22 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
-
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> editarCentroCastracion([FromBody] CentroCastracion centroCastracionEditar)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             if (centroCastracionEditar == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -104,10 +159,22 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
-
+        [Authorize]
         [HttpDelete("deshabilitar/{id}")]
         public async Task<IActionResult> deshabilitarCentro(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             CentroCastracion centroEliminar = await _centroCastracionRepository.ObtenerPorId(id);
@@ -126,10 +193,23 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
-
+        [Authorize]
         [HttpPut("habilitar/{id}")]
         public async Task<IActionResult> habilitarVeterinario(int id)
         {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             CentroCastracion centroHabilitar = await _centroCastracionRepository.ObtenerPorId(id);

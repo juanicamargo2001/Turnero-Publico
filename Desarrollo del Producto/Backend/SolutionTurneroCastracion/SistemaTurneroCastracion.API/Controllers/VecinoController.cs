@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -13,11 +15,13 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
 
         private readonly IVecinoRepository _vecinoRepository;
+        private readonly Validaciones _validaciones;
 
 
-        public VecinoController(IVecinoRepository vecinoRepository)
+        public VecinoController(IVecinoRepository vecinoRepository, Validaciones validaciones)
         {
             _vecinoRepository = vecinoRepository;
+            _validaciones = validaciones;
         }
 
 
@@ -56,12 +60,23 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+        [Authorize]
         [HttpGet("{dni}")]
-        public IActionResult ConsultarVecino(long dni)
+        public async Task<IActionResult> ConsultarVecino(long dni)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni);
 
-            Console.WriteLine(vecinoConsulta?.Dni.ToString());   
 
             if (vecinoConsulta == null) {
 

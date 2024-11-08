@@ -2,24 +2,40 @@
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 using SistemaTurneroCastracion.Entity;
+using Microsoft.AspNetCore.Authorization;
+using SistemaTurneroCastracion.DAL.Implementacion;
 
 
 namespace SistemaTurneroCastracion.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VeterinarioController : ControllerBase
     {
         private readonly IVeterinarioRepository _veterinarioRepository;
+        private readonly Validaciones _validaciones;
 
-        public VeterinarioController(IVeterinarioRepository veterinarioRepository)
+        public VeterinarioController(IVeterinarioRepository veterinarioRepository, Validaciones validaciones)
         {
             _veterinarioRepository = veterinarioRepository;
+            _validaciones = validaciones;
         }
 
         [HttpGet]
         public async Task<IActionResult> obtenerVeterinarios()
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             List<Veterinario> veterinarios = await _veterinarioRepository.ObtenerTodos();
 
             if (veterinarios.Count == 0)
@@ -35,6 +51,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> obtenerVeterinarioById(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             Veterinario veterinario = await _veterinarioRepository.ObtenerPorId(id);
 
             if (veterinario == null)
@@ -50,6 +77,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost]
         public async Task<IActionResult> crearVeterinario([FromBody] Veterinario veterinarioCrear)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (veterinarioCrear == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -71,6 +109,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPut]
         public async Task<IActionResult> editarVeterinario([FromBody] Veterinario veterinarioEditar)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (veterinarioEditar == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -91,6 +140,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> borrarVeterinario(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             Veterinario veterinarioEliminar = await _veterinarioRepository.ObtenerPorId(id);
@@ -114,6 +174,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPut("habilitar/{id}")]
         public async Task<IActionResult> habilitarVeterinario(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             Veterinario veterinarioHabilitar = await _veterinarioRepository.ObtenerPorId(id);
@@ -136,6 +207,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpGet("veterinario/{dni}")]
         public async Task<IActionResult> buscarVeterinario(int dni)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (dni == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el dni o no es valido!", Result = "" });
 
             List<Veterinario> veterinariosBuscados = await _veterinarioRepository.buscarPorDocumento(dni); 

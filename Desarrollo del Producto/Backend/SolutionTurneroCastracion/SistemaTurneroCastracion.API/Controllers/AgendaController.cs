@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 
@@ -11,17 +13,30 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
 
         private readonly IAgendaRepository _agendaRepository;
+        private readonly Validaciones _validaciones;
 
-        public AgendaController (IAgendaRepository agendaRepository)
+        public AgendaController (IAgendaRepository agendaRepository, Validaciones validaciones)
         {
             _agendaRepository = agendaRepository;
+            _validaciones = validaciones;
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ObtenerFechasDisponibles([FromBody] AgendaDTO agendaPrevia)
         {
-            
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             bool agendaRegistrada= await _agendaRepository.RegistrarAgenda(agendaPrevia);
 
             if (!agendaRegistrada) 

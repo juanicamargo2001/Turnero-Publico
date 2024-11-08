@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.BLL.Interfaces;
+using SistemaTurneroCastracion.BLL.Seguridad;
 
 namespace SistemaTurneroCastracion.IOC
 {
@@ -49,6 +51,10 @@ namespace SistemaTurneroCastracion.IOC
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
             services.AddScoped<IRolRepository, RolRepository>();
+
+            services.AddScoped<IAutorizacionService, AutorizacionService>();
+
+            services.AddScoped<Validaciones>();
 
 
 

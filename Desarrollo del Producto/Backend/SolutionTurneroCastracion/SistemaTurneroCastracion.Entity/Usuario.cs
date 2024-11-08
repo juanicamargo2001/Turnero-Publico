@@ -25,5 +25,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual Vecino? Vecino { get; set; }
 
+        [JsonIgnore]
+        public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; } = new List<HistorialRefreshToken>();
+
     }
 }

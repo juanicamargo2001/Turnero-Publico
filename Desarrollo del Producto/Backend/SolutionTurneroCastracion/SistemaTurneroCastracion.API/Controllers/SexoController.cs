@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -12,16 +14,30 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
             
         private readonly ISexoRepository _sexoRepository;
-        
-        public SexoController(ISexoRepository sexoRepository) {
+        private readonly Validaciones _validaciones;
+
+        public SexoController(ISexoRepository sexoRepository, Validaciones validaciones) {
         
             _sexoRepository = sexoRepository;
+            _validaciones = validaciones;
         
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> obtenerSexo()
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             List<Sexo> sexos = await _sexoRepository.ObtenerTodos();
 
             if (sexos.Count == 0) {
@@ -36,6 +52,19 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> obtenerSexoById(int id)
         {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             Sexo sexo = await _sexoRepository.ObtenerPorId(id);
 
             if (sexo == null)
@@ -51,6 +80,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost]
         public async Task<IActionResult> crearSexo([FromBody] Sexo sexoNuevo)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (sexoNuevo == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -72,6 +112,18 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPut]
         public async Task<IActionResult> editarSexo([FromBody] Sexo sexoEditar)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
             if (sexoEditar == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se ingreso bien los datos!", Result = "" });
@@ -92,6 +144,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> borrarSexo(int id)
         {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
             if (id == 0) return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Falto ingresar el id o no es valido!", Result = "" });
 
             Sexo sexoEliminar = await _sexoRepository.ObtenerPorId(id);
