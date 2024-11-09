@@ -19,8 +19,6 @@ namespace SistemaTurneroCastracion.Entity
 
         public long Dni {  get; set; }
 
-        public string Email {  get; set; }
-
 	    public long Telefono {  get; set; }
 
         public int? Id_usuario {  get; set; }
@@ -30,6 +28,8 @@ namespace SistemaTurneroCastracion.Entity
 
         [JsonIgnore]
         public virtual Usuario Usuario { get; set; }
+
+        
 
     }
 }

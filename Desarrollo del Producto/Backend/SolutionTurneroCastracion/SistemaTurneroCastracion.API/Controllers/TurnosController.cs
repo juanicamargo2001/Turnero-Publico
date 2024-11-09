@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 
 
@@ -15,12 +16,14 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
         private readonly ITurnosRepository _turnosRepository;
         private readonly Validaciones _validaciones;
+        private readonly IHorariosRepository _horariosRepository;
 
 
-        public TurnosController(ITurnosRepository turnosRepository, Validaciones validaciones)
+        public TurnosController(ITurnosRepository turnosRepository, Validaciones validaciones, IHorariosRepository horariosRepository)
         {
             _turnosRepository = turnosRepository;
             _validaciones = validaciones;
+            _horariosRepository = horariosRepository;
         }
 
         [HttpPost]
@@ -71,6 +74,30 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnos });
         }
 
+        [HttpPost("reservarTurno")]
+        public async Task<IActionResult> ReservarTurno(int id_horario_turno)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool turnoSacado = await _horariosRepository.SacarTurno(id_horario_turno, HttpContext);
+
+            if (!turnoSacado)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error querer sacar el turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+
+        }
 
 
     }

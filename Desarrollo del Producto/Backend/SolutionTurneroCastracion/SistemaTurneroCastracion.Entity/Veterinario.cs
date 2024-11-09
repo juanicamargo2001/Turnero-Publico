@@ -29,4 +29,7 @@ public partial class Veterinario
     [JsonIgnore]
     public ICollection<VeterinarioxCentro>? VeterinarioxCentros { get; set; } = new List<VeterinarioxCentro>();
 
+    [JsonIgnore]
+    public virtual ICollection<Horarios> Horarios { get; set; } = new List<Horarios>();
+
 }

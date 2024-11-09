@@ -60,6 +60,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+        // ver como hacer para que los usuarios no puedan ver datos que no le pertenecen cuando realiza la consulta con su DNI, para que no pueda acceder a otros DNIs
         [Authorize]
         [HttpGet("{dni}")]
         public async Task<IActionResult> ConsultarVecino(long dni)
@@ -74,6 +75,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 }
                 return BadRequest(errorMessage);
             }
+
 
             VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni);
 

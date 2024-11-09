@@ -17,6 +17,8 @@ namespace SistemaTurneroCastracion.Entity
 
         public string? Contraseña { get; set; }
 
+        public string Email { get; set; }
+
         public int? RolId { get; set; }
 
         [JsonIgnore]
@@ -27,6 +29,9 @@ namespace SistemaTurneroCastracion.Entity
 
         [JsonIgnore]
         public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; } = new List<HistorialRefreshToken>();
+
+        [JsonIgnore]
+        public virtual ICollection<Horarios> Horarios { get; set; } = new List<Horarios>();
 
     }
 }

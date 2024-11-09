@@ -98,7 +98,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (!dniRepetido.Any() && DniValido(request.DNI))
             {
 
-                int? creadoUsuario = await _usuarioRepository.crearCuentaVecino(request.Nombre, request.Apellido, request.Contraseña);
+                int? creadoUsuario = await _usuarioRepository.crearCuentaVecino(request.Nombre, request.Apellido, request.Contraseña, request.Email);
 
                 if (creadoUsuario > 0)
                 {
@@ -107,7 +107,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                         F_nacimiento = request.F_Nacimiento,
                         Domicilio = request.Domicilio,
                         Dni = request.DNI,
-                        Email = request.Email,
                         Telefono = request.Telefono,
                         Id_usuario = creadoUsuario
                     });
@@ -154,13 +153,12 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo into tiposAnimalsGroup
                             from ta in tiposAnimalsGroup.DefaultIfEmpty()
                             where v.Dni == dniVecino
-                            group new { m, s, t, ta } by new { v.Id_vecino, v.F_nacimiento, v.Domicilio, v.Dni, v.Email, v.Telefono } into vecinoGroup
+                            group new { m, s, t, ta } by new { v.Id_vecino, v.F_nacimiento, v.Domicilio, v.Dni, v.Telefono } into vecinoGroup
                             select new VecinoDTO
                             {
                                 F_nacimiento = vecinoGroup.Key.F_nacimiento,
                                 Domicilio = vecinoGroup.Key.Domicilio,
                                 Dni = vecinoGroup.Key.Dni,
-                                Email = vecinoGroup.Key.Email,
                                 Telefono = vecinoGroup.Key.Telefono,
                                 Mascotas = vecinoGroup
                                 .Where(g => g.m != null)

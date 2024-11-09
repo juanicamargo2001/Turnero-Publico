@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
@@ -7,6 +8,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +20,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         protected readonly CentroCastracionContext _dbContext;
 
         private readonly IHorariosRepository _horariosRepository;
+        
+        private readonly IUsuarioRepository _usuarioRepository;
 
 
-        public TurnosRepository(CentroCastracionContext dbContext, IHorariosRepository horariosRepository) : base(dbContext)
+        public TurnosRepository(CentroCastracionContext dbContext, IHorariosRepository horariosRepository, IUsuarioRepository usuarioRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _horariosRepository = horariosRepository;
+            _usuarioRepository = usuarioRepository;
         }
 
 
@@ -84,7 +89,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
                                 join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
                                 join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
-                                where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia
+                                join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
                                 group new { H, TT } by new { T.Dia} into g
                                 select new TurnoDTO
                                 {
@@ -113,12 +119,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        //public async Task<bool> SacarTurno(int IdTurnoHorario)
-        //{
-
-
-
-        //}
+        
 
     }
 

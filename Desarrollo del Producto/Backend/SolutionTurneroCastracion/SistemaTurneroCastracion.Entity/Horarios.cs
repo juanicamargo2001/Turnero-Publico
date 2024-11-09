@@ -17,13 +17,32 @@ namespace SistemaTurneroCastracion.Entity
 
         public int? IdTurno { get; set; }
 
-        public bool? Habilitado { get; set; }
+        public int Id_Estado { get; set; }
+
+        public int? Id_Legajo { get; set; }
+
+        public int? Id_Usuario{ get; set; }
+
+        public string? DescripPostOperatorio { get; set; }
+
 
         [JsonIgnore]
         public Turnos Turnos { get; set; }
 
         [JsonIgnore]
+        public Estado Estado {  get; set; }
+
+        [JsonIgnore]
         public virtual TipoTurno? IdTipoTurnoNavigation { get; set; }
+
+
+        [JsonIgnore]
+        public virtual Veterinario? Veterinario { get; set; }
+
+
+        [JsonIgnore]
+        public virtual Usuario? Usuario { get; set; }
+
 
 
     }

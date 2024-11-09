@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
@@ -6,6 +7,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +38,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             if (centro.HoraInicio >= inicio && centro.HoraFin < fin)
             {
+                int estadoLibre = this.BuscarEstado(EstadoTurno.Libre.ToString());
 
                 while (iteracion < centro.Cantidad)
                 {
@@ -43,7 +46,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     {
                         Hora = centro.HoraInicio,
                         IdTurno = centro.IdTurno,
-                        TipoTurno = centro.IdTipoTurno
+                        TipoTurno = centro.IdTipoTurno,
+                        Id_Estado = estadoLibre
                     });
 
                     iteracion++;
@@ -65,7 +69,111 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             {
                 return false;
             }
-        } 
+        }
+
+
+        public async Task<bool> CambiarEstado (EstadoTurno estadoTurno, int id_Horario)
+        {
+            int id_estado = this.BuscarEstado(estadoTurno.ToString());
+
+            Horarios horarioEncontrado = await this.Obtener(h => h.IdHorario == id_Horario);
+
+            if (horarioEncontrado == null) 
+            {
+                return false;
+            }
+
+            horarioEncontrado.Id_Estado = id_estado;
+
+            bool editado = await this.Editar(horarioEncontrado);
+
+            if (!editado) { 
+            
+                return false;
+            }
+
+            return true;
+
+        }
+
+        
+
+        private int BuscarEstado(string nombreEstado)
+        {
+            int id_estado = (from E in _dbContext.Estados
+                            where E.Nombre == nombreEstado
+                            select E.IdEstado)
+                            .FirstOrDefault();
+
+            return id_estado;
+        }
+
+
+        public async Task<bool> SacarTurno(int IdTurnoHorario, HttpContext httpContext)
+        {
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            string idString = idClaim.Value;
+            Console.WriteLine("ID: " + idString);
+            int id;
+
+            if (int.TryParse(idString, out id)) ;
+            else
+            {
+                Console.WriteLine("El id no es un número válido.");
+            }
+
+            bool ocupado = this.EstaOcupado(IdTurnoHorario);
+
+            if (!ocupado)
+            {
+                bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, IdTurnoHorario);
+
+                if (!cambiadoEstado)
+                {
+                    return false;
+                }
+
+                Horarios? horarioEntrado = _dbContext.Horarios.Where(h => h.IdHorario == IdTurnoHorario).FirstOrDefault();
+
+                if (horarioEntrado == null)
+                {
+                    return false;
+                }
+
+                horarioEntrado.Id_Usuario = id;
+
+                bool reservado = await this.Editar(horarioEntrado);
+
+                if (!reservado)
+                {
+
+                    return false;
+                }
+
+                return true;
+            }
+            else { return false; }
+        }
+
+        public bool EstaOcupado(int IdTurnoHorario)
+        {
+            string? nombreEstado = (from E in _dbContext.Estados
+                                join H in _dbContext.Horarios on E.IdEstado equals H.Id_Estado
+                                where H.IdHorario == IdTurnoHorario
+                                select E.Nombre)
+                                .FirstOrDefault();
+
+            if (nombreEstado != EstadoTurno.Libre.ToString())
+            {
+                return true;
+            }
+
+            return false;
+
+        }
 
 
     }

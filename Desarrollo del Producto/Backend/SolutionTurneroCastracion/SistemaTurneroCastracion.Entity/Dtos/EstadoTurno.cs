@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public class InicioSesion
+    public enum EstadoTurno
     {
-        public string email { get; set; }
-        public string clave {  get; set; }
-
+        Libre,
+        Reservado,
+        Confirmado,
+        Realizado,
+        Cancelado
     }
 }

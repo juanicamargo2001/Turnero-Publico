@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface IHorariosRepository : IGenericRepository<Horarios>
     {
         Task<bool> crearHorarios(HorarioCentroParametroDTO centro);
-
+        Task<bool> CambiarEstado(EstadoTurno estadoTurno, int id_Horario);
+        Task<bool> SacarTurno(int IdTurnoHorario, HttpContext httpContext);
     }
 }

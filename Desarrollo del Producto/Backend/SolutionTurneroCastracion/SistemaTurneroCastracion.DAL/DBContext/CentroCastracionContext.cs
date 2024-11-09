@@ -48,6 +48,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
+    public virtual DbSet<Estado> Estados { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -313,15 +315,20 @@ public partial class CentroCastracionContext : DbContext
             .HasColumnName("hora");
 
 
-            entity.Property(e => e.Habilitado)
-            .HasDefaultValue(true)
-            .HasColumnName("habilitado");
+            entity.Property(e => e.Id_Estado)
+            .HasColumnName("estado");
 
             entity.Property(e => e.TipoTurno)
             .HasColumnName("tipo_turno");
 
             entity.Property(e => e.IdTurno)
             .HasColumnName("id_turno");
+
+            entity.Property(e => e.Id_Usuario)
+            .HasColumnName("id_usuario");
+
+            entity.Property(e => e.Id_Legajo)
+            .HasColumnName("id_legajo");
 
             entity.HasOne(e => e.Turnos)
                   .WithMany(t => t.Horarios)
@@ -332,6 +339,23 @@ public partial class CentroCastracionContext : DbContext
                   .WithMany(t => t.Horarios)
                   .HasForeignKey(e => e.TipoTurno)
                   .HasConstraintName("FK_horarios_tipo");
+
+            entity.HasOne(h => h.Estado)
+                  .WithMany(e => e.Horarios)
+                  .HasForeignKey(e => e.Id_Estado)
+                  .HasConstraintName("FK_horarios_estado");
+
+            entity.HasOne(h => h.Veterinario)
+                  .WithMany(v => v.Horarios)
+                  .HasForeignKey(e => e.Id_Legajo)
+                  .HasConstraintName("FK_horarios_veterinario");
+
+            entity.HasOne(h => h.Usuario)
+                  .WithMany(u => u.Horarios)
+                  .HasForeignKey(e => e.Id_Usuario)
+                  .HasConstraintName("FK_horarios_usuario");
+
+            entity.Property(e => e.DescripPostOperatorio).HasColumnName("descripPostOperatorio");
 
         });
 
@@ -355,9 +379,6 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.Dni)
             .HasColumnName("dni");
             
-            entity.Property(e => e.Email)
-            .HasColumnName("email");
-
             entity.Property(e => e.Telefono)
             .HasColumnName("telefono");
 
@@ -415,6 +436,8 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.RolId).HasColumnName("id_rol");
 
+            entity.Property(e => e.Email).HasColumnName("email");
+
             entity.HasOne(u => u.Rol)
                   .WithMany(r => r.Usuarios)
                   .HasForeignKey(u => u.RolId)
@@ -443,6 +466,17 @@ public partial class CentroCastracionContext : DbContext
                 .HasConstraintName("FK_HistorialRefresh_Usuario");
         });
 
+        modelBuilder.Entity<Estado>(entity =>
+        {
+            entity.ToTable("estado");
+
+            entity.HasKey(e => e.IdEstado).HasName("PK_estado");
+
+            entity.Property(e => e.IdEstado).HasColumnName("id_estado");
+
+            entity.Property(e => e.Nombre).HasColumnName("nombre");
+
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }

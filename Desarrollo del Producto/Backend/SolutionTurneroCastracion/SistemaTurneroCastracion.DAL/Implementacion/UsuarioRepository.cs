@@ -32,13 +32,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _autorizacionService = autorizacionService;
         }
 
-        public async Task<int?> crearCuentaVecino(string nombre, string apellido, string contraseña)
+        public async Task<int?> crearCuentaVecino(string nombre, string apellido, string contraseña, string email)
         {
             string convertirContraseña = UtilidadesUsuario.EncriptarClave(contraseña);
 
             int numeroId = (_dbContext.Roles.Where(e => e.Nombre == "vecino").FirstOrDefault()!).IdRol;
 
-            Usuario usuarioCreado = await this.Crear(new Usuario { Nombre = nombre, Apellido = apellido, Contraseña = convertirContraseña, RolId = numeroId });
+            Usuario usuarioCreado = await this.Crear(new Usuario { Nombre = nombre, Apellido = apellido, Contraseña = convertirContraseña, RolId = numeroId, Email = email });
 
             if (usuarioCreado == null) {
                 return 0;
@@ -48,11 +48,10 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<Usuario?> GetUsuarios(string nombre , string apellido, string clave)
+        public async Task<Usuario?> GetUsuarios(string email, string clave)
         {
 
-            return await _dbContext.Usuarios.Where(u => u.Nombre.ToUpper() == nombre.ToUpper() &&
-                                                        u.Apellido.ToUpper() == apellido.ToUpper() && 
+            return await _dbContext.Usuarios.Where(u => u.Email == email && 
                                                         u.Contraseña == clave).FirstOrDefaultAsync();
         }
 
@@ -116,7 +115,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<ValidacionResultadosDTO> DevolverToken(InicioSesion body)
         {
-            Usuario? usuario_encontrado = await this.GetUsuarios(body.Nombre, body.Apellido, UtilidadesUsuario.EncriptarClave(body.clave));
+            Usuario? usuario_encontrado = await this.GetUsuarios(body.email, UtilidadesUsuario.EncriptarClave(body.clave));
 
             if (usuario_encontrado == null)
             {
