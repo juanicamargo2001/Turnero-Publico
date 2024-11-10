@@ -14,12 +14,14 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const [selectedFile, setSelectedFile] = useState(null);
     const [scanResult, setScanResult] = useState('');
     const [selectedFile2, setSelectedFile2] = useState(null);
+    const today = new Date();
+    const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); // Resta 6570 días o 18 años
 
     const handleFileChange2 = (event) => {
         setSelectedFile2(event.target.files[0]);
     };
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, setError, clearErrors, formState: { errors } } = useForm();
 
     useEffect(() => {
         // Establece cada valor del formData en el formulario
@@ -31,6 +33,10 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
     const onFormSubmit = (data) => {
         if (!formData.domicilio) {return;}
+        if (formData.f_Nacimiento===""){
+          alert("Debe ingresar una fecha de nacimiento mayor a 18 años de edad");
+          return;
+        }
         updateFormData(data);
         nextStep();
     };
@@ -57,9 +63,32 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         }
     };
 
-    const handleDateChange = (date) => {
-      const fech = parsearFechaDate(date[0]);
-      updateFormData({f_Nacimiento: fech});
+    const handleDateChange = (dat) => {
+      //CONTROLAR FECHA
+      /*const date = new Date(dat);
+      const hoy = new Date();
+      const edad = hoy.getFullYear() - date.getFullYear();
+      const mes = hoy.getMonth() - date.getMonth();
+
+      // Ajustar si la fecha de cumpleaños aún no ha ocurrido este año
+      if (mes < 0 || (mes === 0 && hoy.getDate() < date.getDate())) {
+        edad--;
+      }
+
+      if (edad>17) {
+        clearErrors("fNacimiento");
+        const fech = parsearFechaDate(dat[0]);
+        updateFormData({f_Nacimiento: fech});
+      } else {
+        //clearErrors("fNacimiento");
+        updateFormData({f_Nacimiento: ""});
+        setError("fNacimiento", {
+          type: "validate",
+          message: "Debe ser mayor a 18 años",
+        });
+      }*/
+        const fech = parsearFechaDate(dat[0]);
+        updateFormData({f_Nacimiento: fech});
     };
 
     const parsearFechaDate = (f) => {
@@ -204,7 +233,22 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                   id="dni"
                   placeholder={"Escriba su DNI"}
                   defaultValue={formData.dni}
-                  {...register('dni', { required: 'El DNI es obligatorio' })}
+                  {...register('dni', { 
+                    required: "El DNI es obligatorio", 
+                    minLength: {
+                      value: 8,
+                      message: "El DNI debe tener exactamente 8 dígitos"
+                      },
+                      maxLength: {
+                          value: 8,
+                          message: "El DNI debe tener exactamente 8 dígitos"
+                      },
+                      pattern: {
+                          value: /^[0-9]*$/,
+                          message: "El DNI solo puede contener números"
+                      },
+                    validate: value => value > 0 || "El DNI debe ser mayor que 0"
+                  })}
                   onChange={handleInputChange}
                 />
                 {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
@@ -246,6 +290,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                     altFormat: "F j, Y",
                     dateFormat: "Y-m-d",
                     locale: Spanish,
+                    maxDate: maxDate,
                     }}
                     id="fNacimiento"
                     className="form-control"

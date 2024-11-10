@@ -27,12 +27,9 @@ const RegistroVeterinario = () => {
 
   useEffect(() => {
     register('fNacimiento', { 
-      required: "La fecha de nacimiento es obligatoria" /*,
-      
-      CODIGO VALIDADOR DE EDAD>>>>>>>>>>>>>>>>>>>>>>
+      required: "La fecha de nacimiento es obligatoria",
 
-      validate:
-        mayorDe15: (value) => {
+      /*validate: (value) => {
           if (!value || !value[0]) return "La fecha de nacimiento es obligatoria";
 
           const fechaNacimiento = new Date(value[0]);
@@ -45,11 +42,10 @@ const RegistroVeterinario = () => {
             edad--;
           }
 
-          return edad >= 15 || "El dueño debe ser mayor de 15 años";
-        }
+          return edad >= 18 || "El dueño debe ser mayor de 18 años";
+        }*/
       }
-      */ 
-    });
+    );
   }, [register]);
 
   const onSubmit  = async (data) => {
