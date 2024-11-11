@@ -25,6 +25,6 @@ async function Buscar(id) {
   }
 }
 
-export const turnosService = {
+export const turneroService = {
   Buscar
 };

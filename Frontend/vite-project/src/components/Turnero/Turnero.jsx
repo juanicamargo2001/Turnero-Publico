@@ -7,13 +7,15 @@ import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
 import { horarios } from '../../services/horarios.service'; // Importa el servicio de horarios
-import { turnosService } from '../../services/turnero.service'; // Importa el servicio de turnos
+import { turneroService } from '../../services/turnero.service'; // Importa el servicio de turnero
+import { turnosService } from '../../services/turnos.service';
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [value, setValue] = React.useState(null); // Fecha seleccionada
     const [highlightedDates, setHighlightedDates] = React.useState([]); // Fechas resaltadas
     const [showTimes, setShowTimes] = React.useState(false); // Para manejar la transición de mostrar los horarios
     const [selectedTime, setSelectedTime] = React.useState(null); // Para almacenar la hora seleccionada
+    const [selectedTurno, setSelectedTurno] = React.useState(null);
     const [availableTimes, setAvailableTimes] = React.useState([]); // Horarios disponibles
     const [isLoading, setIsLoading] = React.useState(true); // Controla el estado de carga de las fechas
     const [error, setError] = React.useState(null); // Estado para manejar errores
@@ -23,7 +25,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         // Llamada a la API para obtener las fechas del turno por ID
         const fetchDates = async () => {
             try {
-                const fechas = await turnosService.Buscar(turnoId); // Obtener las fechas
+                const fechas = await turneroService.Buscar(turnoId); // Obtener las fechas
                 const fechasResaltadas = fechas.map(fecha => dayjs(fecha)); // Convertir las fechas a objetos `dayjs`
                 setHighlightedDates(fechasResaltadas); // Almacenar las fechas completas
                 setIsLoading(false); // Una vez que se obtienen las fechas, detener la carga
@@ -57,17 +59,17 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         }
     };
     const handleConfirm = async () => {
-        if (!selectedTime) {
+        if (!selectedTime || !selectedTurno) {
             setError("Por favor, selecciona una hora.");
             return;
         }
     
         // Mostrar en consola el ID del turno que se va a enviar
-        console.log("ID del turno seleccionado:", selectedTime.idHorario);
+        console.log("ID del turno seleccionado:", selectedTurno);
     
         try {
             // Llama al servicio para reservar el turno, enviando el idHorario
-            await turnosService.reservarTurno(selectedTime.idHorario); // Enviar solo el idHorario
+            await turnosService.reservarTurno(selectedTurno); // Enviar solo el idHorario
             alert("¡Tu turno ha sido confirmado!");
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");
@@ -78,9 +80,11 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
       
       
 
-    const handleTimeSelect = (time) => {
-        setSelectedTime(time); // Almacenar la hora seleccionada
-        console.log("ID del turno seleccionado:", time.idHorario);
+    const handleTimeSelect = (hora, idHorario) => {
+        //console.log(hora)
+        //console.log(idHorario)
+        setSelectedTurno(idHorario)
+        setSelectedTime(hora); // Almacenar la hora seleccionada
     };
 
     // Componente de renderizado personalizado para los días
@@ -144,7 +148,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
                                     {availableTimes.filter(time => time.hora < '12:00').map((time) => (
                                         <button
                                             key={time.idHorario}
-                                            onClick={() => handleTimeSelect(time.hora)}
+                                            onClick={() => handleTimeSelect(time.hora, time.idHorario)}
                                             className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''}`}
                                         >
                                             {time.hora}
@@ -159,7 +163,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
                                     {availableTimes.filter(time => time.hora >= '12:00').map((time) => (
                                         <button
                                             key={time.idHorario}
-                                            onClick={() => handleTimeSelect(time.hora)}
+                                            onClick={() => handleTimeSelect(time.hora, time.idHorario)}
                                             className={`btn time-slot ${selectedTime === time.hora ? 'selected' : ''}`}
                                         >
                                             {time.hora}

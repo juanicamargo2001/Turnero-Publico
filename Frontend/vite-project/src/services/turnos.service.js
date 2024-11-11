@@ -12,7 +12,7 @@ const turnosService = {
       // Realizar la solicitud POST para reservar el turno
       const response = await axios.post(
         API_URL,
-        { id_horario_tur: idHorario }, // Solo se envía id_horario_tur
+        { id_horario_turno: idHorario }, // Solo se envía id_horario_tur
         {
           headers: {
             'ngrok-skip-browser-warning': 'true',
@@ -21,7 +21,7 @@ const turnosService = {
           }
         }
       );
-
+      
       // Verificar si la respuesta es exitosa
       if (response.data.success) {
         console.log('Turno reservado con éxito:', response.data.message);
