@@ -20,6 +20,7 @@
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.13",
     "flatpickr": "^4.6.13",
+    "js-cookie": "^3.0.5",
     "react": "^18.3.1",
     "react-big-calendar": "^1.15.0",
     "react-bootstrap": "^2.10.5",

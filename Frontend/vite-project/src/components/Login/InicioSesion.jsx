@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import './InicioSesion.css';
+import loginService from '../../services/login.service';
 import loginImage from '../../imgs/inicio.jpeg';
 
 const LoginComponent = () => {
-  const [dni, setDni] = useState('');
+  const [email, setEmail] = useState(''); // Cambiado de dni a email
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleDniChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      setDni(value);
-      setError('');
-    }
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setError('');
   };
 
   const handlePasswordChange = (e) => {
@@ -20,15 +18,28 @@ const LoginComponent = () => {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!dni || !password) {
-      setError('Por favor, ingrese su DNI y contraseña.');
+    if (!email || !password) {
+      setError('Por favor, ingrese su email y contraseña.');
       return;
     }
 
-    console.log('DNI:', dni, 'Password:', password);
+    try {
+      const response = await loginService.login(email, password);
+      if (response.success) {
+        alert('Inicio de sesión exitoso');
+        console.log('Inicio de sesión exitoso:', response);
+      } else {
+        setError('Error de autenticación');
+      }
+    } catch (error) {
+      setError('Error de autenticación');
+      console.error('Error:', error);
+    }
+
+    console.log('Email:', email, 'Password:', password);
   };
 
   return (
@@ -45,30 +56,43 @@ const LoginComponent = () => {
 
         {/* Sección del Formulario de Inicio de Sesión */}
         <div className="login-box">
-          <form className="login-form">
+          <form className="login-form" onSubmit={handleSubmit}>
             <h3>Iniciar Sesión</h3>
 
             <div className="form-group">
-              <input type="text" className="custom-input" placeholder="DNI" required />
+              <input
+                type="email"
+                className="custom-input"
+                placeholder="Email"
+                value={email}
+                onChange={handleEmailChange}
+                required
+              />
             </div>
 
             <div className="form-group">
-              <input type="password" className="custom-input" placeholder="Contraseña" required />
+              <input
+                type="password"
+                className="custom-input"
+                placeholder="Contraseña"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+              />
             </div>
-
 
             <button type="submit">Ingresar</button>
 
+            {error && <p className="error-message">{error}</p>}
+
             <div className="register-link">
-            ¿Aún no estás registrado? <a href="#register">Crea una cuenta</a>
+              ¿Aún no estás registrado? <a href="#register">Crea una cuenta</a>
             </div>
           </form>
         </div>
-
       </div>
     </div>
   );
-
 };
 
 export default LoginComponent;
