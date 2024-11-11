@@ -17,6 +17,7 @@ const horarios = {
                     'Authorization': `Bearer ${token}` 
                   }, }
             );
+            console.log("Respuesta de la API:", response.data);
 
             // Verificar si la respuesta es exitosa
             if (response.data.success) {

@@ -56,9 +56,31 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
             timesContainerRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     };
+    const handleConfirm = async () => {
+        if (!selectedTime) {
+            setError("Por favor, selecciona una hora.");
+            return;
+        }
+    
+        // Mostrar en consola el ID del turno que se va a enviar
+        console.log("ID del turno seleccionado:", selectedTime.idHorario);
+    
+        try {
+            // Llama al servicio para reservar el turno, enviando el idHorario
+            await turnosService.reservarTurno(selectedTime.idHorario); // Enviar solo el idHorario
+            alert("¡Tu turno ha sido confirmado!");
+        } catch (error) {
+            setError("Hubo un problema al confirmar tu turno.");
+            console.error("Error al confirmar el turno:", error);
+        }
+    };
+    
+      
+      
 
     const handleTimeSelect = (time) => {
         setSelectedTime(time); // Almacenar la hora seleccionada
+        console.log("ID del turno seleccionado:", time.idHorario);
     };
 
     // Componente de renderizado personalizado para los días
@@ -154,7 +176,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
                 <button type="button" className="btn btn-dark me-2 confir2" onClick={() => window.history.back()}>
                 Volver
                 </button>
-                <button type="button" className="btn btn-primary confir">
+                <button type="button" className="btn btn-primary confir" onClick={handleConfirm}>
                 Confirmar
                 </button>
             </div>
