@@ -1,19 +1,21 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import loginService from "./login.service";
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/turnos';
 
 const horarios = {
     async obtenerHorarios(turnoId, dia) {
         try {
-            // Obtén el token de la cookie
-            const token = Cookies.get('token'); // Asegúrate de que el nombre coincide con el nombre de la cookie en tu aplicación
-            if (!token) throw new Error('Token no encontrado');
+            const token = loginService.obtenerToken();
 
             const response = await axios.post(
                 API_URL,
                 { id: turnoId, dia: dia },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                  }, }
             );
 
             // Verificar si la respuesta es exitosa

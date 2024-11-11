@@ -1,22 +1,19 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import loginService from "./login.service";
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/veterinario';
 
-// Helper para obtener el token desde las cookies
-function getAuthHeaders() {
-    const token = Cookies.get('token'); // Asegúrate de que el token esté guardado en la cookie "token"
-    return {
-        'ngrok-skip-browser-warning': 'true',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-    };
-}
 
 async function Grabar(nuevoVeterinario) {
+
     try {
+        const token = loginService.obtenerToken();
         const response = await axios.post(API_URL, nuevoVeterinario, {
-            headers: getAuthHeaders(),
+            headers: {
+                'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+              },
         });
         return response.data;
     } catch (error) {
@@ -27,8 +24,13 @@ async function Grabar(nuevoVeterinario) {
 
 async function BuscarTodos() {
     try {
+        const token = loginService.obtenerToken();
         const response = await axios.get(API_URL, {
-            headers: getAuthHeaders(),
+            headers: {
+                'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+              },
         });
         return response.data;
     } catch (error) {
@@ -39,8 +41,13 @@ async function BuscarTodos() {
 
 async function BuscarPorDni(dni) {
     try {
+        const token = loginService.obtenerToken();
         const response = await axios.get(`${API_URL}/${dni}`, {
-            headers: getAuthHeaders(),
+            headers: {
+                'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+              },
         });
         return response.data;
     } catch (error) {
@@ -51,8 +58,13 @@ async function BuscarPorDni(dni) {
 
 async function Modificar(nuevoVeterinario) {
     try {
+        const token = loginService.obtenerToken();
         const response = await axios.put(API_URL, nuevoVeterinario, {
-            headers: getAuthHeaders(),
+            headers: {
+                'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+              },
         });
         return response.data;
     } catch (error) {

@@ -1,13 +1,17 @@
 import axios from "axios";
+import loginService from "./login.service";
 
 const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos";
 
 async function Buscar(id) {
   try {
+    const token = loginService.obtenerToken();
+
     const resp = await axios.get(`${urlResource}/${id}`, {
       headers: {
         'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Agrega el token en el encabezado
       },
     });
 

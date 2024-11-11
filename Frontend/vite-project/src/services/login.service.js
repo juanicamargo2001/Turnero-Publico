@@ -19,6 +19,16 @@ const login = async (email, clave) => {
   }
 };
 
+// Función para obtener el token desde las cookies
+const obtenerToken = () => {
+  const token = Cookies.get('token');
+  if (!token) {
+    throw new Error('Token no encontrado'); // Lanza un error si el token no está disponible
+  }
+  return token; // Retorna el token si existe
+};
+
 export default {
-  login,
+  login, 
+  obtenerToken 
 };
