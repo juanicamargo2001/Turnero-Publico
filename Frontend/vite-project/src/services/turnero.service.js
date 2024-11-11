@@ -5,7 +5,7 @@ const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos";
 
 async function Buscar(id) {
   try {
-    const token = loginService.obtenerToken();
+    const token = await loginService.obtenerTokenConRenovacion();
 
     const resp = await axios.get(`${urlResource}/${id}`, {
       headers: {

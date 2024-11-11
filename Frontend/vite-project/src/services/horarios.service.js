@@ -6,7 +6,7 @@ const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/turnos';
 const horarios = {
     async obtenerHorarios(turnoId, dia) {
         try {
-            const token = loginService.obtenerToken();
+            const token = await loginService.obtenerTokenConRenovacion();
 
             const response = await axios.post(
                 API_URL,

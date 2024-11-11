@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarSesion';
+const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
 
 const login = async (email, clave) => {
   try {
@@ -28,7 +29,46 @@ const obtenerToken = () => {
   return token; // Retorna el token si existe
 };
 
+// Función para refrescar el token utilizando el refreshToken
+const refreshToken = async () => {
+  const refresh = Cookies.get('refreshToken');
+  if (!refresh) {
+    throw new Error('Refresh token no encontrado'); // Lanza un error si no hay refreshToken
+  }
+
+  try {
+    // Enviar solicitud de refresco de token con el refreshToken
+    const response = await axios.post(REFRESH_URL, {
+      tokenExpirado: obtenerToken(),
+      refreshToken: refresh
+    });
+
+    const { token, refreshToken } = response.data.result;
+
+    // Guardar los nuevos tokens en cookies
+    Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos
+    Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
+
+    return token; // Retorna el nuevo token
+  } catch (error) {
+    console.error('Error al refrescar el token:', error);
+    throw error;
+  }
+};
+
+  const obtenerTokenConRenovacion = async () => {
+    try {
+      let token = obtenerToken();
+  
+      return token;
+    } catch (error) {
+      // Si no se encuentra el token o si ha expirado, intenta refrescarlo
+      console.log('Token expirado o no encontrado, intentando renovar...');
+      return await refreshToken(); // Llama a la función para refrescar el token
+    }
+};
+
 export default {
-  login, 
-  obtenerToken 
+  login, obtenerToken,
+  obtenerTokenConRenovacion
 };

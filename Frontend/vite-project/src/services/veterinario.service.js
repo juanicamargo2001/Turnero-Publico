@@ -7,7 +7,7 @@ const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/veterinario';
 async function Grabar(nuevoVeterinario) {
 
     try {
-        const token = loginService.obtenerToken();
+        const token = await loginService.obtenerTokenConRenovacion();
         const response = await axios.post(API_URL, nuevoVeterinario, {
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
@@ -24,7 +24,7 @@ async function Grabar(nuevoVeterinario) {
 
 async function BuscarTodos() {
     try {
-        const token = loginService.obtenerToken();
+        const token = await loginService.obtenerTokenConRenovacion();
         const response = await axios.get(API_URL, {
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
@@ -41,7 +41,7 @@ async function BuscarTodos() {
 
 async function BuscarPorDni(dni) {
     try {
-        const token = loginService.obtenerToken();
+        const token = await loginService.obtenerTokenConRenovacion();
         const response = await axios.get(`${API_URL}/${dni}`, {
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
@@ -58,7 +58,7 @@ async function BuscarPorDni(dni) {
 
 async function Modificar(nuevoVeterinario) {
     try {
-        const token = loginService.obtenerToken();
+        const token = await loginService.obtenerTokenConRenovacion();
         const response = await axios.put(API_URL, nuevoVeterinario, {
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia

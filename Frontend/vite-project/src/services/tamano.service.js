@@ -4,8 +4,8 @@ import loginService from "./login.service";
 const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/tamaño";
 async function Buscar() {
   try {
-    const token = loginService.obtenerToken();
-    
+    const token = await loginService.obtenerTokenConRenovacion();
+
     const resp = await axios.get(urlResource, {
       headers: {
         'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
