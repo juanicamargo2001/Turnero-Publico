@@ -77,7 +77,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
 
 
-            VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni);
+            VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni, HttpContext);
 
 
             if (vecinoConsulta == null) {

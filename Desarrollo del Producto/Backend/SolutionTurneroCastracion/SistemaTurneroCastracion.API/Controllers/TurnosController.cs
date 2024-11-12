@@ -40,7 +40,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<TurnoDTO> turnos= await _turnosRepository.ObtenerTurnosHabiles(turnoXHorario.Id, turnoXHorario.Dia);
+            List<TurnoDTO> turnos = await _turnosRepository.ObtenerTurnosHabiles(turnoXHorario.Id, turnoXHorario.Dia);
 
             if (!turnos.Any())
             {
@@ -64,7 +64,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<DateTime> turnos= await _turnosRepository.ObtenerDiasTurnos(id);
+            List<DateTime> turnos = await _turnosRepository.ObtenerDiasTurnos(id);
 
             if (!turnos.Any())
             {
@@ -92,13 +92,62 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (!turnoSacado)
             {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error querer sacar el turno!", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al querer sacar el turno!", Result = "" });
             }
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
 
         }
 
+        [HttpGet("misTurnos")]
+        public async Task<IActionResult> ObtenerMisMascotas()
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
 
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<TurnoUsuario> turnosUsuario = await _turnosRepository.ObtenerTurnosUsuario(HttpContext);
+
+            if (turnosUsuario == null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al visualizar los turnos!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnosUsuario });
+
+        }
+
+
+        [HttpPost("cancelarTurno")]
+        public async Task<IActionResult> CancelarTurno([FromBody] int idTurno)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool cancelado = await _horariosRepository.CancelarTurno(idTurno, HttpContext);
+
+            if (!cancelado)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al cancelar el turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 
         Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion);
 
+        Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context);
     }
 }

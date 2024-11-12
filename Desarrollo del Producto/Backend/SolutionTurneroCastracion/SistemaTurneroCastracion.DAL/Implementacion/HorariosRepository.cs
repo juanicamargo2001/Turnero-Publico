@@ -175,6 +175,45 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
+        public async Task<bool> CancelarTurno(int idTurno, HttpContext context)
+        {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int? id = Int32.Parse(idClaim.Value);
+
+
+
+            bool cambioCancelado = await this.CambiarEstado(EstadoTurno.Libre, idTurno);
+
+            if (!cambioCancelado)
+            {
+                return false;
+            }
+
+            Horarios? cancelarUsuario= _dbContext.Horarios.Where(h => h.IdHorario == idTurno).FirstOrDefault();
+
+            if (cancelarUsuario == null)
+            {
+                return false;
+            }
+
+            cancelarUsuario.Id_Usuario = null;
+
+            bool cancelado = await this.Editar(cancelarUsuario);
+
+            if (!cancelado)
+            {
+
+                return false;
+            }
+
+            return true;
+
+
+        }
+
 
     }
 }

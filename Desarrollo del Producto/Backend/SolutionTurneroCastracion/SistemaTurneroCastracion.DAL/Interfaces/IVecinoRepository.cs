@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<bool> AnalizarDNIConReglas (string imageBytes);
         Task<bool> RegistrarSinFoto(ImagenRequest request);
-        VecinoDTO? ConsultarVecino(long dniVecino);
+        VecinoDTO? ConsultarVecino(long dniVecino, HttpContext context);
 
     }
 }

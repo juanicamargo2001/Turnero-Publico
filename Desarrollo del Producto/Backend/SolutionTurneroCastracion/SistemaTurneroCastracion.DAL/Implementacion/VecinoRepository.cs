@@ -15,6 +15,9 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System.Runtime.CompilerServices;
 using Microsoft.Identity.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
+using System.Security.Claims;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -75,7 +78,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             if (!string.IsNullOrEmpty(textoParseado))
             {
-                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0 && textoParseado.IndexOf("capital", StringComparison.OrdinalIgnoreCase) >= 0)
+                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     return true;
                 }
@@ -139,8 +142,14 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public VecinoDTO? ConsultarVecino(long dniVecino)
+        public VecinoDTO? ConsultarVecino(long dniVecino, HttpContext context)
         {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int id = Int32.Parse(idClaim.Value);
+
             using (var ctx = _dbContext)
             {
                 var query = from v in ctx.Vecinos
@@ -152,7 +161,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             from t in tipoGroup.DefaultIfEmpty()
                             join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo into tiposAnimalsGroup
                             from ta in tiposAnimalsGroup.DefaultIfEmpty()
-                            where v.Dni == dniVecino
+                            where v.Dni == dniVecino && v.Id_usuario == id
                             group new { m, s, t, ta } by new { v.Id_vecino, v.F_nacimiento, v.Domicilio, v.Dni, v.Telefono } into vecinoGroup
                             select new VecinoDTO
                             {
