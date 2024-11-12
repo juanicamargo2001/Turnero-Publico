@@ -18,6 +18,7 @@ import HabilitarTurneroLafrance from "./components/Turnero/HabilitarTurneri_Lafr
 import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.jsx";
 
 import InicioSesion from "./components/Login/InicioSesion.jsx"
+import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
             <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
 
             <Route path="/" element={<InicioSesion />} />
+
+            <Route path="/misTurnos" element={<TurnoVecino/>}/>
 
           </Routes>
         </div>

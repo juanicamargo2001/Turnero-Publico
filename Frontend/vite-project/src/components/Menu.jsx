@@ -53,6 +53,9 @@ function Menu() {
         <li>
           <a className="nav-link" href="/habilitar/alberdi">Habilitar turnero</a>
         </li>
+        <li>
+          <a className="nav-link" href="/misTurnos">Mis Turnos</a>
+        </li>
         <li className="nav-item dropdown">
           <a
             className="nav-link dropdown-toggle"
