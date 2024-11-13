@@ -25,7 +25,8 @@ async function obtenerMisTurnos() {
 async function cancelarTurno(idHorario) {
   try {
     const token = await loginService.obtenerTokenConRenovacion();
-    const resp = await axios.post(urlCancelarTurno, { idHorario }, {
+    console.log(idHorario)
+    const resp = await axios.post(urlCancelarTurno,  idHorario , {
       headers: {
         'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
