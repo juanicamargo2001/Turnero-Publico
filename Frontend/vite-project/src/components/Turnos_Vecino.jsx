@@ -5,7 +5,7 @@ import { Button, Card, Container, Row, Col } from 'react-bootstrap';
 function TurnoVecino() {
   const [turnos, setTurnos] = useState([]);
   const [error, setError] = useState(null);
-  const [cancelError, setCancelError] = useState(null); // Para manejar errores de cancelación
+  const [cancelError, setCancelError] = useState(null);
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -22,23 +22,23 @@ function TurnoVecino() {
   }, []);
 
   const handleCancelarTurno = async (idHorario) => {
-    console.log("ID del turno recibido:", idHorario); // Verifica el valor recibido
-    const parsedId = parseInt(idHorario, 10); // Convertimos a entero
+    const parsedId = parseInt(idHorario);
+    console.log("ID del turno después de parsear a entero:", parsedId);
     if (isNaN(parsedId)) {
       console.error("El ID del turno no es un número válido.");
-      setCancelError("El ID del turno no es válido."); // Muestra un error en la UI
+      setCancelError("El ID del turno no es válido.");
       return;
     }
-  
+
     try {
-      await turnosService.cancelarTurno(parsedId); // Usamos parsedId para enviar
-      setCancelError(null); // Si se cancela exitosamente, limpiamos el error
+      await turnosService.cancelarTurno(parsedId);
+      setCancelError(null);
+      console.log(`Turno con ID ${parsedId} cancelado exitosamente.`);
     } catch (error) {
       console.error("Error al cancelar el turno", error);
-      setCancelError("Hubo un error al cancelar el turno."); // Muestra un error en la UI
+      setCancelError("Hubo un error al cancelar el turno.");
     }
   };
-  
 
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
@@ -47,7 +47,7 @@ function TurnoVecino() {
   return (
     <Container>
       <Row className="justify-content-center">
-        {cancelError && <div className="alert alert-danger">{cancelError}</div>} {/* Mostrar error de cancelación */}
+        {cancelError && <div className="alert alert-danger">{cancelError}</div>}
 
         {turnos.map((turno, index) => (
           <Col key={index} md={8} className="mb-3">
@@ -66,7 +66,7 @@ function TurnoVecino() {
                   </Button>
                   <Button
                     variant="danger"
-                    onClick={() => handleCancelarTurno(turno.idHorario)} // Usamos idHorario aquí
+                    onClick={() => handleCancelarTurno(turno.idHorario)}
                   >
                     Cancelar Turno
                   </Button>
@@ -75,7 +75,6 @@ function TurnoVecino() {
             </Card>
           </Col>
         ))}
-
       </Row>
     </Container>
   );
