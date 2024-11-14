@@ -12,6 +12,8 @@ using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.BLL.Interfaces;
 using SistemaTurneroCastracion.BLL.Seguridad;
+using SistemaTurneroCastracion.DAL.Publisher;
+using SistemaTurneroCastracion.DAL.Consumer;
 
 namespace SistemaTurneroCastracion.IOC
 {
@@ -25,6 +27,10 @@ namespace SistemaTurneroCastracion.IOC
             });
 
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddScoped<EmailPublisher>();
+
+            services.AddScoped<EmailConsumer>();
 
             services.AddScoped<IMascotaRepository, MascotaRepository>();
 

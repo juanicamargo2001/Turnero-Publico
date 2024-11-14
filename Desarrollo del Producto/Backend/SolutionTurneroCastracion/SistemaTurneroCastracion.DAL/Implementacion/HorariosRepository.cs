@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.DAL.Consumer;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
+using SistemaTurneroCastracion.DAL.Publisher;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +21,16 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
     {
         protected readonly CentroCastracionContext _dbContext;
         private readonly ICentroCastracionRepository _centroCastracionRepository;
+        private readonly EmailPublisher _emailPublisher;
+        private readonly EmailConsumer _emailConsumer;  
 
-        public HorariosRepository(CentroCastracionContext dbContext, ICentroCastracionRepository centroCastracionRepository) : base(dbContext)
+
+        public HorariosRepository(CentroCastracionContext dbContext, ICentroCastracionRepository centroCastracionRepository, EmailPublisher emailPublisher, EmailConsumer emailConsumer) : base(dbContext)
         {
             _dbContext = dbContext;
             _centroCastracionRepository = centroCastracionRepository;
+            _emailPublisher = emailPublisher;
+            _emailConsumer = emailConsumer;
         }
 
 
@@ -153,6 +162,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     return false;
                 }
 
+                EmailDTO email = await this.ObtenerInformacionEmail(id, IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
+
+                string mensaje = this.CambiarTexto(email);
+
+                await _emailPublisher.ConexionConRMQ(mensaje);
+                await _emailConsumer.StartConsumingAsync();
+
                 return true;
             }
             else { return false; }
@@ -209,9 +225,131 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             }
 
+            EmailDTO email = await this.ObtenerInformacionEmail((int) id, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
+
+            string mensaje = this.CambiarTexto(email);
+
+            await _emailPublisher.ConexionConRMQ(mensaje);
+            await _emailConsumer.StartConsumingAsync();
+
             return true;
 
 
+        }
+
+        public async Task<EmailDTO> ObtenerInformacionEmail(int idUsuario, int IdHorario, string tipoMensaje, string mensaje)
+        {
+            var emailDTO = (from U in _dbContext.Usuarios
+                           join H in _dbContext.Horarios on U.IdUsuario equals H.Id_Usuario
+                           join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                           join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                           join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                           join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                           select new EmailDTO
+                           {
+                               TipoEmail = tipoMensaje,
+                               Email = U.Email,
+                               Nombre = U.Nombre,
+                               CentroCastracion = C.Nombre,
+                               Fecha = T.Dia.ToString(),
+                               Hora = H.Hora.ToString(),
+                               Tipo = TT.NombreTipo,
+                               Mensaje = mensaje
+
+                           }).FirstOrDefault();
+
+            return emailDTO;
+        }
+
+        public string CambiarTexto(EmailDTO texto)
+        {
+            string timeString = texto.Hora;
+            TimeSpan time = TimeSpan.Parse(timeString);
+            string tiempoFormateado = $"{time.Hours}:{time.Minutes:D2} Hrs";
+
+            DateTime fecha = DateTime.Parse(texto.Fecha);
+            string fechaFormateada = fecha.ToString("dd-MM-yyyy");
+
+            TextInfo textInfo = new CultureInfo("es-ES", false).TextInfo;
+
+            string nombreFormateado = textInfo.ToTitleCase(texto.Nombre.ToLower());
+
+            string Body = $"{texto.Email}\n" + @"
+                            <!DOCTYPE html>
+                            <html lang=""es"">
+                            <head>
+                              <meta charset=""UTF-8"">
+                              <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                            </head>
+                            <body style=""margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;"">
+                              <table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""border-collapse: collapse; background-color: #ffffff;"">
+
+                                <tr>
+                                  <td align=""left"" style=""padding: 20px 0 10px 20px;"">
+                                    <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin-bottom: 10px;"">
+                                    <p style=""margin: 5px 0 0; color: #666666; font-size: 14px;"">Municipio BIOCORDOBA</p>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td style=""padding: 0 20px;"">
+                                    <h2 style=""color: #0072bc; font-size: 22px; margin: 0;"">" + texto.TipoEmail + @"</h2>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td style=""padding: 10px 20px;"">
+                                    <p style=""color: #333333; font-size: 16px; margin: 0;"">
+                                      Hola, "+ nombreFormateado + @". "+ texto.Mensaje + @"
+                                    </p>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td style=""padding: 10px 20px;"">
+                                    <h3 style=""color: #0072bc; font-size: 18px; margin-bottom: -15px;"">Detalle de turno</h3>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style=""padding: 10px 20px;"">
+                                    <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
+                                      <strong>Lugar</strong><br>
+                                       "+ texto.CentroCastracion + @"
+                                    </p>
+                                    <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
+                                      <strong>Fecha y hora</strong><br>
+                                      "+ fechaFormateada + @" "    + tiempoFormateado + @"
+                                    </p>
+                                    <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
+                                      <strong>Tipo de animal</strong><br>
+                                      "+ char.ToUpper(texto.Tipo[0]) + texto.Tipo.Substring(1).ToLower() + @"
+                                    </p>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td style=""padding: 20px;"">
+                                    <table width=""100%"" cellspacing=""0"" cellpadding=""0"">
+                                      <tr>
+                                        <td width=""25%"" style=""background-color: #e8b434; height: 4px;""></td>
+                                        <td width=""25%"" style=""background-color: #e64545; height: 4px;""></td>
+                                        <td width=""25%"" style=""background-color: #b855d8; height: 4px;""></td>
+                                        <td width=""25%"" style=""background-color: #0072bc; height: 4px;""></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td style=""padding: 10px 20px; text-align: center; color: #999999; font-size: 12px;"">
+                                    Este mensaje se envió de forma automática. Por favor, no responda.
+                                  </td>
+                                </tr>
+                              </table>
+                            </body>
+                            </html>";
+
+            return Body;
         }
 
 
