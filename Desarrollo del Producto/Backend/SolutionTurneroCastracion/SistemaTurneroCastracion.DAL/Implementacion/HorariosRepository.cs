@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using SistemaTurneroCastracion.DAL.Consumer;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.DAL.Publisher;
@@ -22,15 +21,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         protected readonly CentroCastracionContext _dbContext;
         private readonly ICentroCastracionRepository _centroCastracionRepository;
         private readonly EmailPublisher _emailPublisher;
-        private readonly EmailConsumer _emailConsumer;  
 
 
-        public HorariosRepository(CentroCastracionContext dbContext, ICentroCastracionRepository centroCastracionRepository, EmailPublisher emailPublisher, EmailConsumer emailConsumer) : base(dbContext)
+        public HorariosRepository(CentroCastracionContext dbContext, ICentroCastracionRepository centroCastracionRepository, EmailPublisher emailPublisher) : base(dbContext)
         {
             _dbContext = dbContext;
             _centroCastracionRepository = centroCastracionRepository;
             _emailPublisher = emailPublisher;
-            _emailConsumer = emailConsumer;
         }
 
 
@@ -167,7 +164,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 string mensaje = this.CambiarTexto(email);
 
                 await _emailPublisher.ConexionConRMQ(mensaje);
-                await _emailConsumer.StartConsumingAsync();
 
                 return true;
             }
@@ -197,7 +193,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
 
-            int? id = Int32.Parse(idClaim.Value);
+            int id = Int32.Parse(idClaim.Value);
 
 
 
@@ -215,6 +211,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             }
 
+            EmailDTO email = await this.ObtenerInformacionEmail(id, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
+
             cancelarUsuario.Id_Usuario = null;
 
             bool cancelado = await this.Editar(cancelarUsuario);
@@ -225,12 +223,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             }
 
-            EmailDTO email = await this.ObtenerInformacionEmail((int) id, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
-
             string mensaje = this.CambiarTexto(email);
 
             await _emailPublisher.ConexionConRMQ(mensaje);
-            await _emailConsumer.StartConsumingAsync();
 
             return true;
 
@@ -245,6 +240,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                            join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
                            join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                            join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                           where H.IdHorario == IdHorario && U.IdUsuario == idUsuario
                            select new EmailDTO
                            {
                                TipoEmail = tipoMensaje,
