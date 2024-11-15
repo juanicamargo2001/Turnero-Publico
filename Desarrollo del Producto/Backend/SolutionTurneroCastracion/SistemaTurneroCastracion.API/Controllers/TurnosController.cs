@@ -40,7 +40,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<TurnoDTO> turnos = await _turnosRepository.ObtenerTurnosHabiles(turnoXHorario.Id, turnoXHorario.Dia);
+            List<TurnoDTO> turnos = await _turnosRepository.ObtenerTurnosHabiles(turnoXHorario.Id, turnoXHorario.Dia, turnoXHorario.TipoAnimal);
 
             if (!turnos.Any())
             {
@@ -50,8 +50,8 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnos });
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> ObtenerDiasDisponibles(int id)
+        [HttpPost("obtenerTurnosAnimal")]
+        public async Task<IActionResult> ObtenerDiasDisponibles(TurnoXAnimalRequestDTO turnoXAnimalRequest)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
 
@@ -64,7 +64,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<DateTime> turnos = await _turnosRepository.ObtenerDiasTurnos(id);
+            List<DateTime> turnos = await _turnosRepository.ObtenerDiasTurnos(turnoXAnimalRequest.IdCentroCastracion, turnoXAnimalRequest.TipoAnimal);
 
             if (!turnos.Any())
             {

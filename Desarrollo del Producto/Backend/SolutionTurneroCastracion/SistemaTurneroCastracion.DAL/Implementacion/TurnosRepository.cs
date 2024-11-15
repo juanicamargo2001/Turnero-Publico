@@ -82,7 +82,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return true;
         }
 
-        public async Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia)
+        public async Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia, string tipoAnimal)
         {
             var turnos = (from C in _dbContext.Centros
                                 join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
@@ -91,6 +91,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                                 join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                                 where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
+                                && TT.NombreTipo == tipoAnimal
                                 group new { H, TT } by new { T.Dia} into g
                                 select new TurnoDTO
                                 {
@@ -106,14 +107,17 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return turnos;
         }
 
-        public async Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion)
+        public async Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion, string tipoAnimal)
         {
             var turnosDias = (from C in _dbContext.Centros
                              join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
                              join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
                              join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
-                             where C.Id_centro_castracion == IdCentroCastracion
-                             select T.Dia
+                             join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                             join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                             where C.Id_centro_castracion == IdCentroCastracion && TT.NombreTipo == tipoAnimal
+                             && E.Nombre == EstadoTurno.Libre.ToString()
+                              select T.Dia
                              ).Distinct().ToList();   
             return turnosDias;
         }

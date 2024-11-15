@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public class TurnoXHorarioRequestDTO
+    public class TurnoXAnimalRequestDTO
     {
-        public int Id { get; set; }
-
-        public DateTime Dia { get; set; }
+        public int IdCentroCastracion { get; set; }
 
         public string TipoAnimal { get; set; }
-
     }
 }

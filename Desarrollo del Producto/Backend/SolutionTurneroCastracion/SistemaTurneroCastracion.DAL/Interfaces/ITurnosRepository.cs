@@ -13,9 +13,9 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<bool> CrearTurnosAgenda(TurnoHorarioCentroDTO turnoHorarioDTO);
 
-        Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia);
+        Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia, string tipoAnimal);
 
-        Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion);
+        Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion, string tipoAnimal);
 
         Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context);
     }
