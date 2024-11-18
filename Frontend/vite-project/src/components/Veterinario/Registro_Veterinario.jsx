@@ -3,8 +3,10 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import {veterinarioService} from "../../services/veterinario.service";
+import { provinciaService } from '../../services/provinciasService';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const RegistroVeterinario = () => {
   const { 
@@ -17,6 +19,9 @@ const RegistroVeterinario = () => {
   const today = new Date();
   const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); // Resta 6570 días o 18 años
   const navigate = useNavigate();
+  const [barrios, setBarrios] = useState([]); 
+  const [sugerencias, setSugerencias] = useState([]); 
+  const [barrioSeleccionado, setBarrioSeleccionado] = useState(""); 
 
   useForm({
     mode: 'onSubmit',
@@ -46,24 +51,66 @@ const RegistroVeterinario = () => {
         }*/
       }
     );
+
+    fetchBarrios("")
+
   }, [register]);
+
+  const fetchBarrios = async (pattern) => {
+    try {
+      const data = await provinciaService.getBarriosCba(pattern);
+      const barriosObtenidos = data.features.map(b => b.attributes.nombre);
+      setBarrios(barriosObtenidos);
+    } catch (error) {
+      setError("Error al cargar los barrios. Por favor, inténtelo de nuevo.");
+    }
+  };
+
+  const handleBarrioInput = (e) => {
+    const valor = e.target.value;
+    setBarrioSeleccionado(valor);
+
+    if (valor.length >= 3) {
+      const filtrados = barrios.filter(barrio =>
+        barrio.toLowerCase().includes(valor.toLowerCase())
+      );
+      setSugerencias(filtrados);
+    } else {
+      // Limpiar sugerencias si no hay texto o es menor a 3 caracteres
+      setSugerencias([]);
+    }
+  };
+
+  const seleccionarBarrio = (barrio) => {
+    setBarrioSeleccionado(barrio);
+    setSugerencias([]);
+  };
+
+  const capitalizeWords = (text) => {
+    return text
+      .toLowerCase() // Convertimos todo a minúsculas
+      .split(" ")    // Dividimos el texto en palabras
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalizamos la primera letra
+      .join(" ");    // Unimos las palabras nuevamente
+  };
 
   const onSubmit  = async (data) => {
     const nuevoVeterinario = {
       ...data,
       habilitado: true,
+      domicilio: capitalizeWords(barrioSeleccionado) + ", " + data.calle + ", " + data.altura
     };
 
     nuevoVeterinario.fNacimiento = nuevoVeterinario.fNacimiento[0].toISOString().split("T")[0] + "T00:00:00";
     console.log(nuevoVeterinario)
 
-    try {
+    /*try {
       await veterinarioService.Grabar(nuevoVeterinario);
       alert("Veterinario registrado con éxito");
       navigate("/modificar/veterinario");
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
-    }
+    }*/
   };
 
   return (
@@ -109,16 +156,52 @@ const RegistroVeterinario = () => {
           />
           {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
         </div>
+        <div className='mb-3'>
+            <label htmlFor="barrio" className="form-label">Barrio</label>
+            <input
+              type="text"
+              className={`form-control ${errors.barrio ? "is-invalid" : ""}`}
+              id="barrio"
+              placeholder="Ingrese el barrio"
+              value={barrioSeleccionado}
+              onChange={handleBarrioInput} 
+            />
+            {errors.barrio && <div className="invalid-feedback">{errors.barrio.message}</div>}
+            <div className="autocomplete-list">
+              {sugerencias.map((barrio, index) => (
+                <div
+                  key={index}
+                  className="autocomplete-item"
+                  onClick={() => seleccionarBarrio(barrio)}
+                >
+                  {capitalizeWords(barrio)}
+                </div>
+              ))}
+            </div>
+        </div> 
         <div className="mb-3">
-          <label htmlFor="domicilio" className="form-label">Domicilio</label>
-          <input
-            type="text"
-            className="form-control"
-            id="domicilio"
-            placeholder="Escriba su domicilio "
-            {...register('domicilio', { required: "El domicilio es obligatorio" })}
-          />
-          {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
+            <label htmlFor="calle" className='form-label'>Calle</label>
+            <input
+             type="text"
+             className={`form-control ${errors.calle ? "is-invalid" : ""}`}
+             id="calle"
+             placeholder="Ingrese la calle"
+             {...register("calle", {required : "La calle es requerida"})}
+            />
+            {errors.calle && <div className="invalid-feedback">{errors.calle.message}</div>}
+        </div>
+        <div className="mb-3">
+            <label htmlFor="altura" className="form-label">Altura</label>
+            <input
+              type="number"
+              className={`form-control ${errors.altura ? "is-invalid" : ""}`}
+              id="altura"
+              placeholder="Ingrese la altura (opcional)"
+              {...register("altura", {valueAsNumber: "La altura debe ser un numero", 
+                validate: value => value > -1 || "La altura debe ser 0 o superior"
+              })}
+            />
+            {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="matricula" className="form-label">Matricula</label>
