@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { turnosService } from '../services/misTurnos.service';
-import { Button, Card, Container, Row, Col } from 'react-bootstrap';
+import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 function TurnoVecino() {
   const [turnos, setTurnos] = useState([]);
   const [error, setError] = useState(null);
-  const [cancelError, setCancelError] = useState(null); // Para manejar errores de cancelación
+  const [cancelError, setCancelError] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [postOperatorio, setPostOperatorio] = useState('');
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -22,62 +26,119 @@ function TurnoVecino() {
   }, []);
 
   const handleCancelarTurno = async (idHorario) => {
-    console.log("ID del turno recibido:", idHorario); // Verifica el valor recibido
-    const parsedId = parseInt(idHorario, 10); // Convertimos a entero
+    const parsedId = parseInt(idHorario);
+    console.log("ID del turno después de parsear a entero:", parsedId);
+  
     if (isNaN(parsedId)) {
-      console.error("El ID del turno no es un número válido.");
-      setCancelError("El ID del turno no es válido."); // Muestra un error en la UI
+      setCancelError("El ID del turno no es válido.");
       return;
     }
   
-    try {
-      await turnosService.cancelarTurno(parsedId); // Usamos parsedId para enviar
-      setCancelError(null); // Si se cancela exitosamente, limpiamos el error
-    } catch (error) {
-      console.error("Error al cancelar el turno", error);
-      setCancelError("Hubo un error al cancelar el turno."); // Muestra un error en la UI
-    }
+    // Mostrar la confirmación con SweetAlert2
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Este cambio no se puede revertir!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Cancelar Turno',
+      cancelButtonText: 'Volver', 
+      reverseButtons: true, 
+      customClass: {
+        confirmButton: 'btn-danger', // Botón "Cancelar" (confirmación)
+        cancelButton: 'btn-secondary' // Botón "Volver" (cancelación)
+        // cancelButton: 'btn-danger', // Clase personalizada para el botón Cancelar
+      }
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma la cancelación
+        try {
+          // Cancelar el turno en el backend
+          await turnosService.cancelarTurno(parsedId);
+          setCancelError(null);
+          console.log(`Turno con ID ${parsedId} cancelado exitosamente.`);
+          
+          // Mostrar un mensaje de éxito
+          Swal.fire('Cancelado', `El turno con ID ${parsedId} ha sido cancelado.`, 'success');
+          
+          // Eliminar el turno de la lista localmente
+          setTurnos((prevTurnos) => prevTurnos.filter((turno) => turno.idHorario !== parsedId));
+        } catch (error) {
+          console.error("Error al cancelar el turno", error);
+          setCancelError("Hubo un error al cancelar el turno.");
+          Swal.fire('Error', 'Hubo un error al cancelar el turno', 'error');
+        }
+      } else if (result.isDismissed) {
+        // Si el usuario cancela
+        console.log("Cancelación del turno cancelada");
+      }
+    });
   };
   
+
+  // Función para abrir el modal con la descripción del postoperatorio
+  const handleShowDetalles = (descripcion) => {
+    setPostOperatorio(descripcion);
+    setShowModal(true);
+  };
+
+  // Función para cerrar el modal
+  const handleCloseModal = () => setShowModal(false);
 
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
   }
 
   return (
-    <Container>
-      <Row className="justify-content-center">
-        {cancelError && <div className="alert alert-danger">{cancelError}</div>} {/* Mostrar error de cancelación */}
+    <div className="container p-2 maven-pro-body">
+      <div className="row justify-content-center">
+        {cancelError && <div className="alert alert-danger">{cancelError}</div>}
 
         {turnos.map((turno, index) => (
-          <Col key={index} md={8} className="mb-3">
-            <Card className="shadow-sm">
-              <Card.Body>
-                <Card.Title>{`Turno para ${turno.tipoTurno}`}</Card.Title>
-                <Card.Text>
-                  <strong>Hora:</strong> {turno.hora || "No disponible"} <br />
-                  <strong>Día del Turno:</strong> {new Date(turno.diaTurno).toLocaleDateString() || "No disponible"} <br />
-                  <strong>Estado:</strong> {turno.estado || "No especificado"} <br />
-                  <strong>Descripción Postoperatorio:</strong> {turno.descripPostOperatorio || "No disponible"} <br />
-                </Card.Text>
-                <div className="d-flex justify-content-end">
-                  <Button variant="primary" className="me-2">
-                    Detalles
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleCancelarTurno(turno.idHorario)} // Usamos idHorario aquí
-                  >
-                    Cancelar Turno
-                  </Button>
+          <div key={index} className="col-md-12 p-4">
+            <div className="shadow-sm border p-5 rounded">
+              <div className="d-flex justify-content-between">
+                <div>
+                  <h5>{`Turno para ${turno.tipoTurno}`}</h5>
+                  <p>
+                    <strong>Hora:</strong> {turno.hora || "No disponible"} <br />
+                    <strong>Día del Turno:</strong> {new Date(turno.diaTurno).toLocaleDateString() || "No disponible"} <br />
+                    <strong>Estado:</strong> {turno.estado || "No especificado"} <br />
+                  </p>
                 </div>
-              </Card.Body>
-            </Card>
-          </Col>
+                <div className="d-flex flex-column align-items-start">
+                  <button
+                    className="btn btn-primary mb-2"
+                    onClick={() => handleShowDetalles(turno.descripPostOperatorio)}
+                  >
+                    Detalles
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleCancelarTurno(turno.idHorario)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         ))}
 
-      </Row>
-    </Container>
+        <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Descripción Postoperatorio</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>{postOperatorio || 'No disponible'}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseModal}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    </div>
   );
 }
 

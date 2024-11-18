@@ -86,7 +86,7 @@ const LoginComponent = () => {
             {error && <p className="error-message">{error}</p>}
 
             <div className="register-link">
-              ¿Aún no estás registrado? <a href="#register">Crea una cuenta</a>
+              ¿Aún no estás registrado? <a href="/registrar/vecino">Crea una cuenta</a>
             </div>
           </form>
         </div>

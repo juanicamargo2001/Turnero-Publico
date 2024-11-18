@@ -388,4 +388,25 @@ input, select, textarea {
   color: #009EE2;
 }
 
-/* SELECTOR */
+/* MIS TURNOS */
+/* Botón de confirmación (Cancelar) */
+.swal2-confirm {
+  background-color: #e15562 !important; /* Rojo para cancelar */
+  border: none !important;
+  color: white !important;
+}
+
+.swal2-confirm:hover {
+  background-color: #c44251 !important; /* Un tono de rojo más oscuro cuando pasa el cursor */
+}
+
+/* Botón de cancelación (Volver) */
+.swal2-cancel {
+  background-color: #6c757d; /* Color gris para Volver */
+  border: none;
+  color: white;
+}
+
+.swal2-cancel:hover {
+  background-color: #5a6268; /* Gris oscuro cuando pasa el cursor */
+}
