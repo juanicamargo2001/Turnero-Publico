@@ -12,7 +12,7 @@ const RegistroDatos = () => {
     nombre: "",
     apellido: "",
     f_Nacimiento: "",
-    domicilio: false,
+    domicilio: "",
     email: "",
     telefono: null
   });

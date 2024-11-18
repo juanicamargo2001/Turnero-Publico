@@ -32,7 +32,12 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     }, [formData, setValue]);
 
     const onFormSubmit = (data) => {
-        if (!formData.domicilio) {return;}
+        if (!formData.domicilio) {
+          return;
+        } else if (formData.domicilio===""){
+          formData.domicilio = false;
+          return
+        }
         if (formData.f_Nacimiento===""){
           alert("Debe ingresar una fecha de nacimiento mayor a 18 años de edad");
           return;
@@ -309,7 +314,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
               </div>
               <div className="mb-3">
                 <div>
-                    {formData.domicilio ? (
+                    {formData.domicilio === "" ? null : formData.domicilio ? (
                         <p style={{ color: 'green' }}>Domicilio verificado</p>
                     ) : (
                         <p style={{ color: 'red' }}>Domicilio no verificado</p>
