@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System.IdentityModel.Tokens.Jwt;
@@ -65,6 +66,26 @@ namespace SistemaTurneroCastracion.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest("Sucedio un error inesperado!");
+            }
+        }
+
+        [HttpGet("rol")]
+        public async Task<IActionResult> BuscarRolXUsuario()
+        {
+            try
+            {
+                string? rolNombre = await _usuarioRepository.ObtenerRol(HttpContext);
+
+                if (rolNombre == string.Empty)
+                {
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error con el token!", Result = "" });
+
+                }
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = rolNombre });
+            }
+            catch
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error con el token!", Result = "" });
             }
         }
     }

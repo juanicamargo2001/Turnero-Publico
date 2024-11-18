@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<ValidacionResultadosDTO> DevolverToken(InicioSesion autorizacion);
         Task<ValidacionResultadosDTO> DevolverRefreshToken(RefreshTokenRequestDTO refreshTokenRequest, int idUsuario);
         Task<string> ObtenerRolNombre(int? idRol);
+        Task<string> ObtenerRol(HttpContext httpContext);
     }
 }

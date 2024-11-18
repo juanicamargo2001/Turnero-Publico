@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SistemaTurneroCastracion.BLL;
@@ -160,6 +161,22 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return resultado!;
 
+        }
+
+
+        public async Task<string> ObtenerRol(HttpContext httpContext)
+        {
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int id = Int32.Parse(idClaim.Value);
+
+            Usuario usuario = await this.Obtener(e => e.IdUsuario == id);
+
+            string nombre = await this.ObtenerRolNombre(usuario.RolId);
+
+            return nombre ?? string.Empty;
         }
     }
 }
