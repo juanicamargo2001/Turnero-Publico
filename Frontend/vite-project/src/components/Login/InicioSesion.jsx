@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import './InicioSesion.css';
 import loginService from '../../services/login.service';
 import loginImage from '../../imgs/inicio.jpeg';
+import { useUserRole } from "./UserRoleContext";
+import { useNavigate } from 'react-router-dom';
 
 const LoginComponent = () => {
   const [email, setEmail] = useState(''); // Cambiado de dni a email
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { setUserRole } = useUserRole();
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -30,7 +34,12 @@ const LoginComponent = () => {
       const response = await loginService.login(email, password);
       if (response.success) {
         alert('Inicio de sesión exitoso');
-        console.log('Inicio de sesión exitoso:', response);
+        try {
+          const rol = await loginService.userRol();
+          setUserRole(rol);
+        } catch (error){
+          console.log(error);
+        }
       } else {
         setError('Error de autenticación');
       }
@@ -40,6 +49,7 @@ const LoginComponent = () => {
     }
 
     console.log('Email:', email, 'Password:', password);
+    navigate("/turno");
   };
 
   return (

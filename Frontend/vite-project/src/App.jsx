@@ -1,5 +1,6 @@
 import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { UserRoleProvider } from "./components/Login/UserRoleContext";
 import  RegistroAnimal  from "./components/Registro_Animal";
 import Veterinarios from "./components/Veterinario/Modificar_Veterinario";
 import { Menu } from "./components/Menu"; // Asegúrate de que la ruta sea correcta
@@ -23,7 +24,9 @@ import TurnoVecino from "./components/Turnos_Vecino.jsx";
 function App() {
   return (
     <>
+      <UserRoleProvider>
       <BrowserRouter>
+        
         <Menu />
         <div className="divBody">
           <Routes>
@@ -57,7 +60,9 @@ function App() {
 
           </Routes>
         </div>
+
       </BrowserRouter>
+      </UserRoleProvider>
     </>
   );
 }

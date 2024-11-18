@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarSesion';
+const ROL_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/rol';
 const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
 
 const login = async (email, clave) => {
@@ -56,7 +57,7 @@ const refreshToken = async () => {
   }
 };
 
-  const obtenerTokenConRenovacion = async () => {
+const obtenerTokenConRenovacion = async () => {
     try {
       let token = obtenerToken();
   
@@ -68,7 +69,31 @@ const refreshToken = async () => {
     }
 };
 
+const userRol = async () => {
+  let token = null;
+  try {
+    token = await obtenerTokenConRenovacion();
+  } catch (error) {
+    return "default";
+  }
+
+  try {
+    const response = await axios.get(ROL_URL, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error al obtener el rol:", error.response ? error.response.data : error.message);
+    return await refreshToken();
+    //throw error;
+  }
+};
+
 export default {
   login, obtenerToken,
-  obtenerTokenConRenovacion
+  obtenerTokenConRenovacion, userRol
 };
