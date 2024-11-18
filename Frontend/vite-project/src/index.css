@@ -410,3 +410,43 @@ input, select, textarea {
 .swal2-cancel:hover {
   background-color: #5a6268; /* Gris oscuro cuando pasa el cursor */
 }
+
+/*CENTROS DE CASTRACION*/
+/*Lista de sugerencias*/
+.autocomplete-list {
+  position: absolute;
+  z-index: 1000;
+  background-color: #fff;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 85%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+}
+
+.autocomplete-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ajustar el input del barrio para evitar desbordamientos */
+#barrio {
+  box-sizing: border-box; /* Asegura que padding y borde no causen desbordamientos */
+}
+
+/* Opcional: contenedor del formulario para evitar que todo se desborde */
+.container {
+  max-width: 100%; /* Evita desbordes horizontales */
+  overflow-x: hidden; /* Esconde cualquier contenido que sobresalga */
+}

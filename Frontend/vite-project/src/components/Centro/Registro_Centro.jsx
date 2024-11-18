@@ -19,23 +19,55 @@ const Registro_Centro = () => {
     const [error, setError] = useState(null);
     const [horaInicio, setHoraInicio] = useState(dayjs().set('hour', 7).set('minute', 0).set('second', 0));
     const [horaFin, setHoraFin] = useState(dayjs().set('hour', 19).set('minute', 0).set('second', 0));
-    //const [pattern, setPattern] = useState("YOFRE");
+    const [barrios, setBarrios] = useState([]); 
+    const [sugerencias, setSugerencias] = useState([]); 
+    const [barrioSeleccionado, setBarrioSeleccionado] = useState(""); 
     const navigate = useNavigate();
 
 
-    /*const fetchBarrios = async(pattern) => {
-      try{
-          const data = await provinciaService.getBarriosCba(pattern);
-          console.log(data)
-      } catch(error){
-          setError(error)
+    const fetchBarrios = async (pattern) => {
+      try {
+        const data = await provinciaService.getBarriosCba(pattern);
+        const barriosObtenidos = data.features.map(b => b.attributes.nombre);
+        setBarrios(barriosObtenidos);
+      } catch (error) {
+        setError("Error al cargar los barrios. Por favor, inténtelo de nuevo.");
       }
-  }*/
+    };
+
+    const handleBarrioInput = (e) => {
+      const valor = e.target.value;
+      setBarrioSeleccionado(valor);
+
+      if (valor.length >= 3) {
+        const filtrados = barrios.filter(barrio =>
+          barrio.toLowerCase().includes(valor.toLowerCase())
+        );
+        setSugerencias(filtrados);
+      } else {
+        // Limpiar sugerencias si no hay texto o es menor a 3 caracteres
+        setSugerencias([]);
+      }
+    };
+
+    const seleccionarBarrio = (barrio) => {
+      setBarrioSeleccionado(barrio);
+      setSugerencias([]);
+    };
+
+    const capitalizeWords = (text) => {
+      return text
+        .toLowerCase() // Convertimos todo a minúsculas
+        .split(" ")    // Dividimos el texto en palabras
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalizamos la primera letra
+        .join(" ");    // Unimos las palabras nuevamente
+    };
+
     
     const onSubmit = async (data) =>{
         const nuevoCentro = {
             nombre: data.nombre,
-            barrio: data.barrio,
+            barrio: capitalizeWords(barrioSeleccionado),
             calle: data.calle,
             altura: parseInt(data.altura),
             habilitado: true,
@@ -43,20 +75,21 @@ const Registro_Centro = () => {
             horaLaboralFin: horaFin.format("H:mm:ss")
         }
         
-        //console.log(nuevoCentro)
-        try {
+        console.log(nuevoCentro)
+        /*try {
             await centroService.Grabar(nuevoCentro);
             alert("Centro registrado con exito!")
             navigate("/modificar/centro")
         } catch (error) {
             setError("Error al registrar el centro. Por favor, inténtelo de nuevo.");
             console.error("Error al registrar el centro:", error.response ? error.response.data : error); 
-        }
+        }*/
     }
 
-    /*useEffect(()=>{
-      fetchBarrios(pattern);
-    }, [])*/
+    // Cargar barrios al montar el componente
+    useEffect(() => {
+      fetchBarrios("");
+    }, []);
 
   return (
     <div className='container mt-4'>
@@ -80,9 +113,21 @@ const Registro_Centro = () => {
               className={`form-control ${errors.barrio ? "is-invalid" : ""}`}
               id="barrio"
               placeholder="Ingrese el barrio"
-              {...register("barrio", {required: "El barrio es requerido"})}  
+              value={barrioSeleccionado}
+              onChange={handleBarrioInput} 
             />
             {errors.barrio && <div className="invalid-feedback">{errors.barrio.message}</div>}
+            <div className="autocomplete-list">
+              {sugerencias.map((barrio, index) => (
+                <div
+                  key={index}
+                  className="autocomplete-item"
+                  onClick={() => seleccionarBarrio(barrio)}
+                >
+                  {capitalizeWords(barrio)}
+                </div>
+              ))}
+            </div>
         </div> 
         <div className="mb-3">
             <label htmlFor="calle" className='form-label'>Calle</label>
