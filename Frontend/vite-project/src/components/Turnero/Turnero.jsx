@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { horarios } from '../../services/horarios.service'; // Importa el servicio de horarios
 import { turneroService } from '../../services/turnero.service'; // Importa el servicio de turnero
 import { turnosService } from '../../services/turnos.service';
+import { useLocation } from 'react-router-dom';
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [value, setValue] = React.useState(null); // Fecha seleccionada
@@ -20,12 +21,14 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [isLoading, setIsLoading] = React.useState(true); // Controla el estado de carga de las fechas
     const [error, setError] = React.useState(null); // Estado para manejar errores
     const timesContainerRef = React.useRef(null); // Referencia al contenedor de horarios
+    const location = useLocation();
+    const { tipoAnimal } = location.state || {}; // Obtiene tipoAnimal desde el estado
 
     React.useEffect(() => {
         // Llamada a la API para obtener las fechas del turno por ID
         const fetchDates = async () => {
             try {
-                const fechas = await turneroService.Buscar(turnoId); // Obtener las fechas
+                const fechas = await turneroService.Buscar(turnoId, tipoAnimal); // Obtener las fechas
                 const fechasResaltadas = fechas.map(fecha => dayjs(fecha)); // Convertir las fechas a objetos `dayjs`
                 setHighlightedDates(fechasResaltadas); // Almacenar las fechas completas
                 setIsLoading(false); // Una vez que se obtienen las fechas, detener la carga
@@ -46,7 +49,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         // Obtener horarios disponibles para la fecha seleccionada
         try {
             const dia = newValue.format(); // Formato de fecha ISO 8601
-            const horariosObtenidos = await horarios.obtenerHorarios(turnoId, dia);
+            const horariosObtenidos = await horarios.obtenerHorarios(turnoId, dia, tipoAnimal);
             setAvailableTimes(horariosObtenidos); // Actualiza los horarios disponibles
         } catch (error) {
             console.error("Error al obtener los horarios:", error);

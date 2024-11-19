@@ -450,3 +450,21 @@ input, select, textarea {
   max-width: 100%; /* Evita desbordes horizontales */
   overflow-x: hidden; /* Esconde cualquier contenido que sobresalga */
 }
+
+
+.card.tipoAnimal {
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.card.tipoAnimal:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card.tipoAnimal.selected {
+  border-color: #009EE2; /* Color del borde para el animal seleccionado */
+  background-color: #f0f8ff; /* Fondo ligeramente azul para mostrar selección */
+  transform: scale(1.1); /* Agrandar un poco el tamaño */
+}

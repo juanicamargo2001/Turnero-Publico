@@ -1,23 +1,22 @@
 import axios from 'axios';
 import loginService from "./login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/turnos';
+const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Turnos';
 
 const horarios = {
-    async obtenerHorarios(turnoId, dia) {
+    async obtenerHorarios(turnoId, dia, tipoAnimal) {
         try {
             const token = await loginService.obtenerTokenConRenovacion();
 
             const response = await axios.post(
                 API_URL,
-                { id: turnoId, dia: dia },
+                { id: turnoId, dia: dia , tipoAnimal: tipoAnimal},
                 { headers: {
                     'ngrok-skip-browser-warning': 'true',
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}` 
                   }, }
             );
-            console.log("Respuesta de la API:", response.data);
 
             // Verificar si la respuesta es exitosa
             if (response.data.success) {
