@@ -104,13 +104,13 @@ const RegistroVeterinario = () => {
     nuevoVeterinario.fNacimiento = nuevoVeterinario.fNacimiento[0].toISOString().split("T")[0] + "T00:00:00";
     console.log(nuevoVeterinario)
 
-    /*try {
+    try {
       await veterinarioService.Grabar(nuevoVeterinario);
       alert("Veterinario registrado con éxito");
       navigate("/modificar/veterinario");
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
-    }*/
+    }
   };
 
   return (
