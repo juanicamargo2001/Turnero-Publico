@@ -131,6 +131,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Console.WriteLine("El id no es un número válido.");
             }
 
+            bool turnoVecinoPresente = await this.EsTurnoPresente(id, IdTurnoHorario);
+
+            if (turnoVecinoPresente) { return false; }
+
+
             bool ocupado = this.EstaOcupado(IdTurnoHorario);
 
             if (!ocupado)
@@ -168,6 +173,25 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return true;
             }
             else { return false; }
+        }
+
+        private async Task<bool> EsTurnoPresente(int id, int idTurnoHorario)
+        {
+            var agendaTurno = await (from H in _dbContext.Horarios
+                                    join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                    join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                    where H.IdHorario == idTurnoHorario
+                                    select A).FirstOrDefaultAsync();
+
+            DateTime? fechaFin = agendaTurno!.Fecha_fin;
+
+            return await (from H in _dbContext.Horarios
+                          join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                          where H.Id_Usuario == id
+                                && T.Dia.Year == fechaFin!.Value.Year
+                                && T.Dia.Month == fechaFin.Value.Month
+                          select H).AnyAsync();
+
         }
 
         public bool EstaOcupado(int IdTurnoHorario)
