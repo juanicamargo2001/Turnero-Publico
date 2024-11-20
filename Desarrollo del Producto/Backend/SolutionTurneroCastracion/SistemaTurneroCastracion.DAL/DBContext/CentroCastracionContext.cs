@@ -357,6 +357,9 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.DescripPostOperatorio).HasColumnName("descripPostOperatorio");
 
+            entity.Property(e => e.RowVersion)
+            .IsRowVersion();
+
         });
 
         modelBuilder.Entity<Vecino>(entity => {

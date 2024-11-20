@@ -122,10 +122,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
 
             string idString = idClaim.Value;
-            Console.WriteLine("ID: " + idString);
             int id;
 
-            if (int.TryParse(idString, out id)) ;
+            if (int.TryParse(idString, out id));
             else
             {
                 Console.WriteLine("El id no es un número válido.");
@@ -156,13 +155,29 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 horarioEntrado.Id_Usuario = id;
 
-                bool reservado = await this.Editar(horarioEntrado);
-
-                if (!reservado)
+                try
                 {
+                    await this.Editar(horarioEntrado);
+
+                }catch (DbUpdateConcurrencyException ex)
+                {
+                    foreach (var entry in ex.Entries)
+                    {
+                        if (entry.Entity is Horarios)
+                        {
+                            var proposedValues = entry.CurrentValues;
+                            var databaseValues = await entry.GetDatabaseValuesAsync();
+
+                            if (databaseValues != null)
+                            {
+                                proposedValues.SetValues(databaseValues);
+                            }
+                        }
+                    }
 
                     return false;
                 }
+
 
                 EmailDTO email = await this.ObtenerInformacionEmail(id, IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
 

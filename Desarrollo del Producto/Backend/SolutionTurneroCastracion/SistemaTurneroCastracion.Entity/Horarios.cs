@@ -25,6 +25,7 @@ namespace SistemaTurneroCastracion.Entity
 
         public string? DescripPostOperatorio { get; set; }
 
+        public byte[] RowVersion { get; set; }
 
         [JsonIgnore]
         public Turnos Turnos { get; set; }
