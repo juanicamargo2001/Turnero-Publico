@@ -19,15 +19,16 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
     public class HorariosRepository : GenericRepository<Horarios> , IHorariosRepository
     {
         protected readonly CentroCastracionContext _dbContext;
-        private readonly ICentroCastracionRepository _centroCastracionRepository;
         private readonly EmailPublisher _emailPublisher;
+        private readonly ICorreosProgramados _correosProgramados;
 
 
-        public HorariosRepository(CentroCastracionContext dbContext, ICentroCastracionRepository centroCastracionRepository, EmailPublisher emailPublisher) : base(dbContext)
+
+        public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, EmailPublisher emailPublisher) : base(dbContext)
         {
             _dbContext = dbContext;
-            _centroCastracionRepository = centroCastracionRepository;
             _emailPublisher = emailPublisher;
+            _correosProgramados = correosProgramados;
         }
 
 
@@ -159,7 +160,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 {
                     await this.Editar(horarioEntrado);
 
-                }catch (DbUpdateConcurrencyException ex)
+                }
+                catch (DbUpdateConcurrencyException ex)
                 {
                     foreach (var entry in ex.Entries)
                     {
@@ -183,7 +185,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 string mensaje = this.CambiarTexto(email);
 
-                await _emailPublisher.ConexionConRMQ(mensaje);
+                await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
+
+                bool guardado = await _correosProgramados.GuardarCorreo(email);
+
+                if (!guardado) {
+                    return false;
+                }
 
                 return true;
             }
@@ -264,7 +272,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             string mensaje = this.CambiarTexto(email);
 
-            await _emailPublisher.ConexionConRMQ(mensaje);
+            await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
             return true;
 

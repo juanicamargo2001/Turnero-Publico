@@ -59,6 +59,10 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<Validaciones>();
 
+            services.AddScoped<ICorreosProgramados, CorreosProgramadosRepository>();
+
+            services.AddHostedService<EmailWorker>();
+
 
 
         }

@@ -8,7 +8,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 {
     public class EmailDTO
     {
-        public string TipoEmail {  get; set; }
+        public string? TipoEmail {  get; set; }
 
         public string Email { get; set; }
 

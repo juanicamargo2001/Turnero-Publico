@@ -50,6 +50,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Estado> Estados { get; set; }
 
+    public virtual DbSet<CorreosProgramados> CorreosProgramados { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -480,6 +482,41 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.Nombre).HasColumnName("nombre");
 
         });
+
+
+        modelBuilder.Entity<CorreosProgramados>(entity => 
+        {
+            entity.ToTable("correos_programados");
+
+            entity.HasKey(e => e.IdCorreo).HasName("PK_CorreosProgramados");
+
+            entity.Property(e => e.IdCorreo).HasColumnName("id_correo");
+
+            entity.Property(e => e.FechaEnvio)
+            .HasColumnName("fecha_envio")
+            .HasColumnType("date");
+
+            entity.Property(e => e.Estado)
+            .HasColumnName("estado");
+
+            entity.Property(e => e.EmailDestino)
+            .HasColumnName("email_destino");
+
+            entity.Property(e => e.NombreCompleto)
+            .HasColumnName("nombre_completo");
+
+            entity.Property(e => e.Hora)
+            .HasColumnType("time(7)")
+            .HasColumnName("hora_turno");
+
+            entity.Property(e => e.CentroCastracion)
+            .HasColumnName("centro_castracion");
+
+            entity.Property(e => e.TipoAnimal)
+            .HasColumnName("tipo_animal");
+
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

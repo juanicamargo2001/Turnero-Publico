@@ -19,7 +19,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
             
         }
 
-        public async Task<bool> ConexionConRMQ(string mensaje)
+        public async Task<bool> ConexionConRMQ(string mensaje, string routingKey)
         {
             try
             {
