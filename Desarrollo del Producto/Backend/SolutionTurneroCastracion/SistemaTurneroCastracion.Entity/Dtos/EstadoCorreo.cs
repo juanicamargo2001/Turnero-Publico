@@ -10,6 +10,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
     {
         Pendiente,
         Enviado,
-        Fallido
+        Fallido,
+        Recordado
     }
 }

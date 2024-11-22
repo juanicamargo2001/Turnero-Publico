@@ -149,5 +149,29 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
 
         }
+
+        [HttpPost("confirmarTurno")]
+        public async Task<IActionResult> ConfirmarTurno([FromBody] int idTurno)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool confirmado = await _horariosRepository.ConfirmarTurno(idTurno);
+
+            if (!confirmado)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al confirmar el turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
     }
 }

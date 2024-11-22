@@ -187,7 +187,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
-                bool guardado = await _correosProgramados.GuardarCorreo(email);
+                bool guardado = await _correosProgramados.GuardarCorreo(email, IdTurnoHorario);
 
                 if (!guardado) {
                     return false;
@@ -303,6 +303,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return emailDTO;
         }
+
+        public async Task<bool> ConfirmarTurno(int idHorario)
+        {
+            bool estadoCambiado = await this.CambiarEstado(EstadoTurno.Confirmado, idHorario);
+
+            if (!estadoCambiado)
+            {
+                return false;
+            } 
+
+            return true;
+        }
+
 
         public string CambiarTexto(EmailDTO texto)
         {

@@ -15,5 +15,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<bool> CambiarEstado(EstadoTurno estadoTurno, int id_Horario);
         Task<bool> SacarTurno(int IdTurnoHorario, HttpContext httpContext);
         Task<bool> CancelarTurno(int idTurno, HttpContext context);
+        Task<bool> ConfirmarTurno(int idHorario);
     }
 }

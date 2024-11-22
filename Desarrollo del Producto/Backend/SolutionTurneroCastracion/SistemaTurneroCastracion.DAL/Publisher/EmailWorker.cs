@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SistemaTurneroCastracion.DAL.DBContext;
+using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,8 +26,8 @@ namespace SistemaTurneroCastracion.DAL.Publisher
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _timer = new Timer(ExecuteTask, cancellationToken, 0, 1800000);
+        { // 5 minutos = 300000
+            _timer = new Timer(ExecuteTask, cancellationToken, 0, 60000);
             return Task.CompletedTask;
         }
 
@@ -38,33 +40,98 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                 DateTime ahora = DateTime.UtcNow;
                 var dbContext = scope.ServiceProvider.GetRequiredService<CentroCastracionContext>();
                 var emailPublisher = scope.ServiceProvider.GetRequiredService<EmailPublisher>();
+                var horario = scope.ServiceProvider.GetRequiredService<IHorariosRepository>();
+
 
                 var correosPendientes = await dbContext.CorreosProgramados
-                    .Where(c => c.Estado == "Pendiente"
-                                && c.FechaEnvio.Date == ahora.AddDays(2).Date)
+                    .Where(c => c.Estado == EstadoCorreo.Pendiente.ToString()
+                                && c.FechaEnvio.Date == ahora.AddDays(1).Date)
                     .ToListAsync();
+
+                var correosAvisoPrevio = await (from C in dbContext.CorreosProgramados
+                                                join H in dbContext.Horarios on C.IdHorario equals H.IdHorario
+                                                join E in dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                                where E.Nombre == EstadoTurno.Confirmado.ToString()
+                                                      && C.Estado == EstadoCorreo.Enviado.ToString()
+                                                      && C.FechaEnvio.Date == ahora.Date
+                                                      && C.Hora.Hours == ahora.AddHours(-1).Hour
+                                                      && C.Hora.Minutes <= ahora.Minute
+                                                select C).ToListAsync();
+
+                List<Horarios> turnosACancelar = await (from C in dbContext.CorreosProgramados
+                                                        join H in dbContext.Horarios on C.IdHorario equals H.IdHorario
+                                                        join E in dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                                        where E.Nombre == EstadoTurno.Reservado.ToString()
+                                                              && C.EsActivo == false
+                                                        select H).ToListAsync();
+
 
                 foreach (var correo in correosPendientes)
                 {
                     try
                     {
-                        string mensaje = this.CambiarTexto(correo);
+                        string mensaje = this.CambiarTexto(correo, true, "Confirmación de Turno");
                         await emailPublisher.ConexionConRMQ(mensaje, "email_send_delayed");
 
-                        correo.Estado = "Enviado";
+                        correo.Estado = EstadoCorreo.Enviado.ToString();
                         dbContext.CorreosProgramados.Update(correo);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
-
-                        correo.Estado = "Fallido";
+                        correo.Estado = EstadoCorreo.Fallido.ToString();
                         dbContext.CorreosProgramados.Update(correo);
                     }
                 }
 
-                await dbContext.SaveChangesAsync();
 
+                if (correosAvisoPrevio.Count > 0) {
+
+                    foreach (var correo in correosAvisoPrevio)
+                    {
+                        try
+                        {
+                            string mensaje = this.CambiarTexto(correo, false, "Recordatorio de Turno");
+                            await emailPublisher.ConexionConRMQ(mensaje, "email_send_delayed");
+
+                            correo.Estado = EstadoCorreo.Recordado.ToString();
+
+                        }
+                        catch (Exception ex)
+                        {
+                            correo.Estado = EstadoCorreo.Fallido.ToString();
+                            dbContext.CorreosProgramados.Update(correo);
+                        }
+                    }
+                }
+
+
+                if (turnosACancelar.Count > 0)
+                {
+
+                    foreach (var turno in turnosACancelar)
+                    {
+                        try
+                        {
+                            int estado = (from E in dbContext.Estados
+                                         where E.Nombre == EstadoTurno.Cancelado.ToString()
+                                         select E.IdEstado).FirstOrDefault();
+
+                            turno.Id_Estado = estado;
+
+                            turno.Id_Usuario = null;
+
+                            dbContext.Horarios.Update(turno);
+
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+
+
+                await dbContext.SaveChangesAsync();
             }
         }
 
@@ -79,7 +146,8 @@ namespace SistemaTurneroCastracion.DAL.Publisher
             _timer?.Dispose();
         }
 
-        public string CambiarTexto(CorreosProgramados correo)
+
+        public string CambiarTexto(CorreosProgramados correo, bool incluirBotonConfirmar, string titulo)
         {
             string tiempoFormateado = $"{correo.Hora.Hours}:{correo.Hora.Minutes:D2} Hrs";
 
@@ -95,6 +163,16 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                 "PERRO" => "🐶",
                 _ => "" 
             };
+
+
+            string botonConfirmar = incluirBotonConfirmar ? @"
+                <tr>
+                    <td style=""text-align: center; margin-bottom: 7px;"">
+                        <a href=""http://centroCastracion.com"" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
+                            Confirmar
+                        </a>
+                    </td>
+                </tr>" : string.Empty;
 
             string Body = $"{correo.EmailDestino}\n" + @"
                            <!DOCTYPE html>
@@ -115,7 +193,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
                                <tr>
                                  <td style=""padding: 0 20px;"">
-                                   <h2 style=""color: #0072bc; font-size: 22px; margin-top: 30px;"">Confirmación de Turno</h2>
+                                   <h2 style=""color: #0072bc; font-size: 22px; margin-top: 30px;"">" + titulo + @"</h2>
                                  </td>
                                </tr>
 
@@ -158,11 +236,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
     
     
                                <tr>
-                                   <td style=""text-align: center; margin-bottom: 7px;"">
-                                        <a href=""http://centroCastracion.com"" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
-                                            Confirmar
-                                        </a>
-                                    </td>
+                                   " + botonConfirmar + @"
                                </tr>
 
                                <tr>

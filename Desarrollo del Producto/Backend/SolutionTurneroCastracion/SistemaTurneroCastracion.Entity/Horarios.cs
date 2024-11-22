@@ -44,7 +44,7 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual Usuario? Usuario { get; set; }
 
-
+        public virtual CorreosProgramados? CorreosProgramados { get; set;}
 
     }
 }

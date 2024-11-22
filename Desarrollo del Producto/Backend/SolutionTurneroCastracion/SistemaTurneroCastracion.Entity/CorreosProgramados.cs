@@ -24,5 +24,13 @@ namespace SistemaTurneroCastracion.Entity
 
         public string TipoAnimal { get; set; }
 
+        public bool EsActivo { get; set; }
+
+        public int IdHorario { get; set; }
+
+        public virtual Horarios? Horarios { get; set; }
+
+
+
     }
 }
