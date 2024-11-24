@@ -42,7 +42,7 @@ async function BuscarTodos() {
 async function BuscarPorDni(dni) {
     try {
         const token = await loginService.obtenerTokenConRenovacion();
-        const response = await axios.get(`${API_URL}/${dni}`, {
+        const response = await axios.get(`${API_URL}/veterinario/${dni}`, {
             headers: {
                 'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
                 'Content-Type': 'application/json',
