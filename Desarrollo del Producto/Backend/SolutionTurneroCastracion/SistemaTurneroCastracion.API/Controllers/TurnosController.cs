@@ -164,7 +164,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            bool confirmado = await _horariosRepository.ConfirmarTurno(idTurno);
+            bool confirmado = await _horariosRepository.ConfirmarTurno(idTurno, HttpContext);
 
             if (!confirmado)
             {
@@ -173,5 +173,32 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
         }
+
+
+        [HttpPost("turnosFiltro")]
+        public async Task<IActionResult> ObtenerTurnosPorFiltro([FromBody] TurnosSecretariaDTO filtro)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<TurnosFiltradoSecretariaDTO?> horariosEncontrados = await _horariosRepository.ObtenerHorariosFiltrados(filtro);
+
+            if (horariosEncontrados.Count == 0) {
+
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron turnos para esos filtros!", Result = horariosEncontrados });
+
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = horariosEncontrados });
+        }
+
     }
 }

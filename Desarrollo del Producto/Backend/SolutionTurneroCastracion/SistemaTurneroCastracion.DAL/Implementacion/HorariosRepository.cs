@@ -83,8 +83,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             int id_estado = this.BuscarEstado(estadoTurno.ToString());
 
-            Console.WriteLine("PASOO:" + id_Horario.ToString());
-
             Horarios horarioEncontrado = await this.Obtener(h => h.IdHorario == id_Horario);
 
             if (horarioEncontrado == null) 
@@ -133,8 +131,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Console.WriteLine("El id no es un número válido.");
             }
 
-            Console.WriteLine("Horarioo:" + horarioMascota.IdTurnoHorario.ToString());
-
             bool turnoVecinoPresente = await this.EsTurnoPresente(id, horarioMascota.IdTurnoHorario);
 
             if (turnoVecinoPresente) { return false; }
@@ -145,7 +141,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (!ocupado)
             {
                 bool verificado = await this.VerificarMascotaHorario(horarioMascota);
-
+                Console.WriteLine("boolean: " + verificado.ToString());
                 if (!verificado) return false;
 
                 bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, horarioMascota.IdTurnoHorario);
@@ -217,6 +213,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                      join TA in _dbContext.TiposAnimals on M.IdTipoAnimal equals TA.IdTipo
                                      where M.IdMascota == horarioMascota.IdMascota
                                      select TA.TipoAnimal).FirstOrDefaultAsync();
+
 
             if (tipoTurno != null && tipoAnimal != null && tipoTurno.ToUpper() == tipoAnimal.ToUpper()) {          
                 return true;
@@ -332,17 +329,85 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return emailDTO;
         }
 
-        public async Task<bool> ConfirmarTurno(int idHorario)
+        public async Task<bool> ConfirmarTurno(int idHorario, HttpContext context)
         {
-            bool estadoCambiado = await this.CambiarEstado(EstadoTurno.Confirmado, idHorario);
+            var identity = context.User.Identity as ClaimsIdentity;
 
-            if (!estadoCambiado)
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int id = Int32.Parse(idClaim.Value);
+
+            bool esDiaActual = await this.EsDiaActual(idHorario, id);
+
+            if (esDiaActual)
             {
-                return false;
-            } 
 
-            return true;
+                bool estadoCambiado = await this.CambiarEstado(EstadoTurno.Confirmado, idHorario);
+
+                if (!estadoCambiado)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
+
+        private async Task<bool> EsDiaActual(int idHorario, int id)
+        {
+            DateTime actual = DateTime.Now;
+
+            var turnoHabilitadoConfirmacion = await (from H in _dbContext.Horarios
+                                              join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                              join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                              where H.IdHorario == idHorario
+                                                    && T.Dia.Year == actual.Year
+                                                    && T.Dia.Day == actual.Day
+                                                    && H.Id_Usuario == id
+                                                    && E.Nombre == EstadoTurno.Reservado.ToString()
+                                              select H).ToListAsync();
+
+            if (turnoHabilitadoConfirmacion.Count > 0) {
+                return true;   
+            }
+
+            return false;
+
+        }
+
+        public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerHorariosFiltrados(TurnosSecretariaDTO filtro)
+        {
+            var turnosHorarios = await (from H in _dbContext.Horarios
+                                  join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                  join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                                  join U in _dbContext.Usuarios on H.Id_Usuario equals U.IdUsuario
+                                  join V in _dbContext.Vecinos on U.IdUsuario equals V.Id_usuario
+                                  join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                  join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                  join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                  where T.Dia >= filtro.FechaDesde && T.Dia <= filtro.FechaHasta
+                                       && H.Hora >= filtro.HoraDesde && H.Hora <= filtro.HoraHasta
+                                       && (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString())
+                                       && C.Id_centro_castracion == filtro.IdCentroCastracion
+                                  select new TurnosFiltradoSecretariaDTO
+                                  {
+                                       DNI = V.Dni,
+                                       Telefono = V.Telefono,
+                                       Nombre = U.Nombre.ToLower(),
+                                       Apellido = U.Apellido.ToLower(),
+                                       TipoServicio = TT.NombreTipo,
+                                       IdHorario = H.IdHorario,
+                                       Dia = T.Dia,
+                                       Hora = H.Hora,
+                                       Estado = E.Nombre
+                                  }).ToListAsync(); 
+
+            return turnosHorarios;
+
+        }
+
 
 
         public string CambiarTexto(EmailDTO texto)
