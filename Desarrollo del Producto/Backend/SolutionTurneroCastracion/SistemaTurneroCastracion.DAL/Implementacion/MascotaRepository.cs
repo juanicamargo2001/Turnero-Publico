@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
@@ -6,6 +7,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +22,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _dbContext = dbContext;
         }
 
-        public async Task<List<MascotaDTO>> obtenerMascotasDueño()
+        public async Task<List<MascotaDTO>> obtenerTodasMascotas()
         {
             using (var ctx = _dbContext)
             {
@@ -28,6 +30,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             join s in ctx.Sexos on m.IdSexo equals s.IdSexos
                             join t in ctx.Tamaños on m.IdTamaño equals t.IdTamaño
                             join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo
+                            join V in ctx.Vecinos on m.IdVecino equals V.Id_vecino
                             select new MascotaDTO
                             {
                                 idMascota = m.IdMascota,
@@ -37,34 +40,43 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 Sexo = s.SexoTipo,
                                 Tamaño = t.TamañoTipo,
                                 TipoAnimal = ta.TipoAnimal,
-                                Vecino = null //por ahora esto va null despues vemos pero creo que la relacion es al reves 
+                                Vecino = V.Id_vecino
                             };
                 return query.ToList();
             }
         }
 
 
-        public async Task<MascotaDTO> obtenerMascotasDueñoById(int id)
+        public async Task<List<MascotaDTO>> obtenerMascotasDueño(HttpContext context)
         {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int? id = Int32.Parse(idClaim.Value);
+
+
             using (var ctx = _dbContext)
             {
-                var query = from m in ctx.Mascotas
-                            join s in ctx.Sexos on m.IdSexo equals s.IdSexos
-                            join t in ctx.Tamaños on m.IdTamaño equals t.IdTamaño
-                            join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo
-                            where m.IdMascota == id
+                var mascotas = await (from M in ctx.Mascotas
+                            join V in _dbContext.Vecinos on M.IdVecino equals V.Id_vecino
+                            join U in _dbContext.Usuarios on V.Id_usuario equals U.IdUsuario
+                            join s in ctx.Sexos on M.IdSexo equals s.IdSexos
+                            join t in ctx.Tamaños on M.IdTamaño equals t.IdTamaño
+                            join ta in ctx.TiposAnimals on M.IdTipoAnimal equals ta.IdTipo
+                            where U.IdUsuario == id
                             select new MascotaDTO
                             {
-                                idMascota = m.IdMascota,
-                                Edad = m.Edad,
-                                Descripcion = m.Descripcion,
-                                Nombre = m.Nombre,
+                                idMascota = M.IdMascota,
+                                Edad = M.Edad,
+                                Descripcion = M.Descripcion,
+                                Nombre = M.Nombre,
                                 Sexo = s.SexoTipo,
                                 Tamaño = t.TamañoTipo,
                                 TipoAnimal = ta.TipoAnimal,
-                                Vecino = null //por ahora esto va null despues vemos pero creo que la relacion es al reves 
-                            };
-                return query.FirstOrDefault();
+                                Vecino = V.Id_vecino
+                            }).ToListAsync();
+                return mascotas;
             }
         }
 
@@ -109,8 +121,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
         }
 
-        public async Task<Mascota> crearMascota(MascotaDTO mascota)
+        public async Task<Mascota> crearMascota(MascotaDTO mascota, HttpContext context)
         {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int? id = Int32.Parse(idClaim.Value);
+
+
             using (var ctx = _dbContext)
             {
                 int sexoId = await ctx.Sexos
@@ -130,6 +149,12 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     .FirstOrDefaultAsync();
 
 
+                int? idVecino = await (from U in ctx.Usuarios
+                                join V in ctx.Vecinos on U.IdUsuario equals V.Id_usuario
+                                where U.IdUsuario == id
+                                select V.Id_vecino).FirstOrDefaultAsync();
+
+
                 return await this.Crear(new Mascota
                 {
                     Descripcion = mascota.Descripcion,
@@ -137,15 +162,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     IdTipoAnimal = tipoAnimalId,
                     IdSexo = sexoId,
                     IdTamaño = tamañoId,
-                    IdVecino = mascota.Vecino,
+                    IdVecino = idVecino,
                     Nombre = mascota.Nombre
                 });
 
             }
         }
-
-       
-
-
     }
 }

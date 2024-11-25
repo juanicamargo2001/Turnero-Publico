@@ -27,6 +27,9 @@ namespace SistemaTurneroCastracion.Entity
 
         public byte[] RowVersion { get; set; }
 
+        public int? Id_mascota { get; set; }
+
+
         [JsonIgnore]
         public Turnos Turnos { get; set; }
 
@@ -44,7 +47,11 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual Usuario? Usuario { get; set; }
 
+        [JsonIgnore]
         public virtual CorreosProgramados? CorreosProgramados { get; set;}
+
+        [JsonIgnore]
+        public virtual Mascota Mascota { get; set; }
 
     }
 }

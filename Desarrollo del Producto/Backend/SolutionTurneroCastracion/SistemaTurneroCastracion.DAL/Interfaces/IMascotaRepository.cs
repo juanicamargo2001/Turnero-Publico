@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IMascotaRepository : IGenericRepository<Mascota>
     {
-        Task<List<MascotaDTO>> obtenerMascotasDueño();
-        Task<MascotaDTO> obtenerMascotasDueñoById(int id);
+        Task<List<MascotaDTO>> obtenerTodasMascotas();
+        Task<List<MascotaDTO>> obtenerMascotasDueño(HttpContext context);
         Task<bool> editarMascotaPorId(MascotaDTO mascotaEditar);
-        Task<Mascota> crearMascota(MascotaDTO mascota);
+        Task<Mascota> crearMascota(MascotaDTO mascota, HttpContext context);
 
     }
 }

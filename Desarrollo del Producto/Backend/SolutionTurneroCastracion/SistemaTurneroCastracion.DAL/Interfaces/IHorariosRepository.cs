@@ -13,7 +13,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<bool> crearHorarios(HorarioCentroParametroDTO centro);
         Task<bool> CambiarEstado(EstadoTurno estadoTurno, int id_Horario);
-        Task<bool> SacarTurno(int IdTurnoHorario, HttpContext httpContext);
+        Task<bool> SacarTurno(HorarioMascotaDTO horarioMascota, HttpContext httpContext);
         Task<bool> CancelarTurno(int idTurno, HttpContext context);
         Task<bool> ConfirmarTurno(int idHorario);
     }

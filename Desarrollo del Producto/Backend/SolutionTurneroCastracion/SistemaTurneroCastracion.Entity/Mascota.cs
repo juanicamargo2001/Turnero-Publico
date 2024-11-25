@@ -35,4 +35,7 @@ public partial class Mascota
     [JsonIgnore]
     public virtual Vecino Vecino { get; set; }
 
+    [JsonIgnore]
+    public virtual Horarios Horario { get; set; }
+
 }

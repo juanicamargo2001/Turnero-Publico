@@ -362,6 +362,15 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.RowVersion)
             .IsRowVersion();
 
+            entity.Property(e => e.Id_mascota)
+            .HasColumnName("id_mascota");
+
+            entity.HasOne(m => m.Mascota)
+            .WithOne(h => h.Horario)
+            .HasForeignKey<Horarios>(e => e.Id_mascota)
+            .HasConstraintName("FK_horarios_mascota");
+
+
         });
 
         modelBuilder.Entity<Vecino>(entity => {

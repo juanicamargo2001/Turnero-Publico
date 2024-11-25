@@ -83,6 +83,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             int id_estado = this.BuscarEstado(estadoTurno.ToString());
 
+            Console.WriteLine("PASOO:" + id_Horario.ToString());
+
             Horarios horarioEncontrado = await this.Obtener(h => h.IdHorario == id_Horario);
 
             if (horarioEncontrado == null) 
@@ -116,7 +118,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<bool> SacarTurno(int IdTurnoHorario, HttpContext httpContext)
+        public async Task<bool> SacarTurno(HorarioMascotaDTO horarioMascota, HttpContext httpContext)
         {
             var identity = httpContext.User.Identity as ClaimsIdentity;
 
@@ -131,23 +133,27 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Console.WriteLine("El id no es un número válido.");
             }
 
-            bool turnoVecinoPresente = await this.EsTurnoPresente(id, IdTurnoHorario);
+            Console.WriteLine("Horarioo:" + horarioMascota.IdTurnoHorario.ToString());
+
+            bool turnoVecinoPresente = await this.EsTurnoPresente(id, horarioMascota.IdTurnoHorario);
 
             if (turnoVecinoPresente) { return false; }
 
 
-            bool ocupado = this.EstaOcupado(IdTurnoHorario);
+            bool ocupado = this.EstaOcupado(horarioMascota.IdTurnoHorario);
 
             if (!ocupado)
             {
-                bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, IdTurnoHorario);
+                bool verificado = await this.VerificarMascotaHorario(horarioMascota);
 
-                if (!cambiadoEstado)
-                {
-                    return false;
-                }
+                if (!verificado) return false;
 
-                Horarios? horarioEntrado = _dbContext.Horarios.Where(h => h.IdHorario == IdTurnoHorario).FirstOrDefault();
+                bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, horarioMascota.IdTurnoHorario);
+
+                if (!cambiadoEstado) return false;
+                
+
+                Horarios? horarioEntrado = _dbContext.Horarios.Where(h => h.IdHorario == horarioMascota.IdTurnoHorario).FirstOrDefault();
 
                 if (horarioEntrado == null)
                 {
@@ -155,6 +161,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 }
 
                 horarioEntrado.Id_Usuario = id;
+                horarioEntrado.Id_mascota = horarioMascota.IdMascota;
+
 
                 try
                 {
@@ -181,13 +189,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 }
 
 
-                EmailDTO email = await this.ObtenerInformacionEmail(id, IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
+                EmailDTO email = await this.ObtenerInformacionEmail(id, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
 
                 string mensaje = this.CambiarTexto(email);
 
                 await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
-                bool guardado = await _correosProgramados.GuardarCorreo(email, IdTurnoHorario);
+                bool guardado = await _correosProgramados.GuardarCorreo(email, horarioMascota.IdTurnoHorario);
 
                 if (!guardado) {
                     return false;
@@ -196,6 +204,26 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return true;
             }
             else { return false; }
+        }
+
+        private async Task<bool> VerificarMascotaHorario(HorarioMascotaDTO horarioMascota)
+        {
+            string? tipoTurno = await (from H in _dbContext.Horarios
+                                      join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                                      where H.IdHorario == horarioMascota.IdTurnoHorario
+                                      select TT.NombreTipo).FirstOrDefaultAsync();
+
+            string? tipoAnimal = await (from M in _dbContext.Mascotas
+                                     join TA in _dbContext.TiposAnimals on M.IdTipoAnimal equals TA.IdTipo
+                                     where M.IdMascota == horarioMascota.IdMascota
+                                     select TA.TipoAnimal).FirstOrDefaultAsync();
+
+            if (tipoTurno != null && tipoAnimal != null && tipoTurno.ToUpper() == tipoAnimal.ToUpper()) {          
+                return true;
+            }
+            
+            return false;
+
         }
 
         private async Task<bool> EsTurnoPresente(int id, int idTurnoHorario)

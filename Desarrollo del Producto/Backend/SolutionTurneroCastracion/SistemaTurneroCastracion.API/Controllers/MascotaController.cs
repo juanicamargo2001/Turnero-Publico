@@ -41,7 +41,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             try
             {
-                List<MascotaDTO> mascotas = await _mascotaRepository.obtenerMascotasDueño();
+                List<MascotaDTO> mascotas = await _mascotaRepository.obtenerTodasMascotas();
 
                 if (mascotas.Count == 0)
                 {
@@ -76,7 +76,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             try
             {
-                Mascota mascotaCreada = await _mascotaRepository.crearMascota(mascota);
+                Mascota mascotaCreada = await _mascotaRepository.crearMascota(mascota, HttpContext);
 
                 if (mascotaCreada == null)
                 {
@@ -93,8 +93,8 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> obtenerMascotaPorId(int id)
+        [HttpGet("misMascotas")]
+        public async Task<IActionResult> obtenerMascotas()
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
 
@@ -110,14 +110,14 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             try
             {
-                MascotaDTO mascotaId = await _mascotaRepository.obtenerMascotasDueñoById(id);
+                List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(HttpContext);
 
-                if (mascotaId == null)
+                if (mascotasVecino == null)
                 {
                     return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró la mascota!", Result = "" });
                 }
 
-                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotaId });
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotasVecino });
             }
             catch
             {

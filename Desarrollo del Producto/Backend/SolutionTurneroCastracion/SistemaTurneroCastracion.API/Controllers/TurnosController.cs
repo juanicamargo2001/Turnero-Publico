@@ -75,7 +75,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [HttpPost("reservarTurno")]
-        public async Task<IActionResult> ReservarTurno(int id_horario_turno)
+        public async Task<IActionResult> ReservarTurno(HorarioMascotaDTO horarioMascota)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
 
@@ -88,7 +88,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            bool turnoSacado = await _horariosRepository.SacarTurno(id_horario_turno, HttpContext);
+            bool turnoSacado = await _horariosRepository.SacarTurno(horarioMascota, HttpContext);
 
             if (!turnoSacado)
             {
