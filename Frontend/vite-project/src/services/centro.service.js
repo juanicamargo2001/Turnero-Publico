@@ -1,7 +1,8 @@
 import axios from "axios";
 import loginService from "./login.service";
+import urlServidor from "../config"
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/centroCastracion'; // Asegúrate de que esta URL sea correcta
+const API_URL =  urlServidor + '/api/centroCastracion';
 
 async function Grabar(nuevoCentro) {
     try {

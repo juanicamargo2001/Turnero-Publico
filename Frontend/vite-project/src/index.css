@@ -15,6 +15,7 @@
   font-optical-sizing: auto;
   font-weight: 700; /* Puedes ajustar el peso según sea necesario */
   font-style: normal;
+  color: #009EE2;
 }
 
 .maven-pro-body {
@@ -459,47 +460,112 @@ input, select, textarea {
 }
 
 .card.tipoAnimal.selected {
-  border-color: #009EE2; /* Color del borde para el animal seleccionado */
-  background-color: #f0f8ff; /* Fondo ligeramente azul para mostrar selección */
-  transform: scale(1.1); /* Agrandar un poco el tamaño */
+  border-color: #009EE2;
+  background-color: #f0f8ff;
+  transform: scale(1.1);
 }
-
 
 /* FOOTER  */
 
 .contact-column {
-  background-color: #d6eaf8; /* Fondo azul claro */
-  color: #1d3557; /* Texto en azul oscuro */
-  border-radius: 80px 80px 0 0; /* Bordes redondeados solo arriba */
-  padding: 1rem; /* Espaciado interno */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
-  margin-top: 1rem; /* Espaciado superior */
+  background-color: #d6eaf8;
+  color: #1d3557;
+  border-radius: 80px 80px 0 0;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
 }
 
-/* Logos en el footer */
 .footer-logo {
   height: 50px;
   width: auto;
 }
 
-/* Íconos de redes sociales */
 .social-icon {
-  color: #6A9FCA; /* Color inicial */
-  transition: color 0.3s ease; /* Transición suave */
+  color: #6A9FCA;
+  transition: color 0.3s ease;
 }
 
 .social-icon:hover {
-  color: #009EE2; /* Color al pasar el cursor */
+  color: #009EE2;
 }
+
 .footer-image-container {
-  background-color: #6A9FCA; /* Fondo azul claro */
-  text-align: center; /* Centrar la imagen */
-  padding: 1rem 0; /* Espaciado arriba y abajo */
+  background-color: #6A9FCA;
+  text-align: center;
+  padding: 1rem 0;
   border-radius: 150px 150px 0 0;
 }
 
 .footer-image {
-  max-width: 60%; /* Que la imagen no exceda el ancho del contenedor */
-  height: auto; /* Mantener proporciones */
-  
+  max-width: 60%;
+  height: auto;
+}
+
+/* PASO 1 */
+.card-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 50px 20px 50px 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s ease-in-out;
+  user-select: none;
+}
+
+.card-option:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.icon-container i {
+  font-size: 60px;
+  color: #6A9FCA;
+  margin-bottom: 15px;
+}
+
+.card-option h4 {
+  font-size: 18px;
+  margin: 0 0 10px;
+  color: #000;
+}
+
+.card-option p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+div.containerPaso1 {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.maven-pro-body {
+  flex: 2;
+  min-width: 300px;
+}
+
+.card-option.maven-pro-body {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+  align-self: center;
+}
+
+/* Estilos responsivos: para dispositivos tablet y celulares */
+@media (max-width: 768px) {
+  div.container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card-option.maven-pro-body {
+    align-self: stretch;
+  }
 }

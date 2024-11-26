@@ -225,12 +225,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
               </div>
             )}
             {!showOtherOption&&!showOtherOption2 &&(
-            <div>
-            <div className="d-flex justify-content-end mt-3">
-                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick}>
-                    <span className="me-2">Registro automático con DNI</span>
-                </button>
-            </div>
+            <div className="containerPaso1">
             <form className="maven-pro-body" onSubmit={handleSubmit(onFormSubmit)}>
               <div className="mb-3">
                 <label htmlFor="dni" className="form-label">DNI</label>
@@ -334,6 +329,23 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                 </button>
               </div>
             </form>
+            <div
+                className="card-option maven-pro-body"
+                onClick={handleOtherOptionClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") handleOtherOptionClick();
+                }}
+            >
+              <h4>Otra opción de registro</h4>
+              <div className="icon-container">
+              <i class="far fa-address-card"></i>
+              </div>
+                <p>Subí una imagen del frente de tu DNI.</p>
+            </div>
+
+
             </div>
             )}
 
