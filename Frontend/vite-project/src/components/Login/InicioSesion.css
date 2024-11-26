@@ -3,12 +3,11 @@
 .login-wrapper {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Mueve el componente hacia arriba */
+    align-items: center; 
     height: 100vh;
-    background-color: #ffffff; /* Fondo blanco */
-    padding-top: 30px; /* Ajusta este valor según necesites espacio desde arriba */
-    margin-top: 10px;
+    background-color: #ffffff; 
 }
+
 
 
 /* Contenedor de Login */
@@ -23,7 +22,7 @@
     min-height: 450px;
 }
 
-/* Sección de la Imagen */
+
 .login-image {
     flex: 1;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../../imgs/inicio.jpeg');
@@ -52,6 +51,8 @@
 }
 
 /* Sección del Formulario */
+
+
 .login-box {
     flex: 1;
     padding: 20px;
@@ -69,6 +70,8 @@
 .login-form h3 {
     font-size: 24px;
     margin-bottom: 20px;
+    width: 100%; 
+    max-width: 90%;
     color: #333;
 }
 
@@ -125,3 +128,54 @@ button[type="submit"]:hover {
 .register-link a:hover {
     text-decoration: underline;
 }
+
+
+.form-logo-mobile {
+    display: none;
+  }
+  
+
+@media (max-width: 768px) {
+    .login-wrapper {
+        padding: 0; 
+        height: auto;
+        min-height: 70vh; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Centra verticalmente */
+    }
+
+    .login-container {
+        margin: 0 auto; 
+    }
+
+    .login-box {
+        margin-top: 0; 
+        margin-bottom: 0; 
+        padding: 20px;
+    }
+    .login-form {
+        width: 100%;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    .form-logo-mobile {
+      display: block;
+      text-align: left;
+      margin-bottom: 15px;
+    }
+  
+    .form-logo-mobile img {
+      width: 50px;
+      height: auto; 
+    }
+  
+    .login-form {
+      margin-top: 0;
+    }
+  
+    .login-image {
+      display: none;
+    }
+  }
+  
