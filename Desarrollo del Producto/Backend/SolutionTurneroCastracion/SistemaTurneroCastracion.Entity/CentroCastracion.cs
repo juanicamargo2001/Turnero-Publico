@@ -33,5 +33,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public ICollection<Agenda>? Agendas { get; set; } = new List<Agenda>();
 
+        [JsonIgnore]
+        public ICollection<SecretariaxCentro>? SecretariaxCentros { get; set; } = [];
+
     }
 }

@@ -33,11 +33,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _autorizacionService = autorizacionService;
         }
 
-        public async Task<int?> crearCuentaVecino(string nombre, string apellido, string contraseña, string email)
+        public async Task<int?> crearUsuario(string nombre, string apellido, string contraseña, string email, string rol)
         {
             string convertirContraseña = UtilidadesUsuario.EncriptarClave(contraseña);
 
-            int numeroId = (_dbContext.Roles.Where(e => e.Nombre == "vecino").FirstOrDefault()!).IdRol;
+            int numeroId = (_dbContext.Roles.Where(e => e.Nombre == rol).FirstOrDefault()!).IdRol;
 
             Usuario usuarioCreado = await this.Crear(new Usuario { Nombre = nombre, Apellido = apellido, Contraseña = convertirContraseña, RolId = numeroId, Email = email });
 

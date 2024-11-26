@@ -377,8 +377,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerHorariosFiltrados(TurnosSecretariaDTO filtro)
+        public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerHorariosFiltrados(TurnosSecretariaDTO filtro, HttpContext context)
         {
+
+            int? idCentroXSecretaria = await this.ObtenerIdCentroXSecretaria(context);
+
             var turnosHorarios = await (from H in _dbContext.Horarios
                                   join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
                                   join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
@@ -390,7 +393,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   where T.Dia >= filtro.FechaDesde && T.Dia <= filtro.FechaHasta
                                        && H.Hora >= filtro.HoraDesde && H.Hora <= filtro.HoraHasta
                                        && (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString())
-                                       && C.Id_centro_castracion == filtro.IdCentroCastracion
+                                       && C.Id_centro_castracion == idCentroXSecretaria
                                   select new TurnosFiltradoSecretariaDTO
                                   {
                                        DNI = V.Dni,
@@ -408,6 +411,23 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
+        private async Task<int?> ObtenerIdCentroXSecretaria(HttpContext context)
+        {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int id = Int32.Parse(idClaim.Value);
+
+
+            int? idCentroXSecretaria = await (from SC in _dbContext.SecretariaxCentros
+                                              where SC.IdUsuario == id
+                                              select SC.IdCentroCastracion).FirstOrDefaultAsync(); 
+
+            return idCentroXSecretaria;
+
+
+        } 
 
 
         public string CambiarTexto(EmailDTO texto)

@@ -52,6 +52,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<CorreosProgramados> CorreosProgramados { get; set; }
 
+    public virtual DbSet<SecretariaxCentro> SecretariaxCentros { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -532,6 +534,31 @@ public partial class CentroCastracionContext : DbContext
             .WithOne(e => e.CorreosProgramados)
             .HasForeignKey<CorreosProgramados>(d => d.IdHorario)
             .HasConstraintName("FK_correos_programados_horarios");
+
+        });
+
+
+        modelBuilder.Entity<SecretariaxCentro>(entity =>
+        {
+            entity.HasKey(sc => new { sc.IdUsuario, sc.IdCentroCastracion}).HasName("PK_secretariaxcentro");
+
+            entity.ToTable("secretariaxcentro");
+
+            entity.Property(e => e.IdUsuario)
+            .HasColumnName("id_usuario");
+
+            entity.Property(e => e.IdCentroCastracion)
+            .HasColumnName("id_centro_castracion");
+
+            entity.HasOne(sc => sc.Secretaria)
+            .WithMany(s => s.SecretariaxCentros)
+            .HasForeignKey(e => e.IdUsuario)
+            .HasConstraintName("FK_secretariaxcentro_secretaria");
+
+            entity.HasOne(sc => sc.CentroCastracion)
+            .WithMany(c => c.SecretariaxCentros)
+            .HasForeignKey(e => e.IdCentroCastracion)
+            .HasConstraintName("FK_secretariaxcentro_centro");
 
         });
 

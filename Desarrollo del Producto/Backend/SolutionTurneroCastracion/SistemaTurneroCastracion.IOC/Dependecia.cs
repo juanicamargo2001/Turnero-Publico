@@ -63,6 +63,8 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddHostedService<EmailWorker>();
 
+            services.AddScoped<ISecretariaXCentroRepository, SecretariaXCentroRepository>();
+
 
 
         }

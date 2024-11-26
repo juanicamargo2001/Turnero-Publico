@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
+using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,6 +14,7 @@ namespace SistemaTurneroCastracion.API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioRepository _usuarioRepository;
+
 
         public UsuarioController (IUsuarioRepository usuarioRepository)
         {

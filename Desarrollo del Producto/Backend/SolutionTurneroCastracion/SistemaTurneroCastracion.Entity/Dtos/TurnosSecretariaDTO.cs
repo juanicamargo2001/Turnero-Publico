@@ -16,7 +16,5 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public TimeSpan? HoraHasta { get; set; }
 
-        public int IdCentroCastracion { get; set; }
-
     }
 }

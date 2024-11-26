@@ -101,7 +101,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (!dniRepetido.Any() && DniValido(request.DNI))
             {
 
-                int? creadoUsuario = await _usuarioRepository.crearCuentaVecino(request.Nombre, request.Apellido, request.Contraseña, request.Email);
+                int? creadoUsuario = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña, 
+                                                                           request.Email, 
+                                                                           RolesEnum.vecino.ToString());
 
                 if (creadoUsuario > 0)
                 {

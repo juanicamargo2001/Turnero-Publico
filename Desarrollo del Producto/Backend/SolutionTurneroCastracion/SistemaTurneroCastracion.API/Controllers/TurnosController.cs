@@ -189,7 +189,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<TurnosFiltradoSecretariaDTO?> horariosEncontrados = await _horariosRepository.ObtenerHorariosFiltrados(filtro);
+            List<TurnosFiltradoSecretariaDTO?> horariosEncontrados = await _horariosRepository.ObtenerHorariosFiltrados(filtro, HttpContext);
 
             if (horariosEncontrados.Count == 0) {
 

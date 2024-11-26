@@ -24,8 +24,5 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string Contraseña {  get; set; }
 
-        //public int Id_Usuario {  get; set; }
-
-
     }
 }
