@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import './InicioSesion.css';
 import loginService from '../../services/login.service';
 import loginImage from '../../imgs/inicio.jpeg';
+import bienestarImage from '../../imgs/bienestar.png';
 import { useUserRole } from "./UserRoleContext";
 import { useNavigate } from 'react-router-dom';
 
 const LoginComponent = () => {
-  const [email, setEmail] = useState(''); // Cambiado de dni a email
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { setUserRole } = useUserRole();
@@ -55,8 +56,6 @@ const LoginComponent = () => {
   return (
     <div className="login-wrapper maven-pro-body">
       <div className="login-container">
-        
-        {/* Sección de la Imagen y el Mensaje de Bienvenida */}
         <div className="login-image">
           <div className="welcome-text">
             <h2 className='maven-pro-title2'>¡Bienvenido al Turnero de Castración de Mascotas!</h2>
@@ -64,9 +63,11 @@ const LoginComponent = () => {
           </div>
         </div>
 
-        {/* Sección del Formulario de Inicio de Sesión */}
         <div className="login-box">
           <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-logo-mobile">
+            <img src={bienestarImage} alt="Logo pequeño" />
+          </div>
             <h3>Iniciar Sesión</h3>
 
             <div className="form-group">

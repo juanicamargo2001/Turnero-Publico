@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { UserRoleProvider } from "./components/Login/UserRoleContext";
 import  RegistroAnimal  from "./components/Registro_Animal";
 import Veterinarios from "./components/Veterinario/Modificar_Veterinario";
-import { Menu } from "./components/Menu"; // Asegúrate de que la ruta sea correcta
+import { Menu } from "./components/Menu";
+import  Footer  from "./components/Footer";
 import RegistroVeterinario from "./components/Veterinario/Registro_Veterinario";
 import Registro_Centro from "./components/Centro/Registro_Centro";
 import Modificar_Centro from "./components/Centro/Modificar_Centro"
@@ -60,6 +61,7 @@ function App() {
 
           </Routes>
         </div>
+        <Footer/>
 
       </BrowserRouter>
       </UserRoleProvider>

@@ -6,6 +6,7 @@ import { Spanish } from "flatpickr/dist/l10n/es.js";
 import uploadImage from '../../imgs/upload2.png';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 import { vecinoService } from '../../services/vecino.service';
+import { useNavigate } from "react-router-dom";
 
 const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const codeReader = new BrowserMultiFormatReader();
@@ -177,6 +178,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
           reader.readAsDataURL(file);
       });
     }
+    const navigate = useNavigate();
 
     return(
         <div>
@@ -212,23 +214,18 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                         onChange={handleFileChange}
                     />
                 </div>
-                <div className="d-flex justify-content-between">
-                  <button type="button" className="btn btn-secondary confir" onClick={handleOtherOptionClick}>
+                <div className="d-flex justify-content-end p-2">
+                  <button type="button" className="btn btn-secondary me-2 confir2" onClick={handleOtherOptionClick}>
                     Volver
                   </button>
-                  <button type="submit" className="btn btn-success ms-auto confir" onClick={handleScanData}>
+                  <button type="submit" className="btn btn-success  confir" onClick={handleScanData}>
                     Continuar
                   </button>
                 </div>
               </div>
             )}
             {!showOtherOption&&!showOtherOption2 &&(
-            <div>
-            <div className="d-flex justify-content-end mt-3">
-                <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick}>
-                    <span className="me-2">Registro automático con DNI</span>
-                </button>
-            </div>
+            <div className="containerPaso1">
             <form className="maven-pro-body" onSubmit={handleSubmit(onFormSubmit)}>
               <div className="mb-3">
                 <label htmlFor="dni" className="form-label">DNI</label>
@@ -323,12 +320,32 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                 {errors.domicilio && <p style={{ color: 'red' }}>{errors.domicilio.message}</p>}
               </div>
 
-              <div className="d-flex justify-content-between">
-                <button type="submit" className="btn btn-success ms-auto confir">
+              <div className="d-flex justify-content-end p-2">
+                <button type="button" className="btn btn-secondary me-2 confir2" onClick={() => navigate("/")}>
+                    Volver
+                  </button>
+                <button type="submit" className="btn btn-success confir">
                   Continuar
                 </button>
               </div>
             </form>
+            <div
+                className="card-option maven-pro-body"
+                onClick={handleOtherOptionClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") handleOtherOptionClick();
+                }}
+            >
+              <h4>Otra opción de registro</h4>
+              <div className="icon-container">
+              <i class="far fa-address-card"></i>
+              </div>
+                <p>Subí una imagen del frente de tu DNI.</p>
+            </div>
+
+
             </div>
             )}
 
@@ -362,11 +379,11 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                         onChange={handleFileChange2}
                     />
                 </div>
-                <div className="d-flex justify-content-between">
-                  <button type="button" className="btn btn-secondary confir" onClick={handleOtherOptionClick2}>
+                <div className="d-flex justify-content-end p-2">
+                  <button type="button" className="btn btn-secondary me-2 confir2" onClick={handleOtherOptionClick2}>
                     Volver
                   </button>
-                  <button type="submit" className="btn btn-success ms-auto confir" onClick={handleDomicilioFoto}>
+                  <button type="submit" className="btn btn-success confir" onClick={handleDomicilioFoto}>
                     Continuar
                   </button>
                 </div>
