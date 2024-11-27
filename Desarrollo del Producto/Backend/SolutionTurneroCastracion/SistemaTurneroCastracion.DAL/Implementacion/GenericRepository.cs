@@ -65,7 +65,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
             catch
             {
-                throw;
+                return false;
             }
         }
 

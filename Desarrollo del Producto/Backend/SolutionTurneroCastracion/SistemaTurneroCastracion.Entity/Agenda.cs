@@ -14,7 +14,6 @@ namespace SistemaTurneroCastracion.Entity
 
         public DateTime Fecha_inicio { get; set; }
 
-        [JsonIgnore]
         public DateTime? Fecha_fin { get; set; }
  
         public int? CantidadTurnosGatos { get; set; }

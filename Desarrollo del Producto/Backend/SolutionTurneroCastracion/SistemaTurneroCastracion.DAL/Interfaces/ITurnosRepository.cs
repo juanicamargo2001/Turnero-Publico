@@ -18,5 +18,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion, string tipoAnimal);
 
         Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context);
+
+        Task<bool> EliminarTurnos(int idAgenda);
     }
 }

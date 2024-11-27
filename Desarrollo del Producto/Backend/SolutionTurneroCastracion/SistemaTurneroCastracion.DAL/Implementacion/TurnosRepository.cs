@@ -151,5 +151,44 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return turnosUsuarios;
         }
+
+        public async Task<bool> EliminarTurnos(int idAgenda)
+        {
+            List<Turnos> turnosBorrar = await (from T in _dbContext.Turnos
+                                               join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                               where T.IdAgenda == idAgenda
+                                               select T).ToListAsync(); 
+
+            if(turnosBorrar.Count > 0){
+
+                try
+                {
+
+                    bool horariosEliminados = await _horariosRepository.EliminarHorarios(idAgenda);
+
+                    if (horariosEliminados)
+                    {
+                        _dbContext.RemoveRange(turnosBorrar);
+                        await _dbContext.SaveChangesAsync();
+
+                        return true;
+
+                    }
+
+                    
+                }
+                catch (Exception ex) {
+                    
+                    return false;
+                    
+                }
+
+            }
+            return false;
+
+
+        }
+
+
     }    
 }

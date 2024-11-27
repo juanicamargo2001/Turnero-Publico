@@ -187,5 +187,35 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return tipoTurnoEncontrado?.NombreTipo;
         } 
 
+
+        public async Task<bool> EliminarAgenda(AgendaBorradoRequest borradoRequest)
+        {
+            Agenda agendaBorrar = await this.Obtener(a => a.IdAgenda ==  borradoRequest.IdAgenda);
+
+            bool turnosBorrados = await _turnosRepository.EliminarTurnos(borradoRequest.IdAgenda);
+
+            if (turnosBorrados)
+            {
+                bool agendaBorrada = await this.Eliminar(agendaBorrar);
+
+                if (agendaBorrada)
+                {
+                    return true;
+                }
+
+                return false;
+
+            }
+            return false;
+        }
+
+        public async Task<List<Agenda?>> AgendaXCentro(int idCentro)
+        {
+            List<Agenda?> agendas = [.. await this.Consultar(a => a.IdCentroCastracion == idCentro)];
+
+            return agendas;
+
+        }
+
     }
 }

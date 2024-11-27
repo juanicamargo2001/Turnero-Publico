@@ -43,7 +43,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             int iteracion = 0;
 
-            if (centro.HoraInicio >= inicio && centro.HoraFin < fin)
+            if (centro.HoraInicio >= inicio && centro.HoraFin <= fin)
             {
                 int estadoLibre = this.BuscarEstado(EstadoTurno.Libre.ToString());
 
@@ -76,6 +76,33 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             {
                 return false;
             }
+        }
+
+
+        public async Task<bool> EliminarHorarios(int idAgenda)
+        {
+            List<Horarios> horariosEliminar = await (from H in _dbContext.Horarios
+                                                     join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                                     join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                                     where A.IdAgenda == idAgenda
+                                                     select H).ToListAsync();
+
+            if (horariosEliminar.Count > 0)
+            {
+                try
+                {
+                    _dbContext.RemoveRange(horariosEliminar);
+                    await _dbContext.SaveChangesAsync();
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            return false;
+
         }
 
 

@@ -14,7 +14,8 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         bool EsFinDeSemana (DateTime fecha);
         Task<List<DateTime>> ObtenerFechaFeriados(DateTime fechaInicio, DateTime fechaFin);
         Task<List<DateTime>?> FechasHabiles(DateTime fechaInicio, DateTime fechaFin);
-
+        Task<bool> EliminarAgenda(AgendaBorradoRequest borradoRequest);
+        Task<List<Agenda?>> AgendaXCentro(int idCentro);
 
 
 
