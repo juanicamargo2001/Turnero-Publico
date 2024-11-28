@@ -419,7 +419,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
                                   where T.Dia >= filtro.FechaDesde && T.Dia <= filtro.FechaHasta
                                        && H.Hora >= filtro.HoraDesde && H.Hora <= filtro.HoraHasta
-                                       && (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString())
+                                       && (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString()
+                                       || E.Nombre == EstadoTurno.Ingresado.ToString())
                                        && C.Id_centro_castracion == idCentroXSecretaria
                                   select new TurnosFiltradoSecretariaDTO
                                   {
@@ -455,6 +456,32 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
 
         } 
+
+
+        public async Task<bool> ConfirmarIngreso(int idHorario)
+        {
+            DateTime actual = DateTime.UtcNow;
+            
+            Horarios? horarioEstadoCambiar = await (from H in _dbContext.Horarios
+                                            join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                            join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                            where (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString())
+                                                   && T.Dia.Year == actual.Year
+                                                   && T.Dia.Day == actual.Day
+                                                   && H.IdHorario == idHorario
+                                            select H).FirstOrDefaultAsync();
+
+            if (horarioEstadoCambiar == null) { return false; }
+
+            bool estadoCambiado = await this.CambiarEstado(EstadoTurno.Ingresado, horarioEstadoCambiar.IdHorario);
+
+            if (!estadoCambiado) {
+                return false;
+            }
+
+            return true;
+
+        }
 
 
         public string CambiarTexto(EmailDTO texto)

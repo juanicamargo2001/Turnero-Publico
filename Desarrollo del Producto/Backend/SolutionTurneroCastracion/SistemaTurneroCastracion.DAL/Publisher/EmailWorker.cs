@@ -35,9 +35,16 @@ namespace SistemaTurneroCastracion.DAL.Publisher
         {
             var cancellationToken = (CancellationToken) state;
 
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                Console.WriteLine("Tarea cancelada antes de comenzar.");
+                return;
+            }
+
             using (var scope = _scopeFactory.CreateScope())
             {
-                DateTime ahora = DateTime.UtcNow;
+                DateTime ahora = DateTime.UtcNow;   
                 var dbContext = scope.ServiceProvider.GetRequiredService<CentroCastracionContext>();
                 var emailPublisher = scope.ServiceProvider.GetRequiredService<EmailPublisher>();
                 var horario = scope.ServiceProvider.GetRequiredService<IHorariosRepository>();
@@ -45,7 +52,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
                 var correosPendientes = await dbContext.CorreosProgramados
                     .Where(c => c.Estado == EstadoCorreo.Pendiente.ToString()
-                                && c.FechaEnvio.Date == ahora.AddDays(1).Date)
+                                && c.FechaEnvio.Date == ahora.AddDays(2).Date)
                     .ToListAsync();
 
                 var correosAvisoPrevio = await (from C in dbContext.CorreosProgramados

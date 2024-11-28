@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
 using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
@@ -200,5 +201,32 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = horariosEncontrados });
         }
 
+
+        [HttpPost("confirmarLlegada")]
+        public async Task<IActionResult> ConfirmarLlegada([FromBody] int IdHorario) {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
+            bool ingresado = await _horariosRepository.ConfirmarIngreso(IdHorario);
+
+
+            if (!ingresado) {
+
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al ingresar al animal!", Result = "" });
+
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
     }
 }

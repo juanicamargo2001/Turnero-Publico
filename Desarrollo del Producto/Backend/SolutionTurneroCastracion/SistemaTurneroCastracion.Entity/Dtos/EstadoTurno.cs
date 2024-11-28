@@ -12,6 +12,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
         Reservado,
         Confirmado,
         Realizado,
-        Cancelado
+        Cancelado,
+        Ingresado
     }
 }
