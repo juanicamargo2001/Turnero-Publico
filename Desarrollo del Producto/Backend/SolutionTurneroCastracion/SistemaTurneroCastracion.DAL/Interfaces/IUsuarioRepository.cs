@@ -16,5 +16,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<ValidacionResultadosDTO> DevolverRefreshToken(RefreshTokenRequestDTO refreshTokenRequest, int idUsuario);
         Task<string> ObtenerRolNombre(int? idRol);
         Task<string> ObtenerRol(HttpContext httpContext);
+        Task<NombreApellidoDTO?> ObtenerNombreUsuario(HttpContext httpContext);
+
     }
 }

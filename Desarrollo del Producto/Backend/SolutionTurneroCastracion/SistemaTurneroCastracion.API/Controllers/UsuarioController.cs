@@ -14,11 +14,13 @@ namespace SistemaTurneroCastracion.API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly Validaciones _validaciones;
 
 
-        public UsuarioController (IUsuarioRepository usuarioRepository)
+        public UsuarioController (IUsuarioRepository usuarioRepository, Validaciones validaciones)
         {
             _usuarioRepository = usuarioRepository;
+            _validaciones = validaciones;
         }
 
 
@@ -89,6 +91,32 @@ namespace SistemaTurneroCastracion.API.Controllers
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error con el token!", Result = "" });
             }
+        }
+
+
+        [HttpPost("NombreUsuario")]
+        public async Task<IActionResult> ObtenerNombreUsuario()
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            NombreApellidoDTO? nombreApellido = await _usuarioRepository.ObtenerNombreUsuario(HttpContext);
+
+            if (nombreApellido == null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al consultar el nombre!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = nombreApellido });
+
         }
     }
 }

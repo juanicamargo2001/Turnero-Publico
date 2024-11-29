@@ -11,6 +11,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface ICorreosProgramados : IGenericRepository<CorreosProgramados>
     {
         Task<bool> GuardarCorreo(EmailDTO datosEmail, int id_horario);
+        Task<bool> BorrarCorreo(int idHorario);
 
     }
 }

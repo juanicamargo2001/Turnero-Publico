@@ -43,6 +43,21 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
+        public async Task<bool> BorrarCorreo(int idHorario)
+        {
 
+            CorreosProgramados? CorreoEliminar = await this.Obtener(c => c.IdHorario == idHorario);
+
+            if (CorreoEliminar == null) { return false; }
+
+            bool eliminado = await this.Eliminar(CorreoEliminar);
+
+            if (!eliminado) 
+            { 
+                return false;
+            }
+
+            return true;
+        }
     }
 }

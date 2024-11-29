@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.DAL.Publisher;
@@ -168,7 +169,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (!ocupado)
             {
                 bool verificado = await this.VerificarMascotaHorario(horarioMascota);
-                Console.WriteLine("boolean: " + verificado.ToString());
+
                 if (!verificado) return false;
 
                 bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, horarioMascota.IdTurnoHorario);
@@ -318,13 +319,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             if (!cancelado)
             {
-
                 return false;
             }
 
             string mensaje = this.CambiarTexto(email);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
+
+            bool borradoCorreo = await _correosProgramados.BorrarCorreo(idTurno);
+
+            if (!borradoCorreo)
+            {
+                return false;
+            }
 
             return true;
 
@@ -575,6 +582,62 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return Body;
         }
 
+        public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerTurnoPorDNI(long dni)
+        {
+            DateTime actual = DateTime.UtcNow;
 
+            List<TurnosFiltradoSecretariaDTO?> turnosHorarios = await (from H in _dbContext.Horarios
+                                        join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                        join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                                        join U in _dbContext.Usuarios on H.Id_Usuario equals U.IdUsuario
+                                        join V in _dbContext.Vecinos on U.IdUsuario equals V.Id_usuario
+                                        join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                        join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                        join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                        where T.Dia.Month == actual.Month && V.Dni == dni
+                                        select new TurnosFiltradoSecretariaDTO
+                                        {
+                                            DNI = V.Dni,
+                                            Telefono = V.Telefono,
+                                            Nombre = U.Nombre.ToLower(),
+                                            Apellido = U.Apellido.ToLower(),
+                                            TipoServicio = TT.NombreTipo,
+                                            IdHorario = H.IdHorario,
+                                            Dia = T.Dia,
+                                            Hora = H.Hora,
+                                            Estado = E.Nombre,
+                                            CentroCastracion = C.Nombre
+
+                                        }).ToListAsync();
+
+            return turnosHorarios;
+
+        }
+
+
+        public async Task<List<HorariosCanceladosResponse>> ObtenerCanceladosPorCentro (TurnosSecretariaDTO filtro, HttpContext context)
+        {
+            int? idCentro = await this.ObtenerIdCentroXSecretaria(context);
+
+            var turnosCancelados = await (from H in _dbContext.Horarios
+                                          join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                          join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                          join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                          join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                          where C.Id_centro_castracion == idCentro 
+                                                && E.Nombre == EstadoTurno.Cancelado.ToString()
+                                                && T.Dia >= filtro.FechaDesde && T.Dia <= filtro.FechaHasta
+                                                && H.Hora >= filtro.HoraDesde && H.Hora <= filtro.HoraHasta
+                                          select new HorariosCanceladosResponse
+                                          {
+                                              IdHorario = H.IdHorario,
+                                              Dia = T.Dia,
+                                              Hora = H.Hora,
+                                              Estado = E.Nombre
+
+                                          }).ToListAsync();
+
+            return turnosCancelados;
+        }
     }
 }

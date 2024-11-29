@@ -26,6 +26,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string Estado {  get; set; }
 
+        public string? CentroCastracion {  get; set; }
 
     }
 }

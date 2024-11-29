@@ -228,5 +228,57 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
         }
+
+        [HttpPost("filtroPorDni")]
+        public async Task<IActionResult> ObtenerTurnosPorDNI([FromBody] long dni)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<TurnosFiltradoSecretariaDTO?> turnosFiltrados = await _horariosRepository.ObtenerTurnoPorDNI(dni);
+
+            if (!turnosFiltrados.Any())
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron turnos!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnosFiltrados });
+
+        }
+
+
+        [HttpPost("turnosCancelados")]
+        public async Task<IActionResult> ObtenerTurnosPorDNI([FromBody] TurnosSecretariaDTO filtro)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<HorariosCanceladosResponse> turnosCancelados = await _horariosRepository.ObtenerCanceladosPorCentro(filtro, HttpContext);
+
+            if (!turnosCancelados.Any())
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron turnos!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnosCancelados });
+
+        }
+
     }
 }

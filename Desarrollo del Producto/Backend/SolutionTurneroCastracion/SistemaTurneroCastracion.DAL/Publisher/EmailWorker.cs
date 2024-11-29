@@ -69,7 +69,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                                                         join H in dbContext.Horarios on C.IdHorario equals H.IdHorario
                                                         join E in dbContext.Estados on H.Id_Estado equals E.IdEstado
                                                         where E.Nombre == EstadoTurno.Reservado.ToString()
-                                                              && C.EsActivo == false
+                                                              && C.EsActivo == false //cambiar esto para que se haga el false un dia antes
                                                         select H).ToListAsync();
 
 
@@ -125,7 +125,8 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
                             turno.Id_Estado = estado;
 
-                            turno.Id_Usuario = null;
+                            //turno.Id_Usuario = null; // creo que se borra esto y cambiar en el mostrar los turnos disponibles que no se le muestre al usuario
+                                                     // pero que lo tenga asignado en estado cancelado asi no puede sacar otro turno para ese mes
 
                             dbContext.Horarios.Update(turno);
 

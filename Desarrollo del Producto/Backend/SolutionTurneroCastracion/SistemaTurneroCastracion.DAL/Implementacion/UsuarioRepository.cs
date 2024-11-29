@@ -178,5 +178,26 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return nombre ?? string.Empty;
         }
+
+        public async Task<NombreApellidoDTO?> ObtenerNombreUsuario(HttpContext httpContext)
+        {
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+
+            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int id = Int32.Parse(idClaim.Value);
+
+            NombreApellidoDTO? nombreApellidoUsuario = await (from U in _dbContext.Usuarios
+                                                             where U.IdUsuario == id
+                                                             select new NombreApellidoDTO
+                                                             {
+                                                                 Nombre = U.Nombre,
+                                                                 Apellido = U.Apellido,
+                                                             }).FirstOrDefaultAsync();
+
+            return nombreApellidoUsuario;
+            
+
+        }
     }
 }

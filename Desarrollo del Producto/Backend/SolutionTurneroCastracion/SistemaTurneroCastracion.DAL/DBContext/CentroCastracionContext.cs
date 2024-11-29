@@ -526,7 +526,7 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.TipoAnimal)
             .HasColumnName("tipo_animal");
 
-            entity.Property(e => e.EsActivo).HasComputedColumnSql("(case when (CONVERT([datetime],[fecha_envio])+CONVERT([datetime],[hora_turno]))<dateadd(hour,(-3),getdate()) then CONVERT([bit],(0)) else CONVERT([bit],(1)) end", false);
+            entity.Property(e => e.EsActivo).HasComputedColumnSql("(case when dateadd(hour, (-27), getdate()) >= (CONVERT([datetime], dateadd(day, (-1), [fecha_envio])) + CONVERT([datetime], [hora_turno])) then CONVERT([bit], (0)) else CONVERT([bit], (1)) end)", false);
 
             entity.Property(e => e.IdHorario).HasColumnName("id_horario");
 
