@@ -21,6 +21,8 @@ import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.j
 import InicioSesion from "./components/Login/InicioSesion.jsx"
 import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
+import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
+
 function App() {
   return (
     <>
@@ -57,6 +59,8 @@ function App() {
             <Route path="/" element={<InicioSesion />} />
 
             <Route path="/misTurnos" element={<TurnoVecino/>}/>
+
+            <Route path="/secretaria/turnos" element={<TurnosSecretaria />} />
 
           </Routes>
         </div>
