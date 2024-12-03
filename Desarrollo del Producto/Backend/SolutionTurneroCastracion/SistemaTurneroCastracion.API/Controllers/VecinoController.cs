@@ -62,8 +62,8 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         // ver como hacer para que los usuarios no puedan ver datos que no le pertenecen cuando realiza la consulta con su DNI, para que no pueda acceder a otros DNIs
         [Authorize]
-        [HttpGet("{dni}")]
-        public async Task<IActionResult> ConsultarVecino(long dni)
+        [HttpGet("perfilPorUsuario")]
+        public async Task<IActionResult> ConsultarPerfilVecino()
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
 
@@ -77,7 +77,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
 
 
-            VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecino(dni, HttpContext);
+            VecinoDTO? vecinoConsulta = _vecinoRepository.ConsultarVecinoXDniOPerfil(null, HttpContext);
 
 
             if (vecinoConsulta == null) {
@@ -88,6 +88,67 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = vecinoConsulta });
         }
 
+
+        [Authorize]
+        [HttpGet("dni")]
+        public async Task<IActionResult> ConsultarVecinoPorDNI(long dni)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            VecinoDTO? vecinoDNI = _vecinoRepository.ConsultarVecinoXDniOPerfil(dni, HttpContext);
+
+
+            if (vecinoDNI == null)
+            {
+
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontró el dni!", Result = "" });
+
+             }
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = vecinoDNI });
+
+
+        }
+
+        [Authorize]
+        [HttpPost("vecinoTelefonico")]
+        public async Task<IActionResult> RegistrarVecinoTelefonico([FromBody] UsuarioTelefonicoDTO request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
+            if (request != null)
+            {
+                bool vecinoCreado = await _vecinoRepository.CrearVecinoTelefonico(request);
+
+                if (!vecinoCreado)
+                {
+
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+                }
+                return NoContent();
+            }
+            return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+
+        }
     }
 }
 

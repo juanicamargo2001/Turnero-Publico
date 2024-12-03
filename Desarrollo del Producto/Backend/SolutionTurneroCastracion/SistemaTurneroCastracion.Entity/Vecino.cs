@@ -15,7 +15,7 @@ namespace SistemaTurneroCastracion.Entity
 
 	    public DateTime F_nacimiento {  get; set; }
 
-        public string Domicilio {  get; set; }
+        public string? Domicilio {  get; set; }
 
         public long Dni {  get; set; }
 

@@ -13,7 +13,8 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<bool> AnalizarDNIConReglas (string imageBytes);
         Task<bool> RegistrarSinFoto(ImagenRequest request);
-        VecinoDTO? ConsultarVecino(long dniVecino, HttpContext context);
+        VecinoDTO? ConsultarVecinoXDniOPerfil(long? dni, HttpContext context);
+        Task<bool> CrearVecinoTelefonico(UsuarioTelefonicoDTO request);
 
     }
 }

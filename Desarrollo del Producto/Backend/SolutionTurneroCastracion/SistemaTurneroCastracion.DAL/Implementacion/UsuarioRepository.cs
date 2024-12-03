@@ -35,7 +35,12 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<int?> crearUsuario(string nombre, string apellido, string contraseña, string email, string rol)
         {
-            string convertirContraseña = UtilidadesUsuario.EncriptarClave(contraseña);
+            string? convertirContraseña = null;
+
+            if (contraseña != String.Empty)
+            {
+                convertirContraseña = UtilidadesUsuario.EncriptarClave(contraseña);
+            }
 
             int numeroId = (_dbContext.Roles.Where(e => e.Nombre == rol).FirstOrDefault()!).IdRol;
 

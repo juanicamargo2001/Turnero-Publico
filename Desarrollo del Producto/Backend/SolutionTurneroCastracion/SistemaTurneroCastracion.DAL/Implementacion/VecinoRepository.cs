@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -98,11 +99,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             var dniRepetido = await this.Consultar(v => v.Dni == request.DNI);
 
-            if (!dniRepetido.Any() && DniValido(request.DNI))
+            if (!dniRepetido.Any())
             {
 
-                int? creadoUsuario = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña, 
-                                                                           request.Email, 
+                int? creadoUsuario = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña,
+                                                                           request.Email,
                                                                            RolesEnum.vecino.ToString());
 
                 if (creadoUsuario > 0)
@@ -128,23 +129,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
         }
 
-        public bool DniValido(long dni)
-        {
-            string pattern = @"^[\d]{1,3}\.?[\d]{3,3}\.?[\d]{3,3}$";
-            Regex regex = new(pattern);
-
-            if (regex.IsMatch(dni.ToString()))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        public VecinoDTO? ConsultarVecino(long dniVecino, HttpContext context)
+      
+        public VecinoDTO? ConsultarVecinoXDniOPerfil(long? dni, HttpContext context)
         {
             var identity = context.User.Identity as ClaimsIdentity;
 
@@ -155,6 +141,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             using (var ctx = _dbContext)
             {
                 var query = from v in ctx.Vecinos
+                            join u in ctx.Usuarios on v.Id_usuario equals u.IdUsuario
+                            join r in ctx.Roles on u.RolId equals r.IdRol
                             join m in ctx.Mascotas on v.Id_vecino equals m.IdVecino into mascotasGroup
                             from m in mascotasGroup.DefaultIfEmpty()
                             join s in ctx.Sexos on m.IdSexo equals s.IdSexos into sexoGroup
@@ -163,14 +151,18 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             from t in tipoGroup.DefaultIfEmpty()
                             join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo into tiposAnimalsGroup
                             from ta in tiposAnimalsGroup.DefaultIfEmpty()
-                            where v.Dni == dniVecino && v.Id_usuario == id
-                            group new { m, s, t, ta } by new { v.Id_vecino, v.F_nacimiento, v.Domicilio, v.Dni, v.Telefono } into vecinoGroup
+                            where (r.Nombre == RolesEnum.vecino.ToString() && v.Id_usuario == id) ||
+                                  (v.Dni == dni)
+                            group new { m, s, t, ta } by new { u.Nombre, u.Apellido, v.Id_vecino, v.F_nacimiento, v.Domicilio , v.Dni, v.Telefono, u.Email } into vecinoGroup
                             select new VecinoDTO
                             {
+                                Nombre = vecinoGroup.Key.Nombre,
+                                Apellido = vecinoGroup.Key.Apellido,
                                 F_nacimiento = vecinoGroup.Key.F_nacimiento,
-                                Domicilio = vecinoGroup.Key.Domicilio,
+                                Domicilio = vecinoGroup.Key.Domicilio ?? String.Empty,
                                 Dni = vecinoGroup.Key.Dni,
                                 Telefono = vecinoGroup.Key.Telefono,
+                                Email = vecinoGroup.Key.Email,
                                 Mascotas = vecinoGroup
                                 .Where(g => g.m != null)
                                 .Select(g => new MascotaDTO
@@ -188,11 +180,44 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                 return query.FirstOrDefault();
 
-                
+
 
             }
+        }
 
+        public async Task<bool> CrearVecinoTelefonico(UsuarioTelefonicoDTO request)
+        {
 
+            var dniRepetido = await this.Consultar(v => v.Dni == request.DNI);
+
+            if (!dniRepetido.Any())
+            {
+
+                int? creadoUsuario = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, String.Empty,
+                                                                           request.Email,
+                                                                           RolesEnum.vecino.ToString());
+
+                if (creadoUsuario > 0)
+                {
+                    Vecino vecinoCreado = await this.Crear(new Vecino
+                    {
+                        F_nacimiento = request.F_Nacimiento,
+                        Dni = request.DNI,
+                        Domicilio = String.Empty, //cambiar cuando haya domicilio!
+                        Telefono = request.Telefono,
+                        Id_usuario = creadoUsuario
+                    });
+
+                    if (vecinoCreado != null)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+
+            }
+            return false;
         }
 
     }
