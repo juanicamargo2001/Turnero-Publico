@@ -94,7 +94,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
 
-        [HttpPost("NombreUsuario")]
+        [HttpGet("NombreUsuario")]
         public async Task<IActionResult> ObtenerNombreUsuario()
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using SistemaTurneroCastracion.BLL;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.DAL.Publisher;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
@@ -23,9 +25,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         private readonly EmailPublisher _emailPublisher;
         private readonly ICorreosProgramados _correosProgramados;
 
-
-
-        public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, EmailPublisher emailPublisher) : base(dbContext)
+        public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, 
+                                  EmailPublisher emailPublisher) : base(dbContext)
         {
             _dbContext = dbContext;
             _emailPublisher = emailPublisher;
@@ -146,91 +147,116 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> SacarTurno(HorarioMascotaDTO horarioMascota, HttpContext httpContext)
         {
-            var identity = httpContext.User.Identity as ClaimsIdentity;
 
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(httpContext);
 
-            string idString = idClaim.Value;
-            int id;
 
-            if (int.TryParse(idString, out id));
-            else
+            if (!await ValidarDisponibilidad(idUsuario, horarioMascota))
+                return false;
+             
+            if (!await ValidarTipoTurnoAnimal(horarioMascota))
+                return false;
+
+            if (!await CambiarEstado(EstadoTurno.Reservado, horarioMascota.IdTurnoHorario))
+                return false;
+
+            if (!await ActualizarHorario(idUsuario, horarioMascota))
+                return false;
+
+            return await EnviarCorreoTurnoSolicitado(idUsuario, horarioMascota);
+
+           
+        }
+
+        private async Task<bool> EnviarCorreoTurnoSolicitado(int? idUsuario, HorarioMascotaDTO horarioMascota)
+        {
+            EmailDTO email = await this.ObtenerInformacionEmail(idUsuario, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
+
+            string mensaje = this.CambiarTexto(email);
+
+            await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
+
+            bool guardado = await _correosProgramados.GuardarCorreoProgramado(email, horarioMascota.IdTurnoHorario);
+
+            if (!guardado)
             {
-                Console.WriteLine("El id no es un número válido.");
+                return false;
+            }
+            return true;
+        }
+
+        private async Task<bool> ActualizarHorario(int? idUsuario, HorarioMascotaDTO horarioMascota)
+        {
+            Horarios? horarioEntrado = await this.Obtener(h => h.IdHorario == horarioMascota.IdTurnoHorario);
+
+            if (horarioEntrado == null) return false;
+
+            horarioEntrado.Id_Usuario = idUsuario;
+            horarioEntrado.Id_mascota = horarioMascota.IdMascota;
+
+
+            try
+            {
+                await this.Editar(horarioEntrado);
+
+                return true;
+
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is Horarios)
+                    {
+                        var proposedValues = entry.CurrentValues;
+                        var databaseValues = await entry.GetDatabaseValuesAsync();
+
+                        if (databaseValues != null)
+                        {
+                            proposedValues.SetValues(databaseValues);
+                        }
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        private async Task<bool> ValidarTipoTurnoAnimal(HorarioMascotaDTO horarioMascota)
+        {
+            bool esTipoAnimalTurno = await this.EsTurnoTipoAnimal(horarioMascota);
+
+            if (!esTipoAnimalTurno)
+            {
+                return false;
             }
 
-            bool turnoVecinoPresente = await this.EsTurnoPresente(id, horarioMascota.IdTurnoHorario);
+            return true;
 
-            if (turnoVecinoPresente) { return false; }
+        }
 
+        public async Task<bool> ValidarDisponibilidad(int? idUsuario, HorarioMascotaDTO horarioMascota)
+        {
+            bool turnoVecinoPresente = await this.EsTurnoPresenteEnMes(idUsuario, horarioMascota.IdTurnoHorario);
+
+            if (turnoVecinoPresente)
+            {
+                return false;
+            }
 
             bool ocupado = this.EstaOcupado(horarioMascota.IdTurnoHorario);
 
             if (!ocupado)
             {
-                bool verificado = await this.VerificarMascotaHorario(horarioMascota);
-
-                if (!verificado) return false;
-
-                bool cambiadoEstado = await this.CambiarEstado(EstadoTurno.Reservado, horarioMascota.IdTurnoHorario);
-
-                if (!cambiadoEstado) return false;
-                
-
-                Horarios? horarioEntrado = _dbContext.Horarios.Where(h => h.IdHorario == horarioMascota.IdTurnoHorario).FirstOrDefault();
-
-                if (horarioEntrado == null)
-                {
-                    return false;
-                }
-
-                horarioEntrado.Id_Usuario = id;
-                horarioEntrado.Id_mascota = horarioMascota.IdMascota;
-
-
-                try
-                {
-                    await this.Editar(horarioEntrado);
-
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    foreach (var entry in ex.Entries)
-                    {
-                        if (entry.Entity is Horarios)
-                        {
-                            var proposedValues = entry.CurrentValues;
-                            var databaseValues = await entry.GetDatabaseValuesAsync();
-
-                            if (databaseValues != null)
-                            {
-                                proposedValues.SetValues(databaseValues);
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-
-
-                EmailDTO email = await this.ObtenerInformacionEmail(id, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
-
-                string mensaje = this.CambiarTexto(email);
-
-                await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
-
-                bool guardado = await _correosProgramados.GuardarCorreo(email, horarioMascota.IdTurnoHorario);
-
-                if (!guardado) {
-                    return false;
-                }
-
                 return true;
             }
-            else { return false; }
+
+            return false;
+
         }
 
-        private async Task<bool> VerificarMascotaHorario(HorarioMascotaDTO horarioMascota)
+
+        private async Task<bool> EsTurnoTipoAnimal(HorarioMascotaDTO horarioMascota)
         {
             string? tipoTurno = await (from H in _dbContext.Horarios
                                       join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
@@ -251,7 +277,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        private async Task<bool> EsTurnoPresente(int id, int idTurnoHorario)
+        private async Task<bool> EsTurnoPresenteEnMes(int? idUsuario, int idTurnoHorario)
         {
             var agendaTurno = await (from H in _dbContext.Horarios
                                     join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
@@ -263,7 +289,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return await (from H in _dbContext.Horarios
                           join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
-                          where H.Id_Usuario == id
+                          where H.Id_Usuario == idUsuario
                                 && T.Dia.Year == fechaFin!.Value.Year
                                 && T.Dia.Month == fechaFin.Value.Month
                           select H).AnyAsync();
@@ -289,12 +315,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> CancelarTurno(int idTurno, HttpContext context)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
 
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
-
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
 
             bool cambioCancelado = await this.CambiarEstado(EstadoTurno.Libre, idTurno);
@@ -311,7 +333,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             }
 
-            EmailDTO email = await this.ObtenerInformacionEmail(id, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
+            EmailDTO email = await this.ObtenerInformacionEmail(idUsuario, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
 
             cancelarUsuario.Id_Usuario = null;
 
@@ -338,7 +360,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<EmailDTO> ObtenerInformacionEmail(int idUsuario, int IdHorario, string tipoMensaje, string mensaje)
+        public async Task<EmailDTO> ObtenerInformacionEmail(int? idUsuario, int IdHorario, string tipoMensaje, string mensaje)
         {
             var emailDTO = (from U in _dbContext.Usuarios
                            join H in _dbContext.Horarios on U.IdUsuario equals H.Id_Usuario
@@ -365,13 +387,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> ConfirmarTurno(int idHorario, HttpContext context)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
-
-            bool esDiaActual = await this.EsDiaActual(idHorario, id);
+            bool esDiaActual = await this.EsDiaActual(idHorario, idUsuario);
 
             if (esDiaActual)
             {
@@ -389,7 +407,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
         }
 
-        private async Task<bool> EsDiaActual(int idHorario, int id)
+        private async Task<bool> EsDiaActual(int idHorario, int? id)
         {
             DateTime actual = DateTime.Now;
 
@@ -448,15 +466,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         private async Task<int?> ObtenerIdCentroXSecretaria(HttpContext context)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
-
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
 
             int? idCentroXSecretaria = await (from SC in _dbContext.SecretariaxCentros
-                                              where SC.IdUsuario == id
+                                              where SC.IdUsuario == idUsuario
                                               select SC.IdCentroCastracion).FirstOrDefaultAsync(); 
 
             return idCentroXSecretaria;

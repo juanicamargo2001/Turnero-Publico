@@ -20,7 +20,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<bool> GuardarCorreo(EmailDTO datosEmail, int id_horario)
+        public async Task<bool> GuardarCorreoProgramado(EmailDTO datosEmail, int idHorario)
         {
             var creado = await this.Crear(new CorreosProgramados 
             {
@@ -31,7 +31,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Hora = TimeSpan.Parse(datosEmail.Hora),
                 CentroCastracion = datosEmail.CentroCastracion,
                 TipoAnimal = datosEmail.Tipo,
-                IdHorario = id_horario
+                IdHorario = idHorario
             });
 
             if (creado == null) { 

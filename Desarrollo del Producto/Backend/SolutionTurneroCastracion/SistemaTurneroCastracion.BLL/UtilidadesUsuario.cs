@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +30,18 @@ namespace SistemaTurneroCastracion.BLL
 
         }
 
+
+        public static int? ObtenerIdUsuario(HttpContext context)
+        {
+            ClaimsIdentity? identidad = context.User.Identity as ClaimsIdentity;
+
+            Claim? idUsuarioClam = identidad?.Claims.FirstOrDefault(x => x.Type == "id");
+
+            int? idUsuario = Int32.Parse(idUsuarioClam.Value);
+
+
+            return idUsuario;
+        }
 
     }
 }
