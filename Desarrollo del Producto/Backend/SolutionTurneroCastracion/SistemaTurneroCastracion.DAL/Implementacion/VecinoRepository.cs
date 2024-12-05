@@ -153,9 +153,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             from ta in tiposAnimalsGroup.DefaultIfEmpty()
                             where (r.Nombre == RolesEnum.vecino.ToString() && v.Id_usuario == id) ||
                                   (v.Dni == dni)
-                            group new { m, s, t, ta } by new { u.Nombre, u.Apellido, v.Id_vecino, v.F_nacimiento, v.Domicilio , v.Dni, v.Telefono, u.Email } into vecinoGroup
+                            group new { m, s, t, ta } by new { u.Nombre, u.Apellido, v.Id_vecino, v.F_nacimiento,
+                                                               v.Domicilio , v.Dni, v.Telefono, u.Email, u.IdUsuario } into vecinoGroup
                             select new VecinoDTO
                             {
+                                IdUsuario = vecinoGroup.Key.IdUsuario,
                                 Nombre = vecinoGroup.Key.Nombre,
                                 Apellido = vecinoGroup.Key.Apellido,
                                 F_nacimiento = vecinoGroup.Key.F_nacimiento,

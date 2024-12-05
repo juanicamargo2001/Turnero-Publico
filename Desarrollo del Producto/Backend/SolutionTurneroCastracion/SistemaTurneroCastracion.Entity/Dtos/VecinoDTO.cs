@@ -8,6 +8,8 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 {
     public class VecinoDTO
     {
+        public int IdUsuario {  get; set; }
+
         public string Nombre { get; set; }
 
         public string Apellido  { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.BLL;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
@@ -83,90 +84,110 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> editarMascotaPorId(MascotaDTO mascotaEditar)
         {
-            using (var ctx = _dbContext)
-            {
-                int sexoId = await ctx.Sexos
-                    .Where(s => s.SexoTipo == mascotaEditar.Sexo)
-                    .Select(s => s.IdSexos) 
-                    .FirstOrDefaultAsync();
+            
+            int sexoId = await _dbContext.Sexos
+                .Where(s => s.SexoTipo == mascotaEditar.Sexo)
+                .Select(s => s.IdSexos) 
+                .FirstOrDefaultAsync();
 
 
-                int tamañoId = await ctx.Tamaños
-                    .Where(t => t.TamañoTipo == mascotaEditar.Tamaño)
-                    .Select(t => t.IdTamaño)
-                    .FirstOrDefaultAsync();
+            int tamañoId = await _dbContext.Tamaños
+                .Where(t => t.TamañoTipo == mascotaEditar.Tamaño)
+                .Select(t => t.IdTamaño)
+                .FirstOrDefaultAsync();
 
-                int tipoAnimalId = await ctx.TiposAnimals
-                    .Where(ta => ta.TipoAnimal == mascotaEditar.TipoAnimal)
-                    .Select(ta => ta.IdTipo)
-                    .FirstOrDefaultAsync();
+            int tipoAnimalId = await _dbContext.TiposAnimals
+                .Where(ta => ta.TipoAnimal == mascotaEditar.TipoAnimal)
+                .Select(ta => ta.IdTipo)
+                .FirstOrDefaultAsync();
 
-                if (sexoId == 0 || tamañoId == 0 || tipoAnimalId == 0) {
-                    return false;
-                }
-
-                Mascota mascota = await ctx.Mascotas.FirstOrDefaultAsync(m => m.IdMascota == mascotaEditar.idMascota);
-
-                if (mascota == null) {  return false; }
-
-                mascota.IdSexo = sexoId;
-                mascota.IdTamaño = tamañoId;
-                mascota.IdTipoAnimal = tipoAnimalId;
-                mascota.Nombre = mascotaEditar.Nombre;
-                mascota.Descripcion = mascotaEditar.Descripcion;
-                mascota.Edad = mascotaEditar.Edad;
-
-
-                return await this.Editar(mascota);
+            if (sexoId == 0 || tamañoId == 0 || tipoAnimalId == 0) {
+                return false;
             }
+
+            Mascota? mascota = await _dbContext.Mascotas.FirstOrDefaultAsync(m => m.IdMascota == mascotaEditar.idMascota);
+
+            if (mascota == null) {  return false; }
+
+            mascota.IdSexo = sexoId;
+            mascota.IdTamaño = tamañoId;
+            mascota.IdTipoAnimal = tipoAnimalId;
+            mascota.Nombre = mascotaEditar.Nombre;
+            mascota.Descripcion = mascotaEditar.Descripcion;
+            mascota.Edad = mascotaEditar.Edad;
+
+
+            return await this.Editar(mascota);
+            
         }
 
-        public async Task<Mascota> crearMascota(MascotaDTO mascota, HttpContext context)
+        private async Task<Mascota> CrearMascotaBD(MascotaDTO mascota, int? idVecino)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
+            int sexoId = await _dbContext.Sexos
+                .Where(s => s.SexoTipo == mascota.Sexo)
+                .Select(s => s.IdSexos)
+                .FirstOrDefaultAsync();
 
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
 
-            int? id = Int32.Parse(idClaim.Value);
+            int tamañoId = await _dbContext.Tamaños
+                .Where(t => t.TamañoTipo == mascota.Tamaño)
+                .Select(t => t.IdTamaño)
+                .FirstOrDefaultAsync();
+
+            int tipoAnimalId = await _dbContext.TiposAnimals
+                .Where(ta => ta.TipoAnimal == mascota.TipoAnimal)
+                .Select(ta => ta.IdTipo)
+                .FirstOrDefaultAsync();
 
 
-            using (var ctx = _dbContext)
+            return await this.Crear(new Mascota
             {
-                int sexoId = await ctx.Sexos
-                    .Where(s => s.SexoTipo == mascota.Sexo)
-                    .Select(s => s.IdSexos)
-                    .FirstOrDefaultAsync();
+                Descripcion = mascota.Descripcion,
+                Edad = mascota.Edad,
+                IdTipoAnimal = tipoAnimalId,
+                IdSexo = sexoId,
+                IdTamaño = tamañoId,
+                IdVecino = idVecino,
+                Nombre = mascota.Nombre
+            });
 
-
-                int tamañoId = await ctx.Tamaños
-                    .Where(t => t.TamañoTipo == mascota.Tamaño)
-                    .Select(t => t.IdTamaño)
-                    .FirstOrDefaultAsync();
-
-                int tipoAnimalId = await ctx.TiposAnimals
-                    .Where(ta => ta.TipoAnimal == mascota.TipoAnimal)
-                    .Select(ta => ta.IdTipo)
-                    .FirstOrDefaultAsync();
-
-
-                int? idVecino = await (from U in ctx.Usuarios
-                                join V in ctx.Vecinos on U.IdUsuario equals V.Id_usuario
-                                where U.IdUsuario == id
-                                select V.Id_vecino).FirstOrDefaultAsync();
-
-
-                return await this.Crear(new Mascota
-                {
-                    Descripcion = mascota.Descripcion,
-                    Edad = mascota.Edad,
-                    IdTipoAnimal = tipoAnimalId,
-                    IdSexo = sexoId,
-                    IdTamaño = tamañoId,
-                    IdVecino = idVecino,
-                    Nombre = mascota.Nombre
-                });
-
-            }
         }
+
+
+        public async Task<int?> ObtenerIdVecino(int? idUsuario)
+        {
+            if (idUsuario != null)
+            {
+                int? idVecino = await (from U in _dbContext.Usuarios
+                                       join V in _dbContext.Vecinos on U.IdUsuario equals V.Id_usuario
+                                       where U.IdUsuario == idUsuario
+                                       select V.Id_vecino).FirstOrDefaultAsync();
+
+                return idVecino;
+            }
+
+            return null;
+
+        }
+
+
+        public async Task<Mascota> CrearMascota(MascotaDTO mascota, HttpContext context)
+        {
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            int? idVecino = await ObtenerIdVecino(idUsuario);
+
+            return await CrearMascotaBD(mascota, idVecino);
+
+        }
+
+        public async Task<Mascota> CrearMascota(MascotaDTO mascota, int? idUsuario)
+        {
+            int? idVecino = await ObtenerIdVecino(idUsuario);
+
+            return await CrearMascotaBD(mascota, idVecino);
+
+        }
+        
     }
 }

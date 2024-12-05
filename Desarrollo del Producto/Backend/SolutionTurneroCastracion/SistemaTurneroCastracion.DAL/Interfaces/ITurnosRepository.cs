@@ -20,5 +20,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context);
 
         Task<bool> EliminarTurnos(int idAgenda);
+
     }
 }

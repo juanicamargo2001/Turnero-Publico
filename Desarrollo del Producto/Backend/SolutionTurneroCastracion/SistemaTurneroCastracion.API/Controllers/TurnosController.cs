@@ -280,5 +280,33 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+
+        [HttpPost("turnoEmergencia")]
+        public async Task<IActionResult> TurnoEmergencia([FromBody] TurnoUrgenteRequestDTO request) 
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if (!await _horariosRepository.TurnoEmergencia(request))
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al registrar el turno de emergencia!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
     }
 }
+
+
+// crear un horario con la hora actual, tipo de turno Emergencia (3), id turno hay que buscar el id del dia actual, el estado pasa de una a ingresado
+// y deberia asignarle el id del usuario pasado por parametro

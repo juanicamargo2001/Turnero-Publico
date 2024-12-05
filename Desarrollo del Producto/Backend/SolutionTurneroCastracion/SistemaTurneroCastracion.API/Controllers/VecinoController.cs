@@ -120,7 +120,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("vecinoTelefonico")]
+        [HttpPost("vecinoMinimo")]
         public async Task<IActionResult> RegistrarVecinoTelefonico([FromBody] UsuarioTelefonicoDTO request)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);

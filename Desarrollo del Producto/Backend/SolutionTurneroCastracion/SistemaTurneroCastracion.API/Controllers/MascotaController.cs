@@ -76,7 +76,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             try
             {
-                Mascota mascotaCreada = await _mascotaRepository.crearMascota(mascota, HttpContext);
+                Mascota mascotaCreada = await _mascotaRepository.CrearMascota(mascota, HttpContext);
 
                 if (mascotaCreada == null)
                 {

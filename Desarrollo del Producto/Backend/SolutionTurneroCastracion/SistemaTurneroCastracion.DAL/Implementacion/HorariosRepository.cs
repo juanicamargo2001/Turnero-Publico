@@ -9,8 +9,10 @@ using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
@@ -24,13 +26,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         protected readonly CentroCastracionContext _dbContext;
         private readonly EmailPublisher _emailPublisher;
         private readonly ICorreosProgramados _correosProgramados;
+        private readonly IMascotaRepository _mascotaRepository;
 
         public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, 
-                                  EmailPublisher emailPublisher) : base(dbContext)
+                                  EmailPublisher emailPublisher, IMascotaRepository mascotaRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _emailPublisher = emailPublisher;
             _correosProgramados = correosProgramados;
+            _mascotaRepository = mascotaRepository;
         }
 
 
@@ -652,6 +656,101 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                           }).ToListAsync();
 
             return turnosCancelados;
+        }
+
+        public async Task<bool> TurnoEmergencia(TurnoUrgenteRequestDTO request) 
+        {
+            
+            Mascota mascotaUrgente = await _mascotaRepository.CrearMascota(new MascotaDTO
+            {
+                Edad = request.Edad,
+                Sexo = request.Sexo,
+                Tamaño = request.TipoTamaño,
+                TipoAnimal = request.TipoAnimal
+            }, request.IdUsuario);
+
+            if (mascotaUrgente == null)
+                return false;
+
+            Horarios? horarioUrgente = await CrearTurnoEmergencia(request.IdUsuario);
+
+            if (horarioUrgente == null)
+                return false;
+
+            return await AsignarMascotaHorario(horarioUrgente, mascotaUrgente);
+
+        
+        }
+
+
+        private async Task<Horarios?> CrearTurnoEmergencia(int? idUsuarioRequest)
+        {
+            DateTime actual = DateTime.Now;
+
+            int? IdTipoTurnoEmergencia = await ObtenerTipoTurnoId(("Emergencia").ToUpper());
+
+            if (IdTipoTurnoEmergencia.HasValue)
+            {
+                int? turnoId = await BuscarTurnoIdDelDia(actual);
+
+                if (turnoId.HasValue)
+                {
+                    Horarios horarioCreado = await Crear(new Horarios
+                    {
+                        Hora = actual.TimeOfDay,
+                        TipoTurno = IdTipoTurnoEmergencia.Value,
+                        IdTurno = turnoId.Value,
+                        Id_Estado = BuscarEstado(EstadoTurno.Ingresado.ToString()),
+                        Id_Usuario = idUsuarioRequest,
+                    });
+
+                    return horarioCreado;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        private async Task<int?> ObtenerTipoTurnoId(string nombreTipo)
+        {
+            TipoTurno? tipoTurnoEncontrado = await _dbContext.TipoTurnos.Where(tt => tt.NombreTipo == nombreTipo).FirstOrDefaultAsync();
+
+            if (tipoTurnoEncontrado != null) {
+
+                return tipoTurnoEncontrado.TipoId;
+            
+            }
+
+            return null;
+
+        }
+
+        private async Task<int?> BuscarTurnoIdDelDia(DateTime fechaDelDia)
+        {
+            Turnos? turnoEncontrado = await _dbContext.Turnos.Where(t => t.Dia.Day == fechaDelDia.Day).FirstOrDefaultAsync();
+
+            if (turnoEncontrado != null) 
+            {
+                return turnoEncontrado.IdTurno;
+            }
+
+            return null;
+        }
+
+        private async Task<bool> AsignarMascotaHorario(Horarios? horarioUrgente, Mascota? mascotaUrgente)
+        {
+            if (horarioUrgente != null && mascotaUrgente != null)
+            {
+                horarioUrgente.Id_mascota = mascotaUrgente.IdMascota;
+
+                if (await Editar(horarioUrgente)){
+                    return true;
+                }
+                return false;
+
+            }
+            return false;
+
         }
     }
 }
