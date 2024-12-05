@@ -28,46 +28,46 @@ function App() {
   return (
     <>
       <UserRoleProvider>
-      <BrowserRouter>
-        
-        <Menu />
-        <div className="divBody">
-          <Routes>
-            {/* <Route path="/" element={<h1>Bienvenido a la aplicación</h1>} /> */}
-            <Route path="/turno" element={<CentrosCastracionList/>}/>
-            <Route path="/registrar/animal" element={<RegistroAnimal/>} />
-            <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
-            <Route path="/modificar/veterinario" element={<Veterinarios/>} />
-            <Route path="/registrar/centro" element={<Registro_Centro/>} />
-            <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
-            
-            <Route path="/habilitar/alberdi" element={<HabilitarTurneroAlberi/>}/>
-            <Route path="/habilitar/lafrance" element={<HabilitarTurneroLafrance/>}/>
-            <Route path="/habilitar/villallende" element={<HabilitarTurneroVilla/>}/>
+        <BrowserRouter>
+          
+          <Menu />
+          <div className="divBody">
+            <Routes>
+              {/* <Route path="/" element={<h1>Bienvenido a la aplicación</h1>} /> */}
+              <Route path="/turno" element={<CentrosCastracionList/>}/>
+              <Route path="/registrar/animal" element={<RegistroAnimal/>} />
+              <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
+              <Route path="/modificar/veterinario" element={<Veterinarios/>} />
+              <Route path="/registrar/centro" element={<Registro_Centro/>} />
+              <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
+              
+              <Route path="/habilitar/alberdi" element={<HabilitarTurneroAlberi/>}/>
+              <Route path="/habilitar/lafrance" element={<HabilitarTurneroLafrance/>}/>
+              <Route path="/habilitar/villallende" element={<HabilitarTurneroVilla/>}/>
 
-            <Route path="/modificar/centro" element={<Modificar_Centro/>} />
+              <Route path="/modificar/centro" element={<Modificar_Centro/>} />
 
 
-            <Route path="/tipoAnimal/alberdi" element={<TipoAnimal_Vecino/>} />
-            <Route path="/tipoAnimal/lafrance" element={<TipoAnimal_Vecino/>} />
-            <Route path="/tipoAnimal/villallende" element={<TipoAnimal_Vecino/>} />
-            
-            <Route path="/registrar/turno/alberdi" element={<Turnero nombreCentro={"Alberdi"} turnoId={14} />} />
-            <Route path="/registrar/turno/lafrance" element={<Turnero nombreCentro={"La France"} turnoId={15} />} />
-            <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
-            <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
+              <Route path="/tipoAnimal/alberdi" element={<TipoAnimal_Vecino/>} />
+              <Route path="/tipoAnimal/lafrance" element={<TipoAnimal_Vecino/>} />
+              <Route path="/tipoAnimal/villallende" element={<TipoAnimal_Vecino/>} />
+              
+              <Route path="/registrar/turno/alberdi" element={<Turnero nombreCentro={"Alberdi"} turnoId={14} />} />
+              <Route path="/registrar/turno/lafrance" element={<Turnero nombreCentro={"La France"} turnoId={15} />} />
+              <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
+              <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
 
-            <Route path="/" element={<InicioSesion />} />
+              <Route path="/" element={<InicioSesion />} />
 
-            <Route path="/misTurnos" element={<TurnoVecino/>}/>
+              <Route path="/misTurnos" element={<TurnoVecino/>}/>
 
-            <Route path="/secretaria/turnos" element={<TurnosSecretaria />} />
+              <Route path="/secretaria/turnos" element={<TurnosSecretaria />} />
 
-          </Routes>
-        </div>
-        <Footer/>
+            </Routes>
+          </div>
+          <Footer/>
 
-      </BrowserRouter>
+        </BrowserRouter>
       </UserRoleProvider>
     </>
   );

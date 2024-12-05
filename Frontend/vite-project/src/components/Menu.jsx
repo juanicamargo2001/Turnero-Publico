@@ -13,20 +13,23 @@ function Menu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const rol = await loginService.userRol();
-        setUserRole(rol); // Actualiza el estado con el rol obtenido
-      } catch (error) {
-        console.log("Error al obtener el rol", error);
-      }
-    };
-  
-    fetchUserRole();
+    if (!userRole.nombre) {
+      const fetchUserRole = async () => {
+        try {
+          const rol = await loginService.userRol();
+          const resNom = await loginService.userName();
+          setUserRole({rol:rol, nombre:resNom.nombre});
+        } catch (error) {
+          console.log("Error al obtener el rol", error);
+        }
+      };
+    
+      fetchUserRole();
+    }
   }, []);
 
   const handleLogout = () => {
-    setUserRole("default");
+    setUserRole({rol:""});
 
     Cookies.remove('token');
     Cookies.remove('refreshToken');
@@ -37,9 +40,9 @@ function Menu() {
 
   // Opciones de menú según el rol
   const menuOptions = {
-    default: [
+    /*default: [
       { label: "inicio", path: "/" },
-    ],
+    ],*/
     administrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
@@ -58,7 +61,7 @@ function Menu() {
   };
 
   // Selecciona las opciones del menú según el rol del usuario
-  const selectedMenuOptions = menuOptions[userRole] || [];
+  const selectedMenuOptions = menuOptions[userRole.rol] || [];
 
   return (
     <nav className="navbar navbar-expand-lg custom-menu-bg w-100">
@@ -95,24 +98,31 @@ function Menu() {
                 </a>
               </li>
             ))}
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="far fa-user"></i> Nombre Apellido
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#" onClick={handleLogout}>
-                    Cerrar Sesion
-                  </a>
-                </li>
-              </ul>
-            </li>
+            {userRole.nombre && (
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="far fa-user"></i> {userRole.nombre}
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href="/misTurnos">
+                      Mis Turnos
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" href="#" onClick={handleLogout}>
+                      Cerrar Sesión
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            )}
           </ul>
         </div>
       </div>

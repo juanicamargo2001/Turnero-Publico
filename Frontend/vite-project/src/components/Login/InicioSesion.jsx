@@ -37,19 +37,23 @@ const LoginComponent = () => {
         alert('Inicio de sesión exitoso');
         try {
           const rol = await loginService.userRol();
-          setUserRole(rol);
+          const resNom = await loginService.userName();
+          setUserRole({rol:rol, nombre:resNom.nombre});
         } catch (error){
           console.log(error);
         }
       } else {
-        setError('Error de autenticación');
+        alert('Error al verificar permisos');
+        setError('Error al verificar permisos');
+        return;
       }
     } catch (error) {
+      alert('Error de autenticación');
       setError('Error de autenticación');
       console.error('Error:', error);
+      return;
     }
 
-    console.log('Email:', email, 'Password:', password);
     navigate("/turno");
   };
 

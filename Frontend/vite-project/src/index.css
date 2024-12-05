@@ -154,7 +154,10 @@ th, td {
   width: 100%; /* Asegurarse de que ocupe todo el ancho */
 }
 
-
+/*Error mensaje*/
+.error-message {
+  color: red;
+}
 
 /* Contenedor para centrar los títulos */
 .titles-container {
