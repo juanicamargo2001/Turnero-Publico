@@ -43,6 +43,16 @@ function Menu() {
     /*default: [
       { label: "inicio", path: "/" },
     ],*/
+    secretaria: [
+      { label: "Veterinarios", path: "/modificar/veterinario" },
+      { label: "Centros", path: "/modificar/centro" },
+      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
+      { label: "Registrar Vecino", path: "/registrar/vecino" },
+      { label: "Turnos", path: "/turno" },
+      { label: "Mis Turnos", path: "/misTurnos" },
+      { label: "Animal", path: "/registrar/animal" },
+    ],
     administrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
@@ -58,6 +68,16 @@ function Menu() {
       { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" },
     ],
+    superadmin: [
+      { label: "Veterinarios", path: "/modificar/veterinario" },
+      { label: "Centros", path: "/modificar/centro" },
+      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
+      { label: "Registrar Vecino", path: "/registrar/vecino" },
+      { label: "Turnos", path: "/turno" },
+      { label: "Mis Turnos", path: "/misTurnos" },
+      { label: "Animal", path: "/registrar/animal" },
+    ]
   };
 
   // Selecciona las opciones del menú según el rol del usuario
