@@ -1,40 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import loginService from '../../services/login.service';
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
   const [fecha, setFecha] = useState('');
-  const [hora, setHora] = useState('');
+  const [dni, setDni] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [token, setToken] = useState(null);
 
-  const fetchTurnos = async () => {
+  useEffect(() => {
+    // Obtén el token de la secretaria logueada
+    const userToken = loginService.obtenerToken();
+    if (userToken) {
+      setToken(userToken);
+      console.log('El token se guardó correctamente:', userToken);
+    } else {
+      console.log('No se encontró ningún token en el localStorage.');
+    }
+  }, []);
+
+  // Configuración de Axios (espera a que el token esté listo)
+  const axiosConfig = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  // Función para obtener turnos por fecha
+  const fetchTurnosPorFecha = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/api/Turnos/turnosFiltro', {
-        fechaDesde: fecha,
-        fechaHasta: fecha,
-        horaDesde: { hours: 0, minutes: 0, seconds: 0 },
-        horaHasta: { hours: 23, minutes: 59, seconds: 59 },
-        idCentroCastracion: 1,
-      });
+      const response = await axios.post(
+        '/api/Turnos/turnosFiltro',
+        {
+          fechaDesde: fecha,
+          fechaHasta: fecha,
+          horaDesde: { hours: 0, minutes: 0, seconds: 0 },
+          horaHasta: { hours: 23, minutes: 59, seconds: 59 },
+        },
+        axiosConfig
+      );
       setTurnos(response.data);
-    } catch (error) {
-      setError('Error al obtener los turnos');
+    } catch (err) {
+      setError('Error al obtener los turnos por fecha');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBuscar = (e) => {
-    e.preventDefault();
-    fetchTurnos();
+  // Función para obtener turnos por DNI
+  const fetchTurnosPorDni = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.post(
+        '/api/Turnos/filtroPorDni',
+        { dni: parseInt(dni, 10) },
+        axiosConfig
+      );
+      setTurnos(response.data);
+    } catch (err) {
+      setError('Error al obtener los turnos por DNI');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    fetchTurnos();
-  }, []);
+  // Función para manejar el filtro de búsqueda
+  const handleBuscar = async (e) => {
+    e.preventDefault();
+    if (!token) {
+      setError('Token no disponible. Intenta recargar la página.');
+      return;
+    }
+
+    if (dni) {
+      if (!/^\d+$/.test(dni)) {
+        setError('El DNI debe contener solo números');
+        return;
+      }
+      await fetchTurnosPorDni();
+    } else if (fecha) {
+      await fetchTurnosPorFecha();
+    } else {
+      setError('Por favor, ingresa una fecha o un DNI para buscar');
+    }
+  };
 
   return (
     <div style={styles.turnosContainer}>
@@ -51,14 +105,15 @@ const TurnosSecretaria = () => {
           style={styles.input}
         />
 
-        <label htmlFor="hora" style={styles.label}>
-          Hora:
+        <label htmlFor="dni" style={styles.label}>
+          DNI:
         </label>
         <input
-          type="time"
-          id="hora"
-          value={hora}
-          onChange={(e) => setHora(e.target.value)}
+          type="text"
+          id="dni"
+          value={dni}
+          onChange={(e) => setDni(e.target.value)}
+          placeholder="Ej. 12345678"
           style={styles.input}
         />
 
@@ -104,20 +159,20 @@ const TurnosSecretaria = () => {
   );
 };
 
-// Estilos en línea
+// Estilos (sin cambios)
 const styles = {
   turnosContainer: {
     padding: '20px',
     backgroundColor: '#f9f9f9',
   },
   title: {
-    color: '#0095d9', // Celeste
+    color: '#0095d9',
     marginBottom: '20px',
     textAlign: 'center',
   },
   filterForm: {
     display: 'flex',
-    flexWrap: 'wrap', // Para apilar en pantallas pequeñas
+    flexWrap: 'wrap',
     gap: '10px',
     justifyContent: 'center',
     marginBottom: '20px',
@@ -136,18 +191,15 @@ const styles = {
   button: {
     padding: '10px 20px',
     fontSize: '1rem',
-    backgroundColor: '#0095d9', // Celeste
+    backgroundColor: '#0095d9',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
   },
-  buttonHover: {
-    backgroundColor: '#007bb5',
-  },
   tableWrapper: {
-    overflowX: 'auto', // Habilita scroll horizontal en pantallas pequeñas
+    overflowX: 'auto',
   },
   table: {
     width: '100%',
@@ -158,7 +210,7 @@ const styles = {
     border: '1px solid #ddd',
     padding: '10px',
     textAlign: 'left',
-    backgroundColor: '#eaf6fc', // Celeste claro
+    backgroundColor: '#eaf6fc',
     color: '#0095d9',
   },
   td: {
