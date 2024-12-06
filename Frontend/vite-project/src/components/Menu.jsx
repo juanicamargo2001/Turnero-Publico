@@ -21,6 +21,7 @@ function Menu() {
           setUserRole({rol:rol, nombre:resNom.nombre});
         } catch (error) {
           console.log("Error al obtener el rol", error);
+          setUserRole({rol:"default"});
         }
       };
     
@@ -40,9 +41,10 @@ function Menu() {
 
   // Opciones de menú según el rol
   const menuOptions = {
-    /*default: [
-      { label: "inicio", path: "/" },
-    ],*/
+    default: [
+      { label: "Iniciar Sesión", path: "/iniciarsesion" },
+      { label: "Registrarse", path: "/registrar/vecino" }
+    ],
     secretaria: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
@@ -68,7 +70,7 @@ function Menu() {
       { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" },
     ],
-    superadmin: [
+    superAdministrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
@@ -82,6 +84,7 @@ function Menu() {
 
   // Selecciona las opciones del menú según el rol del usuario
   const selectedMenuOptions = menuOptions[userRole.rol] || [];
+  console.log(userRole.rol);
 
   return (
     <nav className="navbar navbar-expand-lg custom-menu-bg w-100">

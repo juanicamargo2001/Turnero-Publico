@@ -24,6 +24,11 @@ import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
 import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
 
+import loginService from "./services/login.service.js";
+import RutaProtegida from "./components/RutasProtegidas/RutasProtegidas.jsx";
+import Default from "./components/Default/Default.jsx";
+import Inicio from "./components/Inicio.jsx";
+
 function App() {
   return (
     <>
@@ -33,35 +38,159 @@ function App() {
           <Menu />
           <div className="divBody">
             <Routes>
-              {/* <Route path="/" element={<h1>Bienvenido a la aplicación</h1>} /> */}
-              <Route path="/turno" element={<CentrosCastracionList/>}/>
-              <Route path="/registrar/animal" element={<RegistroAnimal/>} />
-              <Route path="/registrar/veterinario" element={<RegistroVeterinario/>} />
-              <Route path="/modificar/veterinario" element={<Veterinarios/>} />
-              <Route path="/registrar/centro" element={<Registro_Centro/>} />
+
+              <Route path="/turno"
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador","administrador", "secretaria", "vecino"]}>
+                    <CentrosCastracionList />
+                  </RutaProtegida>
+                }
+              />
+
+
+              <Route path="/registrar/animal" 
+              element={
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria", "vecino"]}>
+                  <RegistroAnimal/>
+                </RutaProtegida>
+                } />
+
+
+              <Route path="/registrar/veterinario" 
+              element={
+              <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                <RegistroVeterinario/>
+              </RutaProtegida>
+              } />
+
+
+              <Route path="/modificar/veterinario" 
+              element={
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <Veterinarios/>
+                </RutaProtegida>
+                } />
+              
+
+              <Route path="/registrar/centro" 
+              element={
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <Registro_Centro/>
+                </RutaProtegida>
+                } />
+              
+              
               <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
               
-              <Route path="/habilitar/alberdi" element={<HabilitarTurneroAlberi/>}/>
-              <Route path="/habilitar/lafrance" element={<HabilitarTurneroLafrance/>}/>
-              <Route path="/habilitar/villallende" element={<HabilitarTurneroVilla/>}/>
 
-              <Route path="/modificar/centro" element={<Modificar_Centro/>} />
-
-
-              <Route path="/tipoAnimal/alberdi" element={<TipoAnimal_Vecino/>} />
-              <Route path="/tipoAnimal/lafrance" element={<TipoAnimal_Vecino/>} />
-              <Route path="/tipoAnimal/villallende" element={<TipoAnimal_Vecino/>} />
+              <Route path="/habilitar/alberdi" 
+              element={
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <HabilitarTurneroAlberi/>
+                </RutaProtegida>
+                } />
               
-              <Route path="/registrar/turno/alberdi" element={<Turnero nombreCentro={"Alberdi"} turnoId={14} />} />
-              <Route path="/registrar/turno/lafrance" element={<Turnero nombreCentro={"La France"} turnoId={15} />} />
-              <Route path="/registrar/turno/villaallende" element={<Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />} />
-              <Route path="/registrar/veterinarioXcentro" element={<RegistroVeterinarioXCentro/>} />
+              
+              <Route path="/habilitar/lafrance" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <HabilitarTurneroLafrance/>
+                </RutaProtegida>
+                } />
+                
+              
+              <Route path="/habilitar/villallende" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <HabilitarTurneroVilla/>
+                </RutaProtegida>
+                } />
 
-              <Route path="/" element={<InicioSesion />} />
 
-              <Route path="/misTurnos" element={<TurnoVecino/>}/>
+              <Route path="/modificar/centro" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <Modificar_Centro/>
+                </RutaProtegida>
+                } />
+                
 
-              <Route path="/secretaria/turnos" element={<TurnosSecretaria />} />
+              <Route path="/tipoAnimal/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <TipoAnimal_Vecino/>
+                </RutaProtegida>
+                } />
+
+              <Route path="/tipoAnimal/lafrance" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <TipoAnimal_Vecino/>
+                </RutaProtegida>
+                } />
+              
+              
+              <Route path="/tipoAnimal/villallende" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <TipoAnimal_Vecino/>
+                </RutaProtegida>
+                } />
+
+              
+              <Route path="/registrar/turno/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <Turnero nombreCentro={"Alberdi"} turnoId={14} />
+                </RutaProtegida>
+                } />
+        
+              
+              <Route path="/registrar/turno/lafrance" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <Turnero nombreCentro={"La France"} turnoId={15} />
+                </RutaProtegida>
+                } />
+                
+              
+              <Route path="/registrar/turno/villaallende" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <Turnero nombreCentro={"Villa Allende Parque"} turnoId={16} />
+                </RutaProtegida>
+                } />
+                
+              
+              <Route path="/registrar/veterinarioXcentro" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <RegistroVeterinarioXCentro/>
+                </RutaProtegida>
+                } />
+                
+
+              <Route path="/iniciarsesion" element={<InicioSesion/>} />
+
+              <Route path="/" element={<Inicio/>} />
+
+              <Route path="/misTurnos" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <TurnoVecino/>
+                </RutaProtegida>
+                } />
+                
+
+              <Route path="/secretaria/turnos" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <TurnosSecretaria />
+                </RutaProtegida>
+                } />
+                
+
+              <Route path="*" element={<Default/>} />
 
             </Routes>
           </div>
