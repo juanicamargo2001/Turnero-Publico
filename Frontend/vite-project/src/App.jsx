@@ -66,7 +66,7 @@ function App() {
 
               <Route path="/modificar/veterinario" 
               element={
-                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <Veterinarios/>
                 </RutaProtegida>
                 } />
@@ -85,7 +85,7 @@ function App() {
 
               <Route path="/habilitar/alberdi" 
               element={
-                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <HabilitarTurneroAlberi/>
                 </RutaProtegida>
                 } />
@@ -93,7 +93,7 @@ function App() {
               
               <Route path="/habilitar/lafrance" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <HabilitarTurneroLafrance/>
                 </RutaProtegida>
                 } />
@@ -101,7 +101,7 @@ function App() {
               
               <Route path="/habilitar/villallende" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <HabilitarTurneroVilla/>
                 </RutaProtegida>
                 } />
@@ -109,7 +109,7 @@ function App() {
 
               <Route path="/modificar/centro" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <Modificar_Centro/>
                 </RutaProtegida>
                 } />
@@ -164,7 +164,7 @@ function App() {
               
               <Route path="/registrar/veterinarioXcentro" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <RegistroVeterinarioXCentro/>
                 </RutaProtegida>
                 } />
@@ -176,7 +176,7 @@ function App() {
 
               <Route path="/misTurnos" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino", "secretaria"]}>
                   <TurnoVecino/>
                 </RutaProtegida>
                 } />

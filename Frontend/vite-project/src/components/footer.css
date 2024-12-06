@@ -1,0 +1,32 @@
+/* Footer.css */
+html, body {
+    height: 100%; /* Aseguramos que el body y el html ocupen toda la altura */
+    margin: 0;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .container {
+    flex: 1; /* Permite que el contenido principal crezca */
+  }
+  
+  footer {
+    background-color: #f8f9fa; /* Fondo del footer */
+    text-align: center;
+    padding: 1rem;
+    margin-top: 8%; /* Empuja el footer al final */
+  }
+  
+  .footer-image-container {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .footer-image {
+    max-width: 100%;
+    height: auto;
+  }
+  

@@ -561,6 +561,22 @@ div.containerPaso1 {
   align-self: center;
 }
 
+.video-container {
+  position: relative;
+  overflow: hidden;
+  height: 500px; /* Ajusta según tus necesidades */
+  background: black; /* Fondo negro para ocultar bordes si es necesario */
+}
+
+.video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none; /* Asegúrate de que no haya bordes alrededor del iframe */
+}
+
 /* Estilos responsivos: para dispositivos tablet y celulares */
 @media (max-width: 768px) {
   div.container {
@@ -572,3 +588,5 @@ div.containerPaso1 {
     align-self: stretch;
   }
 }
+
+

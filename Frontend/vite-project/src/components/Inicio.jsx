@@ -3,32 +3,6 @@ import React from 'react';
 const Inicio = () => {
   return (
     <div>
-      {/* Sección del video de fondo */}
-      <div
-        className="video-container"
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          height: '500px',
-        }}
-      >
-        <iframe
-          className="video-iframe"
-          src="https://www.youtube.com/embed/SK3VUx-BaCI?playlist=SK3VUx-BaCI&iv_load_policy=3&enablejsapi=1&disablekb=1&autoplay=1&controls=0&showinfo=0&rel=0&loop=1&mute=1&wmode=transparent"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          title="HEADER FAUNA DOMÉSTICA"
-          allowFullScreen
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-          }}
-        ></iframe>
-      </div>
 
       {/* Contenido principal */}
       <div className="container mt-4">
