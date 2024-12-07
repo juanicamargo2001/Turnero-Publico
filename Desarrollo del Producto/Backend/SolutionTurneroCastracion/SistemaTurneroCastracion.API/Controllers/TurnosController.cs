@@ -306,7 +306,3 @@ namespace SistemaTurneroCastracion.API.Controllers
 
     }
 }
-
-
-// crear un horario con la hora actual, tipo de turno Emergencia (3), id turno hay que buscar el id del dia actual, el estado pasa de una a ingresado
-// y deberia asignarle el id del usuario pasado por parametro

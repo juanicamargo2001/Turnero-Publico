@@ -17,7 +17,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         private readonly Validaciones _validaciones;
 
 
-        public UsuarioController (IUsuarioRepository usuarioRepository, Validaciones validaciones)
+        public UsuarioController(IUsuarioRepository usuarioRepository, Validaciones validaciones)
         {
             _usuarioRepository = usuarioRepository;
             _validaciones = validaciones;
@@ -42,7 +42,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPost]
         [Route("ObtenerRefreshToken")]
         public async Task<IActionResult> ObtenerRefreshToken([FromBody] RefreshTokenRequestDTO request)
@@ -73,6 +73,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("rol")]
         public async Task<IActionResult> BuscarRolXUsuario()
         {
@@ -94,6 +95,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
 
+        [Authorize]
         [HttpGet("NombreUsuario")]
         public async Task<IActionResult> ObtenerNombreUsuario()
         {
@@ -118,5 +120,27 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = nombreApellido });
 
         }
+
+        [Authorize]
+        [HttpPut("cambiarContraseña")]
+        public async Task<IActionResult> CambiarContraseña([FromBody] CambioContraseñaDTO request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if(!await _usuarioRepository.CambiarContraseña(request, HttpContext))
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al cambiar la contraseña!", Result = "" });
+
+            return NoContent();
+        }
+
     }
 }

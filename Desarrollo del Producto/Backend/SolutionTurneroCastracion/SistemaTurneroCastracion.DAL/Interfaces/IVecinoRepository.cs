@@ -15,6 +15,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<bool> RegistrarSinFoto(ImagenRequest request);
         VecinoDTO? ConsultarVecinoXDniOPerfil(long? dni, HttpContext context);
         Task<bool> CrearVecinoTelefonico(UsuarioTelefonicoDTO request);
-
+        Task<bool> EditarVecino(VecinoUsuarioEditarDTO request, HttpContext context);
     }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,8 +27,8 @@ namespace SistemaTurneroCastracion.DAL.Publisher
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
-        { // 5 minutos = 300000
-            _timer = new Timer(ExecuteTask, cancellationToken, 0, 60000);
+        { // 15 minutos = 900000
+            _timer = new Timer(ExecuteTask, cancellationToken, 0, 900000);
             return Task.CompletedTask;
         }
 
@@ -182,6 +183,44 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                     </td>
                 </tr>" : string.Empty;
 
+
+            string tipoAnimalRecomendacionesRecordatorio = !incluirBotonConfirmar ? correo.TipoAnimal switch
+            {
+                "GATO" => @"<tr>
+                            <td style=""padding: 10px 20px;"">
+                              <h3 style=""color: #0072bc; font-size: 18px; margin-bottom: 10px;"">📋 Requisitos para la cirugía de gatos</h3>
+                              <ul style=""color: #333333; font-size: 16px; margin: 5px 0; padding-left: 20px;"">
+                                <p>🐾 <strong>Ayuno:</strong> 8 horas sin sólidos. Última comida ligera y en poca cantidad.</p>
+                                <p><img width=""18"" height=""18"" src=""https://img.icons8.com/pastel-glyph/64/cat-cage--v1.png"" alt=""Transportadora""/> <strong>Transporte:</strong> Llevar al gato en doble bolsa red (de cebolla) bien cerrada o en una transportadora adecuada.</p>
+                                <p><img width=""18"" height=""18"" src=""https://img.icons8.com/external-nawicon-outline-color-nawicon/64/external-blanket-bedroom-nawicon-outline-color-nawicon.png"" alt=""Manta""/> <strong>Colcha:</strong> Limpia, abrigada y acorde al tamaño del animal. No se permite sábana ni toalla.</p>
+                                <p><img width=""19"" height=""19"" src=""https://img.icons8.com/color/48/bandage.png"" alt=""bandage""/> <strong>Protección:</strong> Llevar 2 zaleas o 2 pañales de adulto sin elástico.</p>
+                                <p><img width=""19"" height=""19"" src=""https://img.icons8.com/dusk/64/id-verified.png"" alt=""id-verified""/> <strong>Documentación:</strong> DNI. Solo puede asistir quien tenga el turno asignado.</p>
+                                <p>⏰ <strong>Puntualidad:</strong> Llegar 15 minutos antes. Tolerancia máxima de 15 minutos.</p>
+                                <p>🛁 <strong>Limpieza:</strong> Si es posible, bañe al gato para que esté limpio antes de la cirugía.</p>
+                                <p>👥 <strong>Acompañamiento:</strong> La cirugía dura entre 1 y 1,5 horas. Es obligatorio esperar en el lugar hasta que se entregue al animal.</p>
+                              </ul>
+                            </td>
+                          </tr>",
+                "PERRO" => @"<tr>
+                             <td style=""padding: 10px 20px;"">
+                               <h3 style=""color: #0072bc; font-size: 18px; margin-bottom: 10px;"">📋 Requisitos para la cirugía de perros</h3>
+                               <ul style=""color: #333333; font-size: 16px; margin: 5px 0; padding-left: 20px;"">
+                                 <p>🐾 <strong>Ayuno:</strong> 8 horas sin sólidos. Última cena ligera y en poca cantidad.</p>
+                                 <p><img width=""18"" height=""18"" src=""https://img.icons8.com/external-nawicon-outline-color-nawicon/64/external-blanket-bedroom-nawicon-outline-color-nawicon.png"" alt=""external-blanket-bedroom-nawicon-outline-color-nawicon""/> <strong>Colcha:</strong> Limpia, abrigada y del tamaño adecuado. No se permite sábana ni toalla.</p>
+                                 <p>🔗 <strong>Correa y collar:</strong> Puestos en el animal al momento de llevarlo.</p>
+                                 <p><img width=""19"" height=""19"" src=""https://img.icons8.com/color/48/bandage.png"" alt=""bandage""/> <strong>Protección:</strong> Llevar 2 zaleas o 2 pañales de adulto sin elástico.</p>
+                                 <p><img width=""19"" height=""19"" src=""https://img.icons8.com/dusk/64/id-verified.png"" alt=""id-verified""/> <strong>Documentación:</strong> DNI. Solo puede asistir quien tenga el turno asignado.</p>
+                                 <p>⏰ <strong>Puntualidad:</strong> Llegar 15 minutos antes. Tolerancia máxima de 15 minutos.</p>
+                                 <p>🛁 <strong>Limpieza:</strong> Bañar al perro antes de la cirugía para que esté limpio.</p>
+                                 <p>👥 <strong>Acompañamiento:</strong> La cirugía dura entre 1 y 1,5 horas. Es obligatorio esperar en el lugar hasta que se entregue al animal.</p>
+                               </ul>
+                             </td>
+                            </tr>",
+                _ => ""
+
+            } : string.Empty;
+
+
             string Body = $"{correo.EmailDestino}\n" + @"
                            <!DOCTYPE html>
                            <html lang=""es"">
@@ -232,6 +271,9 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                                      "+ tipoAnimalEmoji + @" <strong> Tipo de Animal: </strong> " + char.ToUpper(correo.TipoAnimal[0]) + correo.TipoAnimal.Substring(1).ToLower() + @"
                                    </p>
                                  </td>
+
+                                " + tipoAnimalRecomendacionesRecordatorio + @"
+
                                </tr>
                                <tr>
                                    <td style=""text-align: center; padding: 10px;"">

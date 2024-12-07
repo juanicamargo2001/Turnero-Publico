@@ -17,6 +17,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<string> ObtenerRolNombre(int? idRol);
         Task<string> ObtenerRol(HttpContext httpContext);
         Task<NombreApellidoDTO?> ObtenerNombreUsuario(HttpContext httpContext);
-
+        Task<bool> EditarUsuarioVecino(int? idUsuario, VecinoUsuarioEditarDTO request);
+        Task<bool> CambiarContraseña(CambioContraseñaDTO request, HttpContext context);
     }
 }

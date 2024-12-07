@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using SistemaTurneroCastracion.BLL;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -129,14 +130,10 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
         }
 
-      
+
         public VecinoDTO? ConsultarVecinoXDniOPerfil(long? dni, HttpContext context)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
-
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
             using (var ctx = _dbContext)
             {
@@ -151,10 +148,10 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             from t in tipoGroup.DefaultIfEmpty()
                             join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo into tiposAnimalsGroup
                             from ta in tiposAnimalsGroup.DefaultIfEmpty()
-                            where (r.Nombre == RolesEnum.vecino.ToString() && v.Id_usuario == id) ||
+                            where (r.Nombre == RolesEnum.vecino.ToString() && v.Id_usuario == idUsuario) ||
                                   (v.Dni == dni)
                             group new { m, s, t, ta } by new { u.Nombre, u.Apellido, v.Id_vecino, v.F_nacimiento,
-                                                               v.Domicilio , v.Dni, v.Telefono, u.Email, u.IdUsuario } into vecinoGroup
+                                v.Domicilio, v.Dni, v.Telefono, u.Email, u.IdUsuario } into vecinoGroup
                             select new VecinoDTO
                             {
                                 IdUsuario = vecinoGroup.Key.IdUsuario,
@@ -220,6 +217,55 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             }
             return false;
+        }
+
+        public async Task<bool> EditarVecino(VecinoUsuarioEditarDTO request, HttpContext context)
+        {
+
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            if (!await EditarVecinoPorRequest(idUsuario, request))
+                return false;
+
+            if (!await _usuarioRepository.EditarUsuarioVecino(idUsuario, request))
+                return false;
+
+            return true;
+
+        }
+
+
+        private async Task<bool> EditarVecinoPorRequest(int? idUsuario, VecinoUsuarioEditarDTO request)
+        {
+            bool editado = false;
+
+            Vecino? vecinoEditar = await Obtener(v => v.Id_usuario == idUsuario);
+
+            if (vecinoEditar == null)
+                return false;
+
+            if (request.Telefono.HasValue && request.Telefono > 0)
+            {
+                vecinoEditar.Telefono = (long) request.Telefono;
+
+                editado = true;
+
+            }
+
+            if (request.Domicilio != String.Empty)
+            {
+                vecinoEditar.Domicilio = request.Domicilio;
+
+                editado = true;
+
+            }
+
+            if (editado)
+                return await Editar(vecinoEditar);            
+            
+
+            return true;
+
         }
 
     }

@@ -149,6 +149,32 @@ namespace SistemaTurneroCastracion.API.Controllers
             return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
 
         }
+
+        [Authorize]
+        [HttpPut("editarVecino")]
+        public async Task<IActionResult> EditarVecino([FromBody] VecinoUsuarioEditarDTO vecinoEditarDTO)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if(!await _vecinoRepository.EditarVecino(vecinoEditarDTO, HttpContext))
+                return BadRequest(new ValidacionResultadosDTO { Success = false, 
+                                                                Message = "Sucedio un error inesperado al momento de editar el vecino!", 
+                                                                Result = "" });
+
+
+            return NoContent();
+        }
+
+
     }
 }
 

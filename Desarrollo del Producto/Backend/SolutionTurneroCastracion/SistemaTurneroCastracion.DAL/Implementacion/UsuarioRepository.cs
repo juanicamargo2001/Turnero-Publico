@@ -54,11 +54,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<Usuario?> GetUsuarios(string email, string clave)
+        private async Task<Usuario?> GetUsuario(string email, string clave)
         {
+            return await Obtener(u => u.Email == email && u.Contraseña == clave);
+        }
 
-            return await _dbContext.Usuarios.Where(u => u.Email == email && 
-                                                        u.Contraseña == clave).FirstOrDefaultAsync();
+
+        private async Task<Usuario?> GetUsuario(int? idUsuario, string clave)
+        {
+            return await Obtener(u => u.IdUsuario == idUsuario && u.Contraseña == clave);
         }
 
         private async Task<ValidacionResultadosDTO> GuardarHistorialRefreshToken(
@@ -121,7 +125,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<ValidacionResultadosDTO> DevolverToken(InicioSesion body)
         {
-            Usuario? usuario_encontrado = await this.GetUsuarios(body.email, UtilidadesUsuario.EncriptarClave(body.clave));
+            Usuario? usuario_encontrado = await this.GetUsuario(body.email, UtilidadesUsuario.EncriptarClave(body.clave));
 
             if (usuario_encontrado == null)
             {
@@ -136,7 +140,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return await GuardarHistorialRefreshToken(usuario_encontrado.IdUsuario, tokenCreado, refreshTokenCreado);
 
         }
-
+        
         public async Task<ValidacionResultadosDTO> DevolverRefreshToken(RefreshTokenRequestDTO refreshTokenRequest, int idUsuario)
         {
             var refreshTokenEncontrado = _dbContext.HistorialRefreshTokens.FirstOrDefault(x =>
@@ -171,13 +175,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<string> ObtenerRol(HttpContext httpContext)
         {
-            var identity = httpContext.User.Identity as ClaimsIdentity;
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(httpContext);
 
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
-
-            Usuario usuario = await this.Obtener(e => e.IdUsuario == id);
+            Usuario usuario = await this.Obtener(e => e.IdUsuario == idUsuario);
 
             string nombre = await this.ObtenerRolNombre(usuario.RolId);
 
@@ -186,15 +186,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<NombreApellidoDTO?> ObtenerNombreUsuario(HttpContext httpContext)
         {
-            var identity = httpContext.User.Identity as ClaimsIdentity;
-
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int id = Int32.Parse(idClaim.Value);
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(httpContext);
 
             NombreApellidoDTO? nombreApellidoUsuario = await (from U in _dbContext.Usuarios
-                                                             where U.IdUsuario == id
-                                                             select new NombreApellidoDTO
+                                                             where U.IdUsuario == idUsuario
+                                                              select new NombreApellidoDTO
                                                              {
                                                                  Nombre = U.Nombre,
                                                                  Apellido = U.Apellido,
@@ -204,5 +200,45 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             
 
         }
+
+        public async Task<bool> EditarUsuarioVecino(int? idUsuario, VecinoUsuarioEditarDTO request)
+        {
+            Usuario? usuarioEditar = await Obtener(u => u.IdUsuario == idUsuario);
+
+            if (usuarioEditar == null)
+                return false;
+
+            if (request.Email != String.Empty)
+            {
+                usuarioEditar.Email = request.Email;
+
+                if (!await Editar(usuarioEditar))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> CambiarContraseña(CambioContraseñaDTO request, HttpContext context)
+        {
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            Usuario? usuario_encontrado = await this.GetUsuario(idUsuario, UtilidadesUsuario.EncriptarClave(request.ContraseñaAnterior));
+
+            if (usuario_encontrado == null)
+                return false;
+
+
+            if (request.NuevaContraseña != String.Empty)
+            {
+                usuario_encontrado.Contraseña = UtilidadesUsuario.EncriptarClave(request.NuevaContraseña);
+
+                if (!await Editar(usuario_encontrado)) 
+                    return false;
+            }
+
+            return true;
+        }
+
     }
 }

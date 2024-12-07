@@ -176,7 +176,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             EmailDTO email = await this.ObtenerInformacionEmail(idUsuario, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
 
-            string mensaje = this.CambiarTexto(email);
+            string mensaje = this.CambiarTexto(email, false);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
@@ -348,7 +348,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             }
 
-            string mensaje = this.CambiarTexto(email);
+            string mensaje = this.CambiarTexto(email, true);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
@@ -461,7 +461,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                        IdHorario = H.IdHorario,
                                        Dia = T.Dia,
                                        Hora = H.Hora,
-                                       Estado = E.Nombre
+                                       Estado = E.Nombre,
+                                       CentroCastracion = C.Nombre
+                                       
                                   }).ToListAsync(); 
 
             return turnosHorarios;
@@ -509,7 +511,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public string CambiarTexto(EmailDTO texto)
+        public string CambiarTexto(EmailDTO texto, bool esCancelacion)
         {
             string timeString = texto.Hora;
             TimeSpan time = TimeSpan.Parse(timeString);
@@ -522,6 +524,23 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             string nombreFormateado = textInfo.ToTitleCase(texto.Nombre.ToLower());
 
+            string tipoAnimalEmoji = texto.Tipo switch
+            {
+                "GATO" => "😺",
+                "PERRO" => "🐶",
+                _ => ""
+            };
+
+            string cancelacionTexto = !esCancelacion ? @"<tr>
+                                                        <td style=""text-align: center; padding: 10px;"">
+                                                            <p style=""font-size: 14px; background-color: #FFF4E0; padding: 15px; border-radius: 10px; display: inline-block; text-align: center; max-width: 450px; width: 100%; color: #C68642; font-weight: bold;"">
+                                                                En caso de no poder asistir al turno programado, es importante que cancele o reprograme por medio de la 
+                                                                <a href=""https://www.centroCastracion.com"" style=""color: #A0522D; ""><strong>página oficial</strong></a>
+                                                            </p>
+                                                        </td>
+                                                    </tr>": String.Empty;
+
+
             string Body = $"{texto.Email}\n" + @"
                             <!DOCTYPE html>
                             <html lang=""es"">
@@ -533,15 +552,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                               <table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""border-collapse: collapse; background-color: #ffffff;"">
 
                                 <tr>
-                                  <td align=""left"" style=""padding: 20px 0 10px 20px;"">
-                                    <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin-bottom: 10px;"">
-                                    <p style=""margin: 5px 0 0; color: #666666; font-size: 14px;"">Municipio BIOCORDOBA</p>
+                                  <td align=""left"" style=""padding: 20px 0 10px 20px; background-color: #3a5475;"">
+                                    <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin: auto;"">
+                                    <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCORDOBA</p>
                                   </td>
                                 </tr>
 
                                 <tr>
                                   <td style=""padding: 0 20px;"">
-                                    <h2 style=""color: #0072bc; font-size: 22px; margin: 0;"">" + texto.TipoEmail + @"</h2>
+                                    <h2 style=""color: #0072bc; font-size: 22px; margin-top: 30px;"">" + texto.TipoEmail + @"</h2>
                                   </td>
                                 </tr>
 
@@ -553,28 +572,28 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   </td>
                                 </tr>
 
+                                <!-- <tr>
+                                 <td style=""padding: 10px 20px;"">
+                                   <h3 style=""color: #0072bc; font-size: 18px; margin-bottom: -10px;"">Detalle de turno</h3>
+                                 </td>
+                               </tr> -->
                                 <tr>
                                   <td style=""padding: 10px 20px;"">
-                                    <h3 style=""color: #0072bc; font-size: 18px; margin-bottom: -15px;"">Detalle de turno</h3>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td style=""padding: 10px 20px;"">
                                     <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
-                                      <strong>Lugar</strong><br>
-                                       "+ texto.CentroCastracion + @"
+                                      <strong>🏥 Centro Castración: " + texto.CentroCastracion + @" </strong>
                                     </p>
                                     <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
-                                      <strong>Fecha y hora</strong><br>
-                                      "+ fechaFormateada + @" "    + tiempoFormateado + @"
+                                      <strong>🗓️ Fecha: </strong> " + fechaFormateada + @"
                                     </p>
                                     <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
-                                      <strong>Tipo de animal</strong><br>
-                                      "+ char.ToUpper(texto.Tipo[0]) + texto.Tipo.Substring(1).ToLower() + @"
+                                      <strong>🕑 Hora: </strong> " + tiempoFormateado + @"
+                                    </p>
+                                    <p style=""color: #333333; font-size: 16px; margin: 5px 0;"">
+                                      "+ tipoAnimalEmoji + @" <strong> Tipo de Animal: </strong> " + char.ToUpper(texto.Tipo[0]) + texto.Tipo.Substring(1).ToLower() + @"
                                     </p>
                                   </td>
-                                </tr>
-
+                                </tr>              
+                                " + cancelacionTexto + @"
                                 <tr>
                                   <td style=""padding: 20px;"">
                                     <table width=""100%"" cellspacing=""0"" cellpadding=""0"">
@@ -590,7 +609,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                                 <tr>
                                   <td style=""padding: 10px 20px; text-align: center; color: #999999; font-size: 12px;"">
-                                    Este mensaje se envió de forma automática. Por favor, no responda.
+                                    Este mensaje se envió de forma automática. Por favor, no responda.<br>
+                                    En caso de no haber solicitado ningún turno, desestime este mail.
                                   </td>
                                 </tr>
                               </table>
