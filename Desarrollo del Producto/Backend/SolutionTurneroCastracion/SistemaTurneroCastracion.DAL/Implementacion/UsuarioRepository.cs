@@ -56,12 +56,16 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         private async Task<Usuario?> GetUsuario(string email, string clave)
         {
+            if (clave == String.Empty) return null;
+
             return await Obtener(u => u.Email == email && u.Contraseña == clave);
         }
 
 
         private async Task<Usuario?> GetUsuario(int? idUsuario, string clave)
         {
+            if (clave == String.Empty) return null;
+
             return await Obtener(u => u.IdUsuario == idUsuario && u.Contraseña == clave);
         }
 

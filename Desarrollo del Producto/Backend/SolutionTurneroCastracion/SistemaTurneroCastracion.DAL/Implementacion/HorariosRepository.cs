@@ -149,11 +149,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<bool> SacarTurno(HorarioMascotaDTO horarioMascota, HttpContext httpContext)
+        public async Task<bool> SacarTurno(HorarioMascotaDTO horarioMascota, HttpContext? httpContext = null, int? idUsuario = null)
         {
 
-            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(httpContext);
+            idUsuario ??= httpContext != null ? UtilidadesUsuario.ObtenerIdUsuario(httpContext) : null;
 
+            if (idUsuario == null)
+                return false;
 
             if (!await ValidarDisponibilidad(idUsuario, horarioMascota))
                 return false;
@@ -171,6 +173,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
            
         }
+
 
         private async Task<bool> EnviarCorreoTurnoSolicitado(int? idUsuario, HorarioMascotaDTO horarioMascota)
         {
@@ -622,8 +625,6 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerTurnoPorDNI(long dni)
         {
-            DateTime actual = DateTime.UtcNow;
-
             List<TurnosFiltradoSecretariaDTO?> turnosHorarios = await (from H in _dbContext.Horarios
                                         join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
                                         join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
@@ -632,7 +633,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                         join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                                         join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
                                         join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
-                                        where T.Dia.Month == actual.Month && V.Dni == dni
+                                        where V.Dni == dni
                                         select new TurnosFiltradoSecretariaDTO
                                         {
                                             DNI = V.Dni,
@@ -702,7 +703,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         
         }
 
-
+        
         private async Task<Horarios?> CrearTurnoEmergencia(int? idUsuarioRequest)
         {
             DateTime actual = DateTime.Now;

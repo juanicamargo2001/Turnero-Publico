@@ -100,6 +100,33 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+
+        [HttpPost("turnoTelefonico")]
+        public async Task<IActionResult> ReservarTurnoTelefonico([FromBody] HorarioMascotaTelefonoDTO request) {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            HorarioMascotaDTO horarioMascota = new HorarioMascotaDTO() { IdTurnoHorario = request.IdTurnoHorario,
+                                                                         IdMascota = request.IdMascota};
+
+
+            if (!await _horariosRepository.SacarTurno(horarioMascota, null, request.IdUsuario))
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al querer sacar el turno!", Result = "" });
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+
+        }
+
+
         [HttpGet("misTurnos")]
         public async Task<IActionResult> ObtenerMisMascotas()
         {
@@ -258,7 +285,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost("turnosCancelados")]
         public async Task<IActionResult> ObtenerTurnosPorDNI([FromBody] TurnosSecretariaDTO filtro)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"]);
 
             if (!isValid)
             {
