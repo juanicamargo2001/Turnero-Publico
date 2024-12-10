@@ -48,6 +48,16 @@
   /* background-color: #009EE2;
   border-color: #009EE2; */
 }
+
+.btn.confir3 {
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
+}
+
 .obtn{
   text-align: center;
 }

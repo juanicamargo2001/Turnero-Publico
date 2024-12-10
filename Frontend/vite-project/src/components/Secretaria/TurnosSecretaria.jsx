@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
@@ -7,6 +8,7 @@ const TurnosSecretaria = () => {
   const [hora, setHora] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate()
 
   const fetchTurnos = async () => {
     setLoading(true);
@@ -99,6 +101,10 @@ const TurnosSecretaria = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div>
+        <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3">Registrar Turno Urgencia</button>
+        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3" >Registrar Turno Telefono</button>
       </div>
     </div>
   );

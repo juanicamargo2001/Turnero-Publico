@@ -23,6 +23,9 @@ import InicioSesion from "./components/Login/InicioSesion.jsx"
 import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
 import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
+import Registro_Turno_Urgencia2 from "./components/Secretaria/Registro_Turno_Urgencia2.jsx";
+import Registro_Vecino_Minimo from "./components/Secretaria/Registro_Vecino_Minimo.jsx";
+import Turnos_Urgencia from "./components/Secretaria/Turnos_Urgencia.jsx"
 
 function App() {
   return (
@@ -62,6 +65,8 @@ function App() {
             <Route path="/misTurnos" element={<TurnoVecino/>}/>
 
             <Route path="/secretaria/turnos" element={<TurnosSecretaria />} />
+            <Route path="/secretaria/registro-vecino-minimo" element={<Registro_Vecino_Minimo/>} />
+            <Route path="/secretaria/turno-urgencia" element={<Turnos_Urgencia/>} />
 
           </Routes>
         </div>
