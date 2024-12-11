@@ -23,8 +23,6 @@ namespace SistemaTurneroCastracion.Entity
 
         public int? Id_Usuario{ get; set; }
 
-        public string? DescripPostOperatorio { get; set; }
-
         public byte[] RowVersion { get; set; }
 
         public int? Id_mascota { get; set; }
@@ -39,7 +37,6 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual TipoTurno? IdTipoTurnoNavigation { get; set; }
 
-
         [JsonIgnore]
         public virtual Veterinario? Veterinario { get; set; }
 
@@ -52,6 +49,9 @@ namespace SistemaTurneroCastracion.Entity
 
         [JsonIgnore]
         public virtual Mascota Mascota { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<MedicacionxHorario?> MedicacionxHorarios { get; set; } = [];
 
     }
 }

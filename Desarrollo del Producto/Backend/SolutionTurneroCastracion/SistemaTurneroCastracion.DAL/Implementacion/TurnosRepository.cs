@@ -144,8 +144,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                       Hora = H.Hora,
                                       TipoTurno = TT.NombreTipo,
                                       DiaTurno = T.Dia,
-                                      Estado = E.Nombre,
-                                      DescripPostOperatorio = H.DescripPostOperatorio
+                                      Estado = E.Nombre
                                   }
                                   ).ToList();
 

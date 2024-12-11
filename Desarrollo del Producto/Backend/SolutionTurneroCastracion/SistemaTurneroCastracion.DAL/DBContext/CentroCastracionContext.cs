@@ -54,6 +54,12 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<SecretariaxCentro> SecretariaxCentros { get; set; }
 
+    public virtual DbSet<Medicacion> Medicacion { get; set; }
+
+    public virtual DbSet<MedicacionxHorario> MedicacionxHorarios { get; set; }
+
+    public virtual DbSet<UnidadMedida> UnidadMedidas { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -359,8 +365,6 @@ public partial class CentroCastracionContext : DbContext
                   .HasForeignKey(e => e.Id_Usuario)
                   .HasConstraintName("FK_horarios_usuario");
 
-            entity.Property(e => e.DescripPostOperatorio).HasColumnName("descripPostOperatorio");
-
             entity.Property(e => e.RowVersion)
             .IsRowVersion();
 
@@ -371,7 +375,6 @@ public partial class CentroCastracionContext : DbContext
             .WithOne(h => h.Horario)
             .HasForeignKey<Horarios>(e => e.Id_mascota)
             .HasConstraintName("FK_horarios_mascota");
-
 
         });
 
@@ -559,6 +562,71 @@ public partial class CentroCastracionContext : DbContext
             .WithMany(c => c.SecretariaxCentros)
             .HasForeignKey(e => e.IdCentroCastracion)
             .HasConstraintName("FK_secretariaxcentro_centro");
+
+        });
+
+
+        modelBuilder.Entity<Medicacion>(entity => 
+        {
+            entity.ToTable("medicacion");
+
+            entity.HasKey(e => e.IdMedicacion).HasName("PK_medicacion");
+
+            entity.Property(e => e.IdMedicacion).HasColumnName("id_medicacion");
+
+            entity.Property(e => e.Nombre).HasColumnName("nombre");
+
+            entity.Property(e => e.Descripcion).HasColumnName("descripcion");
+
+        });
+
+        modelBuilder.Entity<MedicacionxHorario>(entity =>
+        {
+            entity.HasKey(mh => new { mh.IdMedicamento, mh.IdHorario });
+
+            entity.ToTable("medicacionxhorario");
+
+            entity.Property(e => e.IdHorario).HasColumnName("id_horario");
+
+            entity.Property(e => e.IdMedicamento).HasColumnName("id_medicamento");
+
+            entity.Property(e => e.Dosis).HasColumnName("dosis");
+
+            entity.Property(e => e.IdUnidadMedida).HasColumnName("id_unidad");
+
+            entity.HasOne(um => um.UnidadMedida)
+            .WithMany(mh => mh.MedicacionxHorarios)
+            .HasForeignKey(e => e.IdUnidadMedida)
+            .HasConstraintName("FK_medicacionxhorario_unidad");
+
+            entity.HasOne(h => h.Horario)
+            .WithMany(mh => mh.MedicacionxHorarios)
+            .HasForeignKey(e => e.IdHorario)
+            .HasConstraintName("FK_medicacionxhorario_horario");
+
+            entity.HasOne(h => h.Medicamento)
+            .WithMany(mh => mh.MedicacionxHorario)
+            .HasForeignKey(e => e.IdMedicamento)
+            .HasConstraintName("FK_medicacionxhorario_medicacion");
+
+
+            entity.Property(e => e.Descripcion).HasColumnName("descripcion");
+
+
+
+        });
+
+
+        modelBuilder.Entity<UnidadMedida>(entity =>
+        {
+            entity.ToTable("unidad_medida");
+
+            entity.HasKey(e => e.IdUnidad).HasName("PK_unidad_medida");
+
+            entity.Property(e => e.IdUnidad).HasColumnName("id_unidad");
+
+            entity.Property(e => e.TipoUnidad).HasColumnName("tipo_unidad");
+
 
         });
 

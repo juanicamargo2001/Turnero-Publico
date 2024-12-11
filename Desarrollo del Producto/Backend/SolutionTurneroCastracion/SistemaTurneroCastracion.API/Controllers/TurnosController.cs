@@ -331,5 +331,29 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
         }
 
+        [HttpPost("finalizarTurno")]
+        public async Task<IActionResult> FinalizarTurnoPostOperatorio([FromBody] FinalizarTurnoDTO request)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if (!await _horariosRepository.FinalizarHorario(request))
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al finalizar el turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
+
     }
 }

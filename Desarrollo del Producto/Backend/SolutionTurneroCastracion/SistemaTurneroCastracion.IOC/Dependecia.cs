@@ -65,7 +65,11 @@ namespace SistemaTurneroCastracion.IOC
 
             services.AddScoped<ISecretariaXCentroRepository, SecretariaXCentroRepository>();
 
+            services.AddScoped<IMedicamentoRepository, MedicamentoRepository>();
 
+            services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
+
+            services.AddScoped<IMedicamentoxhorarioRepository, MedicamentoxHorarioRepository>();
 
         }
     }

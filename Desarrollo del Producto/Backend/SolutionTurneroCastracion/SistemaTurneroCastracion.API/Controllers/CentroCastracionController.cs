@@ -42,7 +42,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         public async Task<IActionResult> obtenerCentrosXVeterinario(int idCentro)
         {
 
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"] );
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "administrador", "superAdministrador"] );
 
             if (!isValid)
             {

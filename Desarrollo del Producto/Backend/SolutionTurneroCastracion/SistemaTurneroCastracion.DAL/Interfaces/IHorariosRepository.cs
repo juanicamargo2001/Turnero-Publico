@@ -22,5 +22,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerTurnoPorDNI(long dni);
         Task<List<HorariosCanceladosResponse>> ObtenerCanceladosPorCentro(TurnosSecretariaDTO filtro, HttpContext context);
         Task<bool> TurnoEmergencia(TurnoUrgenteRequestDTO request);
+        Task<bool> FinalizarHorario(FinalizarTurnoDTO request);
     }
 }

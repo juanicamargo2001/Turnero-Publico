@@ -27,14 +27,17 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         private readonly EmailPublisher _emailPublisher;
         private readonly ICorreosProgramados _correosProgramados;
         private readonly IMascotaRepository _mascotaRepository;
+        private readonly IMedicamentoxhorarioRepository _medicamentoxhorarioRepository;
 
         public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, 
-                                  EmailPublisher emailPublisher, IMascotaRepository mascotaRepository) : base(dbContext)
+                                  EmailPublisher emailPublisher, IMascotaRepository mascotaRepository, 
+                                  IMedicamentoxhorarioRepository medicamentoxhorarioRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _emailPublisher = emailPublisher;
             _correosProgramados = correosProgramados;
             _mascotaRepository = mascotaRepository;
+            _medicamentoxhorarioRepository = medicamentoxhorarioRepository;
         }
 
 
@@ -773,5 +776,102 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
 
         }
+
+        public async Task<bool> FinalizarHorario(FinalizarTurnoDTO request)
+        {
+            if (!await EsEstado(EstadoTurno.Ingresado, request.IdHorario))
+                return false;
+
+            if (!await CambiarEstado(EstadoTurno.Realizado, request.IdHorario))
+                return false;
+
+            if (!await AgregarVeterinarioHorario(request.IdHorario, request.IdLegajoVeterinario)) 
+                return false;
+
+            if (!await _medicamentoxhorarioRepository.CrearMedicacionXHorario(request.Medicaciones, request.IdHorario))
+                return false;
+
+            if (!await CambiarTextoPostOperatorioYEnvioCorreo(request.Medicaciones, request.IdHorario))
+                return false;
+
+            return true;
+
+
+        }
+
+        private async Task<bool> AgregarVeterinarioHorario(int? IdTurnoHorario, int? IdLegajo)
+        {
+
+            Horarios? horarioEntrado = await this.Obtener(h => h.IdHorario == IdTurnoHorario);
+
+            if (horarioEntrado == null) return false;
+
+            horarioEntrado.Id_Legajo = IdLegajo;
+
+            if (!await Editar(horarioEntrado))
+                return false;
+
+            return true;
+
+        }
+
+
+        private async Task<bool> EsEstado(EstadoTurno estado, int IdHorario)
+        {
+            var estadoEncontrado = await (from H in _dbContext.Horarios
+                                          join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                          where H.IdHorario == IdHorario
+                                          && E.Nombre == estado.ToString()
+                                          select H)
+                                          .FirstOrDefaultAsync();
+
+            if (estadoEncontrado == null)
+                return false;
+
+            return true;
+        }
+
+        private async Task<bool> CambiarTextoPostOperatorioYEnvioCorreo(List<MedicamentoxHorarioDTO>? medicamentos, int? idTurno )
+        {
+
+            Horarios? horarioEncontrado = _dbContext.Horarios.Where(h => h.IdHorario == idTurno).FirstOrDefault();
+
+            if (horarioEncontrado == null)
+                return false;
+
+            Usuario? usuarioEncontrado = await _dbContext.Usuarios.Where(u => u.IdUsuario == horarioEncontrado.Id_Usuario).FirstOrDefaultAsync();
+
+            if (usuarioEncontrado == null)
+                return false;
+
+            string? sexoAnimal = await ObtenerSexoPorHorario(idTurno);
+
+            string mensaje = EnvioCorreosHTML.CrearHTMLPostOperatorio(medicamentos, new 
+                EmailPostOpResponseDTO(){ 
+                Email = usuarioEncontrado.Email, 
+                Nombre = usuarioEncontrado.Nombre,
+                Sexo = sexoAnimal
+                
+            });
+
+            if (!await _emailPublisher.ConexionConRMQ(mensaje, "email_send"))
+                return false;
+
+            return true;
+            
+        }
+
+        private async Task<string> ObtenerSexoPorHorario(int? idHorario)
+        {
+            string? sexo = await (from H in _dbContext.Horarios
+                                 join M in _dbContext.Mascotas on H.Id_mascota equals M.IdMascota
+                                 join S in _dbContext.Sexos on M.IdSexo equals S.IdSexos
+                                 where H.IdHorario == idHorario
+                                 select S.SexoTipo
+                                 ).FirstOrDefaultAsync();
+
+            return sexo!;
+        }
+
     }
 }
