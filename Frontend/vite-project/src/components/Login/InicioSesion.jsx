@@ -34,7 +34,7 @@ const LoginComponent = () => {
     try {
       const response = await loginService.login(email, password);
       if (response.success) {
-        alert('Inicio de sesión exitoso');
+        // alert('Inicio de sesión exitoso');
         try {
           const rol = await loginService.userRol();
           const resNom = await loginService.userName();

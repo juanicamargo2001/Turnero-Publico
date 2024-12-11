@@ -46,35 +46,47 @@ function Menu() {
       { label: "Registrarse", path: "/registrar/vecino" }
     ],
     secretaria: [
+      { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
-      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" },
+      { label: "Mis Turnos", path: "/secretaria/turnos" },
+      // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
+      { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
-      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
-      { label: "Registrar Vecino", path: "/registrar/vecino" },
+      {
+        label: "Habilitar turnero",
+        subOptions: [
+          { label: "Alberdi", path: "/habilitar/alberdi" },
+          { label: "La France", path: "/habilitar/lafrance" },
+          { label: "Villa Allende", path: "/habilitar/villallende" },
+        ],
+      },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" },
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
+      // { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" },
     ],
     superAdministrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
-      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
+      {
+        label: "Habilitar turnero",
+        subOptions: [
+          { label: "Alberdi", path: "/habilitar/alberdi" },
+          { label: "La France", path: "/habilitar/lafrance" },
+          { label: "Villa Allende", path: "/habilitar/villallende" },
+        ],
+      },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
       { label: "Mis Turnos", path: "/misTurnos" },
@@ -114,13 +126,45 @@ function Menu() {
                 Inicio
               </a>
             </li>*/}
-            {selectedMenuOptions.map((option, index) => (
+            {/* {selectedMenuOptions.map((option, index) => (
               <li key={index} className="nav-item">
                 <a className="nav-link" href={option.path}>
                   {option.label}
                 </a>
               </li>
-            ))}
+            ))} */}
+            {selectedMenuOptions.map((option, index) => (
+                <React.Fragment key={index}>
+                  {option.subOptions ? (
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {option.label}
+                      </a>
+                      <ul className="dropdown-menu">
+                        {option.subOptions.map((subOption, subIndex) => (
+                          <li key={subIndex}>
+                            <NavLink className="dropdown-item" to={subOption.path}>
+                              {subOption.label}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to={option.path}>
+                        {option.label}
+                      </NavLink>
+                    </li>
+                  )}
+                </React.Fragment>
+              ))}
             {userRole.nombre && (
               <li className="nav-item dropdown">
                 <a

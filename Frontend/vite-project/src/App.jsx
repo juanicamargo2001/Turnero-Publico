@@ -27,6 +27,7 @@ import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
 import RutaProtegida from "./components/RutasProtegidas/RutasProtegidas.jsx";
 import Default from "./components/Default/Default.jsx";
 import Inicio from "./components/Inicio.jsx";
+import BuscarTurnosPorDni from "./components/Admin/TurnosDNI.jsx";
 
 function App() {
   return (
@@ -187,7 +188,13 @@ function App() {
                   <TurnosSecretaria />
                 </RutaProtegida>
                 } />
-                
+              
+              <Route path="/asignar/turno" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <BuscarTurnosPorDni/>
+                </RutaProtegida>
+                } />
 
               <Route path="*" element={<Default/>} />
 
