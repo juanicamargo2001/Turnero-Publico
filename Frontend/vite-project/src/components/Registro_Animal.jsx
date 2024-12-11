@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mascotaService } from '../services/mascota.service';
+import mascotaService from '../services/mascota.service';
 import { sexosService } from '../services/sexo.service';
 import { tamanoService } from '../services/tamano.service';
 import { tipoAnimalService } from '../services/tipoAnimal.service';
@@ -29,7 +29,7 @@ const RegistroAnimal = () => {
     };
   
     try {
-      await mascotaService.Grabar(nuevaMascota);
+      await mascotaService.grabar(nuevaMascota);
       alert("Mascota registrada con éxito");
       
       Object.keys(data).forEach((key) => {

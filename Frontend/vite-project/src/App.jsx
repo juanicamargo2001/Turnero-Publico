@@ -24,7 +24,6 @@ import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
 import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
 
-import loginService from "./services/login.service.js";
 import RutaProtegida from "./components/RutasProtegidas/RutasProtegidas.jsx";
 import Default from "./components/Default/Default.jsx";
 import Inicio from "./components/Inicio.jsx";

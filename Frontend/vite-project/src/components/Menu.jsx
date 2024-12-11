@@ -30,7 +30,7 @@ function Menu() {
   }, []);
 
   const handleLogout = () => {
-    setUserRole({rol:""});
+    setUserRole({rol:"default"});
 
     Cookies.remove('token');
     Cookies.remove('refreshToken');
