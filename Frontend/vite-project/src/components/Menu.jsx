@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from '../imgs/logoBiocCordoba.png'; // Ajusta la ruta según la ubicación del archivo
-import loginService from "../services/login.service";
 import UserRoleContext from "./Login/UserRoleContext";
 import Cookies from 'js-cookie';
 
@@ -50,6 +49,7 @@ function Menu() {
         ],
       },
       { label: "Turnos", path: "/turno" },
+      { label: "Mis Turnos", path: "/misTurnos" },
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },

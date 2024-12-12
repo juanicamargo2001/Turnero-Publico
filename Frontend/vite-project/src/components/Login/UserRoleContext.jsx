@@ -38,30 +38,61 @@ async function decryptData(encryptedData, key) {
 
 // Proveedor del contexto
 export const UserRoleProvider = (props) => {
+  const [userRole, setUserRole] = useState(() => {
+    const encryptedData = sessionStorage.getItem('userRole');
+    const keyData = sessionStorage.getItem('cryptoKey');
+    
+    if (encryptedData && keyData) {
+      // Intentar desencriptar los datos al inicio
+      try {
+        const decryptStoredRole = async () => {
+          const importedKey = await crypto.subtle.importKey(
+            'jwk',
+            JSON.parse(keyData),
+            { name: 'AES-GCM' },
+            true,
+            ['encrypt', 'decrypt']
+          );
+          const decryptedData = await decryptData(JSON.parse(encryptedData), importedKey);
+          return decryptedData;
+        };
 
-  const [userRole, setUserRole] = useState(()=>{
-    //const savedRole = sessionStorage.getItem('userRole'); 
-    //return savedRole ? JSON.parse(savedRole) : { nombre: '', rol: 'default' };
-    return { nombre: '', rol: 'default' }
+        // No podemos usar `await` directamente aquí, así que devolvemos un placeholder
+        decryptStoredRole().then(data => {
+          setUserRole(data); // Actualizar el estado una vez que los datos sean desencriptados
+        });
+        return { nombre: '', rol: 'default' }; // Estado temporal
+      } catch (error) {
+        console.error('Error desencriptando datos del rol de usuario:', error);
+        return { nombre: '', rol: 'default' };
+      }
+    } else {
+      return { nombre: '', rol: 'default' };
+    }
   });
 
   useEffect(() => {
-    //sessionStorage.setItem('userRole', JSON.stringify(userRole));
-
-    const storeUserRole = async ()=> {
-      const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+    const storeUserRole = async () => {
+      const key = await crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      );
       const encryptedData = await encryptData(userRole, key);
       sessionStorage.setItem('userRole', JSON.stringify(encryptedData));
       sessionStorage.setItem('cryptoKey', JSON.stringify(await crypto.subtle.exportKey('jwk', key)));
+    };
+    if (userRole.rol !== 'default') {
+      storeUserRole();
     }
-    storeUserRole();
   }, [userRole]);
 
   return (
-    <UserRoleContext.Provider value={{userRole, setUserRole}}>
+    <UserRoleContext.Provider value={{ userRole, setUserRole }}>
       {props.children}
     </UserRoleContext.Provider>
   );
 };
+
 
 export default UserRoleContext;
