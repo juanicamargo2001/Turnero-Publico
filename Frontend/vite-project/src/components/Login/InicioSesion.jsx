@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './InicioSesion.css';
 import loginService from '../../services/login.service';
 import loginImage from '../../imgs/inicio.jpeg';
 import bienestarImage from '../../imgs/bienestar.png';
-import { useUserRole } from "./UserRoleContext";
+import UserRoleContext from './UserRoleContext';
 import { useNavigate } from 'react-router-dom';
 
 const LoginComponent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { setUserRole } = useUserRole();
+  const { userRole, setUserRole } = useContext(UserRoleContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {

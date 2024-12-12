@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext } from "react";
 import { useEffect } from "react";
 
@@ -5,24 +6,22 @@ import { useEffect } from "react";
 const UserRoleContext = createContext();
 
 // Proveedor del contexto
-export const UserRoleProvider = ({ children }) => {
+export const UserRoleProvider = (props) => {
 
-  const [userRole, setUserRole] = useState({
-    rol: "",  
-    nombre: "",     
+  const [userRole, setUserRole] = useState(()=>{
+    const savedRole = sessionStorage.getItem('userRole'); 
+    return savedRole ? JSON.parse(savedRole) : { nombre: '', rol: 'default' };
   });
 
-
-  /*useEffect(() => {
-    console.log("userRole actualizado:", userRole);
-  }, [userRole]);*/
+  useEffect(() => {
+    sessionStorage.setItem('userRole', JSON.stringify(userRole));
+  }, [userRole]);
 
   return (
-    <UserRoleContext.Provider value={{ userRole, setUserRole }}>
-      {children}
+    <UserRoleContext.Provider value={{userRole, setUserRole}}>
+      {props.children}
     </UserRoleContext.Provider>
   );
 };
 
-// Hook personalizado para acceder al contexto
-export const useUserRole = () => useContext(UserRoleContext);
+export default UserRoleContext;

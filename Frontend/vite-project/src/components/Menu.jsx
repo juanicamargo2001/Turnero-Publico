@@ -1,36 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from '../imgs/logoBiocCordoba.png'; // Ajusta la ruta según la ubicación del archivo
 import loginService from "../services/login.service";
-import { useUserRole } from "./Login/UserRoleContext";
+import UserRoleContext from "./Login/UserRoleContext";
 import Cookies from 'js-cookie';
 
 function Menu() {
-  // Simula el rol del usuario. Puedes obtenerlo desde un servicio o contexto en una aplicación real.
-  //const [userRole, setUserRole] = useState("default");// Cambia el rol para probar: "administrador" o "vecino"
-  const { userRole, setUserRole } = useUserRole();
+  const { userRole, setUserRole } = useContext(UserRoleContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!userRole.nombre) {
-      const fetchUserRole = async () => {
-        try {
-          const rol = await loginService.userRol();
-          const resNom = await loginService.userName();
-          setUserRole({rol:rol, nombre:resNom.nombre});
-        } catch (error) {
-          console.log("Error al obtener el rol", error);
-          setUserRole({rol:"default"});
-        }
-      };
-    
-      fetchUserRole();
-    }
-  }, []);
-
   const handleLogout = () => {
-    setUserRole({rol:"default"});
+    setUserRole({nombre:"", rol:"default"});
 
     Cookies.remove('token');
     Cookies.remove('refreshToken');
@@ -96,7 +77,6 @@ function Menu() {
 
   // Selecciona las opciones del menú según el rol del usuario
   const selectedMenuOptions = menuOptions[userRole.rol] || [];
-  console.log(userRole.rol);
 
   return (
     <nav className="navbar navbar-expand-lg custom-menu-bg w-100">
