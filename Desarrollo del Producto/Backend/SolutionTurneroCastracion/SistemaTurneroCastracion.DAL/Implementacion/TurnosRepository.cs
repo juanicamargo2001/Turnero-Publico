@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.IdentityModel.Tokens;
+using SistemaTurneroCastracion.BLL;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
@@ -127,17 +128,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
-
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int? id = Int32.Parse(idClaim.Value);
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
             var turnosUsuarios = (from H in _dbContext.Horarios
                                   join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
                                   join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                                   join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
-                                  where H.Id_Usuario == id
+                                  where H.Id_Usuario == idUsuario
                                   select new TurnoUsuario
                                   {
                                       IdHorario = H.IdHorario,

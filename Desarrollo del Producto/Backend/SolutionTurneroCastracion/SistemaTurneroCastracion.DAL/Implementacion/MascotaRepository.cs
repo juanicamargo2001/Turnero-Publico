@@ -8,6 +8,7 @@ using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,14 +49,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<List<MascotaDTO>> obtenerMascotasDueño(HttpContext context)
+        public async Task<List<MascotaDTO>> obtenerMascotasDueño(HttpContext? context = null , int? idUsuario = null)
         {
-            var identity = context.User.Identity as ClaimsIdentity;
-
-            var idClaim = identity.Claims.FirstOrDefault(x => x.Type == "id");
-
-            int? id = Int32.Parse(idClaim.Value);
-
+            idUsuario ??= context != null ? UtilidadesUsuario.ObtenerIdUsuario(context) : null;
 
             using (var ctx = _dbContext)
             {
@@ -65,7 +61,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             join s in ctx.Sexos on M.IdSexo equals s.IdSexos
                             join t in ctx.Tamaños on M.IdTamaño equals t.IdTamaño
                             join ta in ctx.TiposAnimals on M.IdTipoAnimal equals ta.IdTipo
-                            where U.IdUsuario == id
+                            where U.IdUsuario == idUsuario && M.EstaCastrado == false
                             select new MascotaDTO
                             {
                                 idMascota = M.IdMascota,
@@ -77,6 +73,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 TipoAnimal = ta.TipoAnimal,
                                 Vecino = V.Id_vecino
                             }).ToListAsync();
+
+
+
                 return mascotas;
             }
         }
@@ -189,5 +188,22 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
         
+
+        public async Task<bool> CambiarEstadoCastrado(int? idMascota)
+        {
+
+            Mascota? mascotaEditar = await Obtener(m => m.IdMascota == idMascota);
+
+            if (mascotaEditar == null)
+                return false;
+
+            mascotaEditar.EstaCastrado = true;
+
+            if (!await Editar(mascotaEditar)) 
+                return false;
+
+            return true;
+
+        }
     }
 }

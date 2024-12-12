@@ -18,8 +18,6 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string Estado { get; set; }
 
-        public string DescripPostOperatorio { get; set; }
-
 
     }
 }

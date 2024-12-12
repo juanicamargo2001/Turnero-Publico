@@ -93,7 +93,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("misMascotas")]
+        [HttpGet("misMascotasNoCastradas")]
         public async Task<IActionResult> obtenerMascotas()
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
@@ -111,6 +111,41 @@ namespace SistemaTurneroCastracion.API.Controllers
             try
             {
                 List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(HttpContext);
+
+                if (mascotasVecino == null)
+                {
+                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró la mascota!", Result = "" });
+                }
+
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotasVecino });
+            }
+            catch
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+            }
+
+        }
+
+
+        [Authorize]
+        [HttpPost("MascotasNoCastradasSecre")]
+        public async Task<IActionResult> ObtenerMascotasSecretaria([FromBody] int idUsuario)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
+            try
+            {
+                List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(null, idUsuario);
 
                 if (mascotasVecino == null)
                 {
@@ -159,6 +194,37 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost("crearAnimalSecretaria")]
+        public async Task<IActionResult> CrearAnimalSecretaria([FromBody] TurnoUrgenteRequestDTO request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
+            if (await _mascotaRepository.CrearMascota(new MascotaDTO
+            {
+                Edad = request.Edad,
+                Sexo = request.Sexo,
+                Tamaño = request.TipoTamaño,
+                TipoAnimal = request.TipoAnimal
+            }, request.IdUsuario) == null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al crear la mascota", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
+        
 
     }
 

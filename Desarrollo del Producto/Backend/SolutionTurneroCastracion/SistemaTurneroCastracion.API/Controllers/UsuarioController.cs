@@ -42,7 +42,6 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost]
         [Route("ObtenerRefreshToken")]
         public async Task<IActionResult> ObtenerRefreshToken([FromBody] RefreshTokenRequestDTO request)

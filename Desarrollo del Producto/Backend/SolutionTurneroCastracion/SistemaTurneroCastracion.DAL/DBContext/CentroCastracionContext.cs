@@ -107,6 +107,11 @@ public partial class CentroCastracionContext : DbContext
             .WithMany(v => v.Mascotas)
             .HasForeignKey(e => e.IdVecino)
             .HasConstraintName("FK_vecino");
+
+            entity.Property(e => e.EstaCastrado)
+            .HasColumnName("es_castrado")
+            .HasDefaultValueSql("0");
+
         });
 
         modelBuilder.Entity<Sexo>(entity =>

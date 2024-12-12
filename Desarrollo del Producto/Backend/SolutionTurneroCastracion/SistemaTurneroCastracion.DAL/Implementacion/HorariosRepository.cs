@@ -160,6 +160,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (idUsuario == null)
                 return false;
 
+            if (await EsEstado(EstadoTurno.Cancelado, horarioMascota.IdTurnoHorario))
+                return false;
+
             if (!await ValidarDisponibilidad(idUsuario, horarioMascota))
                 return false;
              
@@ -328,47 +331,42 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
 
-
-            bool cambioCancelado = await this.CambiarEstado(EstadoTurno.Libre, idTurno);
-
-            if (!cambioCancelado)
-            {
+            if (!await EsEstado(EstadoTurno.Reservado, idTurno))
                 return false;
-            }
+
+
+            if (!await this.CambiarEstado(EstadoTurno.Libre, idTurno))
+                return false;
+            
 
             Horarios? cancelarUsuario= _dbContext.Horarios.Where(h => h.IdHorario == idTurno).FirstOrDefault();
 
             if (cancelarUsuario == null)
-            {
                 return false;
-            }
 
             EmailDTO email = await this.ObtenerInformacionEmail(idUsuario, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
 
             cancelarUsuario.Id_Usuario = null;
 
-            bool cancelado = await this.Editar(cancelarUsuario);
 
-            if (!cancelado)
-            {
+            if (!await this.Editar(cancelarUsuario))
                 return false;
-            }
+            
 
             string mensaje = this.CambiarTexto(email, true);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
-            bool borradoCorreo = await _correosProgramados.BorrarCorreo(idTurno);
 
-            if (!borradoCorreo)
-            {
+            if (!await _correosProgramados.BorrarCorreo(idTurno))
                 return false;
-            }
-
+            
             return true;
 
 
         }
+
+        
 
         public async Task<EmailDTO> ObtenerInformacionEmail(int? idUsuario, int IdHorario, string tipoMensaje, string mensaje)
         {
@@ -459,6 +457,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                        && C.Id_centro_castracion == idCentroXSecretaria
                                   select new TurnosFiltradoSecretariaDTO
                                   {
+                                       IdUsuario = U.IdUsuario,
                                        DNI = V.Dni,
                                        Telefono = V.Telefono,
                                        Nombre = U.Nombre.ToLower(),
@@ -791,7 +790,26 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (!await _medicamentoxhorarioRepository.CrearMedicacionXHorario(request.Medicaciones, request.IdHorario))
                 return false;
 
+            if (!await ObtenerIdMascotaXHorario(request.IdHorario))
+                return false;
+
             if (!await CambiarTextoPostOperatorioYEnvioCorreo(request.Medicaciones, request.IdHorario))
+                return false;
+
+            return true;
+
+
+        }
+
+
+        private async Task<bool> ObtenerIdMascotaXHorario(int? IdHorario)
+        {
+            Horarios? horarioEncontrado = await Obtener(h => h.IdHorario == IdHorario);
+
+            if (horarioEncontrado == null)
+               return false;
+
+            if (!await _mascotaRepository.CambiarEstadoCastrado(horarioEncontrado.Id_mascota))
                 return false;
 
             return true;

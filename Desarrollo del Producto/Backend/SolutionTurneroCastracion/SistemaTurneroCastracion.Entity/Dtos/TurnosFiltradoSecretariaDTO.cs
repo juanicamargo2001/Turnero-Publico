@@ -8,6 +8,8 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 {
     public class TurnosFiltradoSecretariaDTO
     {
+        public int IdUsuario { get; set; }
+
         public long DNI { get; set; }
 
         public string Nombre { get; set; }

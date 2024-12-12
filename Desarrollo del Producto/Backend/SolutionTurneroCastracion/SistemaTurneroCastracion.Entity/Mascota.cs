@@ -20,8 +20,10 @@ public partial class Mascota
 
     public string? Nombre { get; set; }
 
-    public string Descripcion { get; set; }
+    public string? Descripcion { get; set; }
 
+    [JsonIgnore]
+    public bool? EstaCastrado { get; set; }
 
     [JsonIgnore]
     public virtual Sexo? IdSexoNavigation { get; set; } = null!;
