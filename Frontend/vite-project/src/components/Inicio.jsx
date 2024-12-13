@@ -1,8 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import './inicio.css';
+import gatoimg1 from '../imgs/gato3.png';
+import gatoimg2 from '../imgs/gato2.png';
+import perroimg1 from '../imgs/perro2.png';
+import perroimg2 from '../imgs/perro3.png';
+
+
 
 const Inicio = () => {
+  const [offset, setOffset] = useState(0);
+
+  const handleScroll = () => {
+    setOffset(window.pageYOffset);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div>
+
+<div className="parallax-container">
+        <div
+          className="parallax-layer background"
+          
+        >
+          <div className="text-container">
+            <h1 className="parallax-text">Castraciones Gratuitas</h1>
+          </div>
+        </div>
+
+        <div
+          className="parallax-layer cat1"
+          style={{ transform: `translateY(${offset * -0.2}px)` }}
+        >
+          <img
+            src = {gatoimg1}
+            alt="Gato"
+          />
+        </div>
+
+        <div
+          className="parallax-layer dog1"
+          style={{ transform: `translateY(${offset * -0.1}px)` }}
+        >
+          <img
+            src={perroimg1}
+            alt="Perro"
+          />
+        </div>
+
+        <div
+          className="parallax-layer cat2"
+          style={{ transform: `translateY(${offset * -0.01}px)` }}
+        >
+          <img
+            src = {gatoimg2}
+            alt="Gato"
+          />
+        </div>
+
+        <div
+          className="parallax-layer dog2"
+          style={{ transform: `translateY(${offset * -0.01}px)` }}
+        >
+          <img
+            src={perroimg2}
+            alt="Perro"
+          />
+        </div>
+
+      </div>
 
       {/* Contenido principal */}
       <div className="container mt-4">
