@@ -401,14 +401,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             if (esDiaActual)
             {
-
-                bool estadoCambiado = await this.CambiarEstado(EstadoTurno.Confirmado, idHorario);
-
-                if (!estadoCambiado)
-                {
+                if (!await this.CambiarEstado(EstadoTurno.Confirmado, idHorario))
                     return false;
-                }
-
+                
                 return true;
             }
 
@@ -497,7 +492,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             Horarios? horarioEstadoCambiar = await (from H in _dbContext.Horarios
                                             join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                                             join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
-                                            where (E.Nombre == EstadoTurno.Reservado.ToString() || E.Nombre == EstadoTurno.Confirmado.ToString())
+                                            where (E.Nombre == EstadoTurno.Confirmado.ToString())
                                                    && T.Dia.Year == actual.Year
                                                    && T.Dia.Day == actual.Day
                                                    && H.IdHorario == idHorario

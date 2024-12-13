@@ -28,7 +28,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
         public Task StartAsync(CancellationToken cancellationToken)
         { // 15 minutos = 900000
-            _timer = new Timer(ExecuteTask, cancellationToken, 0, 900000);
+            _timer = new Timer(ExecuteTask, cancellationToken, 0, 300000);
             return Task.CompletedTask;
         }
 
@@ -45,7 +45,8 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
             using (var scope = _scopeFactory.CreateScope())
             {
-                DateTime ahora = DateTime.UtcNow;   
+                DateTime ahora = DateTime.UtcNow;
+                DateTime limiteTiempo = DateTime.Now.AddMinutes(15);
                 var dbContext = scope.ServiceProvider.GetRequiredService<CentroCastracionContext>();
                 var emailPublisher = scope.ServiceProvider.GetRequiredService<EmailPublisher>();
                 var horario = scope.ServiceProvider.GetRequiredService<IHorariosRepository>();
@@ -69,8 +70,12 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                 List<Horarios> turnosACancelar = await (from C in dbContext.CorreosProgramados
                                                         join H in dbContext.Horarios on C.IdHorario equals H.IdHorario
                                                         join E in dbContext.Estados on H.Id_Estado equals E.IdEstado
-                                                        where E.Nombre == EstadoTurno.Reservado.ToString()
-                                                              && C.EsActivo == false //cambiar esto para que se haga el false un dia antes
+                                                        where (E.Nombre == EstadoTurno.Reservado.ToString() && C.EsActivo == false) || 
+                                                              (E.Nombre == EstadoTurno.Confirmado.ToString()
+                                                              && DateTime.Now.Year == C.FechaEnvio.Year
+                                                              && DateTime.Now.Day == C.FechaEnvio.Day
+                                                              && DateTime.Now.Hour == C.Hora.Hours
+                                                              && DateTime.Now.Minute >= C.Hora.Minutes + 15)
                                                         select H).ToListAsync();
 
 
