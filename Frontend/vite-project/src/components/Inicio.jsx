@@ -75,7 +75,7 @@ const Inicio = () => {
       </div>
 
       {/* Contenido principal */}
-      <div className="container mt-4">
+      <div className="container mt-4 p-5">
         <div className="text-center">
           <h1 className="maven-pro-title">Fauna Doméstica</h1>
         </div>
