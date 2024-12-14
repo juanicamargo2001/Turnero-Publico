@@ -49,7 +49,7 @@ function Menu() {
         ],
       },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
+      
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },

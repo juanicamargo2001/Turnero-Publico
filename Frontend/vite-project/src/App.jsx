@@ -176,7 +176,7 @@ function App() {
 
               <Route path="/misTurnos" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino", "secretaria"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "vecino", "secretaria"]}>
                   <TurnoVecino/>
                 </RutaProtegida>
                 } />
