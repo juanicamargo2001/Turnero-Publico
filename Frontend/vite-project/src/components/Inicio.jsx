@@ -75,9 +75,9 @@ const Inicio = () => {
       </div>
 
       {/* Contenido principal */}
-      <div className="container mt-4 p-5">
+      <div className="container p-5">
         <div className="text-center">
-          <h1 className="maven-pro-title">Fauna Doméstica</h1>
+          <h2 className="maven-pro-title">Fauna Doméstica</h2>
         </div>
 
         <div className="mt-4">
@@ -105,10 +105,10 @@ const Inicio = () => {
         <div className="mt-5">
           <h2 className="maven-pro-title">Beneficios de la Castración</h2>
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">Reduce el abandono y la crueldad animal.</li>
-            <li className="list-group-item">Disminuye la proliferación de enfermedades zoonóticas.</li>
-            <li className="list-group-item">Mejora la convivencia entre animales y personas.</li>
-            <li className="list-group-item">Contribuye al control poblacional ético y seguro.</li>
+            <li className="list-group-item maven-pro-body">Reduce el abandono y la crueldad animal.</li>
+            <li className="list-group-item maven-pro-body">Disminuye la proliferación de enfermedades zoonóticas.</li>
+            <li className="list-group-item maven-pro-body">Mejora la convivencia entre animales y personas.</li>
+            <li className="list-group-item maven-pro-body">Contribuye al control poblacional ético y seguro.</li>
           </ul>
         </div>
       </div>

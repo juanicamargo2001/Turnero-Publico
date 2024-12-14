@@ -69,7 +69,7 @@ const LoginComponent = () => {
 
         <div className="login-box">
           <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-logo-mobile">
+          <div className="form-logo-mobile pb-4 pt-4">
             <img src={bienestarImage} alt="Logo pequeño" />
           </div>
             <h3>Iniciar Sesión</h3>
