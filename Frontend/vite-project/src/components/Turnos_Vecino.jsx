@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { turnosService } from '../services/misTurnos.service';
+import misTurnosService from '../services/misTurnos.service';
 import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
@@ -14,7 +14,7 @@ function TurnoVecino() {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const data = await turnosService.obtenerMisTurnos();
+        const data = await misTurnosService.obtenerMisTurnos();
         setTurnos(Array.isArray(data) ? data : [data]);
       } catch (err) {
         setError('Error al cargar los turnos');
@@ -53,7 +53,7 @@ function TurnoVecino() {
         // Si el usuario confirma la cancelación
         try {
           // Cancelar el turno en el backend
-          await turnosService.cancelarTurno(parsedId);
+          await misTurnosService.cancelarTurno(parsedId);
           setCancelError(null);
           console.log(`Turno con ID ${parsedId} cancelado exitosamente.`);
           

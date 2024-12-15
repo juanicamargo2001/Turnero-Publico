@@ -70,7 +70,6 @@ function Menu() {
       },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" },
     ]
   };
