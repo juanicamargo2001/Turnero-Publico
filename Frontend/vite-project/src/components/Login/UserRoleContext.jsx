@@ -1,11 +1,21 @@
 import React, { createContext, useState, useContext } from "react";
+import { useEffect } from "react";
 
 // Crear el contexto
 const UserRoleContext = createContext();
 
 // Proveedor del contexto
 export const UserRoleProvider = ({ children }) => {
-  const [userRole, setUserRole] = useState(null);
+
+  const [userRole, setUserRole] = useState({
+    rol: "",  
+    nombre: "",     
+  });
+
+
+  /*useEffect(() => {
+    console.log("userRole actualizado:", userRole);
+  }, [userRole]);*/
 
   return (
     <UserRoleContext.Provider value={{ userRole, setUserRole }}>

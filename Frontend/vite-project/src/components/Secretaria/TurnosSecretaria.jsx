@@ -1,46 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import turnosService from "../../services/turnosSecretaria.service";
 import { useNavigate } from 'react-router-dom';
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
-  const [fecha, setFecha] = useState('');
-  const [hora, setHora] = useState('');
+  const [fecha, setFecha] = useState("");
+  const [dni, setDni] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate()
 
-  const fetchTurnos = async () => {
+  // Función para obtener turnos por fecha
+  const fetchTurnosPorFecha = async (fecha) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/api/Turnos/turnosFiltro', {
-        fechaDesde: fecha,
-        fechaHasta: fecha,
-        horaDesde: { hours: 0, minutes: 0, seconds: 0 },
-        horaHasta: { hours: 23, minutes: 59, seconds: 59 },
-        idCentroCastracion: 1,
-      });
-      setTurnos(response.data);
-    } catch (error) {
-      setError('Error al obtener los turnos');
+      const data = await turnosService.obtenerTurnosPorFecha(fecha);
+      setTurnos(data.result);
+      //console.log(data.result);
+    } catch (err) {
+      setError("Error al obtener los turnos por fecha");
+      setTurnos([]);
+      console.error("Error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBuscar = (e) => {
-    e.preventDefault();
-    fetchTurnos();
+  // Función para obtener turnos por DNI
+  const fetchTurnosPorDni = async (dni) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await turnosService.obtenerTurnosPorDni(dni);
+      console.log(data.result);
+      setTurnos(data.result);
+    } catch (err) {
+      setError("Error al obtener los turnos por DNI");
+      setTurnos([]);
+      console.error("Error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    fetchTurnos();
-  }, []);
+  // Manejo del filtro de búsqueda
+  const handleBuscar = async (e) => {
+    e.preventDefault();
+    setError(null);
+    console.log("Buscar por fecha:", fecha);
+    if (dni) {
+      if (!/^\d+$/.test(dni)) {
+        setError("El DNI debe contener solo números");
+        return;
+      }
+      await fetchTurnosPorDni(dni);
+    } else if (fecha) {
+      await fetchTurnosPorFecha(fecha);
+      console.log("Turnos:", turnos);
+    } else {
+      setError("Por favor, ingresa una fecha o un DNI para buscar");
+      setTurnos([]);
+    }
+  };
 
   return (
     <div style={styles.turnosContainer}>
       <h1 style={styles.title}>Turnos del Día</h1>
+      {/* Formulario para buscar por Fecha o DNI */}
       <form style={styles.filterForm} onSubmit={handleBuscar}>
         <label htmlFor="fecha" style={styles.label}>
           Fecha:
@@ -52,53 +79,68 @@ const TurnosSecretaria = () => {
           onChange={(e) => setFecha(e.target.value)}
           style={styles.input}
         />
-
-        <label htmlFor="hora" style={styles.label}>
-          Hora:
+        <label htmlFor="dni" style={styles.label}>
+          DNI:
         </label>
         <input
-          type="time"
-          id="hora"
-          value={hora}
-          onChange={(e) => setHora(e.target.value)}
+          type="text"
+          id="dni"
+          placeholder="Ej. 12345678"
+          value={dni}
+          onChange={(e) => setDni(e.target.value)}
           style={styles.input}
         />
-
         <button type="submit" style={styles.button}>
           Buscar
         </button>
       </form>
 
-      {loading && <p style={styles.loading}>Cargando turnos...</p>}
+      {/* Mostrar mensajes de carga o error */}
+      {loading && <p style={styles.loading}>Cargando...</p>}
       {error && <p style={styles.error}>{error}</p>}
 
-      <div style={styles.tableWrapper}>
+      {/* Mostrar tabla de turnos */}
+      <div style={styles.tableContainer}>
         <table style={styles.table}>
           <thead>
             <tr>
-              <th style={styles.th}>Nombre</th>
-              <th style={styles.th}>Tipo Animal</th>
-              <th style={styles.th}>Sexo</th>
-              <th style={styles.th}>Estado</th>
+              <th style={styles.tableHeader}>Nombre</th>
+              <th style={styles.tableHeader}>DNI</th>
+              <th style={styles.tableHeader}>Tipo Animal</th>
+              <th style={styles.tableHeader}>Hora</th>
+              <th style={styles.tableHeader}>Estado</th>
             </tr>
           </thead>
           <tbody>
-            {turnos.map((turno, index) => (
-              <tr key={index} style={styles.tr}>
-                <td style={styles.td}>{turno.nombre || 'Sin nombre'}</td>
-                <td style={styles.td}>{turno.tipoAnimal || 'Desconocido'}</td>
-                <td style={styles.td}>{turno.sexo || 'N/A'}</td>
-                <td
-                  style={{
-                    ...styles.td,
-                    ...styles.estado,
-                    color: turno.estado?.toLowerCase() === 'pendiente' ? '#28a745' : '#dc3545',
-                  }}
-                >
-                  {turno.estado || 'Pendiente'}
+            {turnos.length > 0 ? (
+              turnos.map((turno) => (
+                <tr key={turno.id} style={styles.tableRow}>
+                  <td style={styles.tableCell}>{turno.nombre} {turno.apellido}</td>
+                  <td style={styles.tableCell}>{turno.dni}</td>
+                  <td style={styles.tableCell}>{turno.tipoServicio}</td>
+                  <td style={styles.tableCell}>{turno.hora}</td>
+                  <td style={styles.tableCell}>
+                    <span
+                      style={{
+                        ...styles.estado,
+                        backgroundColor:
+                          turno.estado === "Pendiente"
+                            ? "#28a745"
+                            : "#dc3545",
+                      }}
+                    >
+                      {turno.estado}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={styles.noResults}>
+                  No se encontraron turnos.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -110,81 +152,94 @@ const TurnosSecretaria = () => {
   );
 };
 
-// Estilos en línea
 const styles = {
   turnosContainer: {
-    padding: '20px',
-    backgroundColor: '#f9f9f9',
+    padding: "20px",
+    fontFamily: "Arial, sans-serif",
   },
   title: {
-    color: '#0095d9', // Celeste
-    marginBottom: '20px',
-    textAlign: 'center',
+    fontSize: "28px",
+    color: "#007BFF",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginBottom: "20px",
   },
   filterForm: {
-    display: 'flex',
-    flexWrap: 'wrap', // Para apilar en pantallas pequeñas
-    gap: '10px',
-    justifyContent: 'center',
-    marginBottom: '20px',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "20px",
   },
   label: {
-    fontWeight: 'bold',
-    marginRight: '10px',
+    fontSize: "16px",
+    fontWeight: "bold",
+    color: "#000",
   },
   input: {
-    padding: '10px',
-    fontSize: '1rem',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    minWidth: '150px',
+    padding: "10px",
+    fontSize: "14px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    outline: "none",
+    width: "150px",
   },
   button: {
-    padding: '10px 20px',
-    fontSize: '1rem',
-    backgroundColor: '#0095d9', // Celeste
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontSize: "16px",
   },
-  buttonHover: {
-    backgroundColor: '#007bb5',
-  },
-  tableWrapper: {
-    overflowX: 'auto', // Habilita scroll horizontal en pantallas pequeñas
+  tableContainer: {
+    marginTop: "20px",
+    overflowX: "auto",
   },
   table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    marginTop: '20px',
+    width: "100%",
+    borderCollapse: "collapse",
+    textAlign: "center",
+    backgroundColor: "#f9f9f9",
   },
-  th: {
-    border: '1px solid #ddd',
-    padding: '10px',
-    textAlign: 'left',
-    backgroundColor: '#eaf6fc', // Celeste claro
-    color: '#0095d9',
+  tableHeader: {
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    padding: "10px",
+    fontWeight: "bold",
+    fontSize: "16px",
   },
-  td: {
-    border: '1px solid #ddd',
-    padding: '10px',
-    textAlign: 'left',
+  tableRow: {
+    borderBottom: "1px solid #ddd",
   },
-  tr: {
-    backgroundColor: '#f2f2f2',
+  tableCell: {
+    padding: "10px",
+    fontSize: "14px",
   },
   estado: {
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#fff",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    fontSize: "14px",
+    fontWeight: "bold",
   },
   loading: {
-    color: '#0095d9',
+    textAlign: "center",
+    color: "#007BFF",
   },
   error: {
-    color: 'red',
-    marginTop: '10px',
+    color: "red",
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+  noResults: {
+    padding: "10px",
+    fontSize: "16px",
+    color: "#555",
+    fontStyle: "italic",
+    textAlign: "center",
   },
 };
 
