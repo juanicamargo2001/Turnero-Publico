@@ -703,7 +703,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         
         private async Task<Horarios?> CrearTurnoEmergencia(int? idUsuarioRequest)
         {
-            DateTime actual = DateTime.Now;
+            DateTime actual = DateTime.UtcNow;
 
             int? IdTipoTurnoEmergencia = await ObtenerTipoTurnoId(("Emergencia").ToUpper());
 
@@ -715,7 +715,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 {
                     Horarios horarioCreado = await Crear(new Horarios
                     {
-                        Hora = actual.TimeOfDay,
+                        Hora = actual.AddHours(-3).TimeOfDay,
                         TipoTurno = IdTipoTurnoEmergencia.Value,
                         IdTurno = turnoId.Value,
                         Id_Estado = BuscarEstado(EstadoTurno.Ingresado.ToString()),

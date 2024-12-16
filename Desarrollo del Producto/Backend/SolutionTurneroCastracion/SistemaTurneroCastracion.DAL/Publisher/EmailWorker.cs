@@ -46,7 +46,6 @@ namespace SistemaTurneroCastracion.DAL.Publisher
             using (var scope = _scopeFactory.CreateScope())
             {
                 DateTime ahora = DateTime.UtcNow;
-                DateTime limiteTiempo = DateTime.Now.AddMinutes(15);
                 var dbContext = scope.ServiceProvider.GetRequiredService<CentroCastracionContext>();
                 var emailPublisher = scope.ServiceProvider.GetRequiredService<EmailPublisher>();
                 var horario = scope.ServiceProvider.GetRequiredService<IHorariosRepository>();
@@ -72,10 +71,10 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                                                         join E in dbContext.Estados on H.Id_Estado equals E.IdEstado
                                                         where (E.Nombre == EstadoTurno.Reservado.ToString() && C.EsActivo == false) || 
                                                               (E.Nombre == EstadoTurno.Confirmado.ToString()
-                                                              && DateTime.Now.Year == C.FechaEnvio.Year
-                                                              && DateTime.Now.Day == C.FechaEnvio.Day
-                                                              && DateTime.Now.Hour == C.Hora.Hours
-                                                              && DateTime.Now.Minute >= C.Hora.Minutes + 15)
+                                                              && ahora.Year == C.FechaEnvio.Year
+                                                              && ahora.Day == C.FechaEnvio.Day
+                                                              && ahora.AddHours(-3).Hour == C.Hora.Hours
+                                                              && ahora.Minute >= C.Hora.Minutes + 15)
                                                         select H).ToListAsync();
 
 
