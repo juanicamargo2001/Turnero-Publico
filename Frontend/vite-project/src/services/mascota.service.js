@@ -26,7 +26,7 @@ const mascotaService = {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
 
-      const response = await axios.get(`${API_URL}/misMascotas`, {
+      const response = await axios.get(`${API_URL}/misMascotasNoCastradas`, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',

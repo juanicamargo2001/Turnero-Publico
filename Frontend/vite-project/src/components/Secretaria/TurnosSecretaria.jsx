@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import turnosService from "../../services/turnosSecretaria.service";
+import misTurnosService from "../../services/misTurnos.service";
 import { useNavigate } from 'react-router-dom';
 
 const TurnosSecretaria = () => {
@@ -11,8 +12,15 @@ const TurnosSecretaria = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTurno, setSelectedTurno] = useState(null);
   const navigate = useNavigate()
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [nuevoEstado, setNuevoEstado] = useState("");
 
-  // Función para obtener turnos por fecha
+  const estadosPermitidos = {
+    Reservado: ["Confirmado", "Cancelado"],
+    Confirmado: ["Ingresado"],
+    Ingresado: ["Realizado"],
+  };
+
   const fetchTurnosPorFecha = async (fecha) => {
     setLoading(true);
     setError(null);
@@ -28,7 +36,6 @@ const TurnosSecretaria = () => {
     }
   };
 
-  // Función para obtener turnos por DNI
   const fetchTurnosPorDni = async (dni) => {
     setLoading(true);
     setError(null);
@@ -44,7 +51,6 @@ const TurnosSecretaria = () => {
     }
   };
 
-  // Manejo del filtro de búsqueda
   const handleBuscar = async (e) => {
     e.preventDefault();
     setError(null);
@@ -62,22 +68,56 @@ const TurnosSecretaria = () => {
     }
   };
 
-  // Manejar clic en "Finalizar"
-  const handleView = (turno) => {
-    setSelectedTurno(turno);
-    setShowModal(true);
+  const handleEstadoChange = async (turno, nuevoEstado) => {
+    if (nuevoEstado === "Cancelado") {
+      try {
+        setLoading(true);
+        await misTurnosService.cancelarTurno(turno.idHorario);
+        setTurnos((prevTurnos) =>
+          prevTurnos.map((t) =>
+            t.idHorario === turno.idHorario ? { ...t, estado: "Cancelado" } : t
+          )
+        );
+        console.log(`Turno con ID ${turno.idHorario} cancelado exitosamente.`);
+      } catch (err) {
+        setError("Error al cancelar el turno");
+        console.error("Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setSelectedTurno(turno);
+      setNuevoEstado(nuevoEstado);
+      setConfirmModal(true);
+    }
   };
 
-  // Manejar cierre del modal
+  const handleConfirmChange = async () => {
+    try {
+      await turnosService.cambiarEstado(selectedTurno.id, nuevoEstado);
+      setTurnos((prevTurnos) =>
+        prevTurnos.map((turno) =>
+          turno.id === selectedTurno.id ? { ...turno, estado: nuevoEstado } : turno
+        )
+      );
+      setConfirmModal(false);
+      setSelectedTurno(null);
+      setNuevoEstado("");
+    } catch (err) {
+      setError("Error al cambiar el estado del turno");
+      console.error("Error:", err);
+    }
+  };
+
   const handleCloseModal = () => {
-    setShowModal(false);
+    setConfirmModal(false);
     setSelectedTurno(null);
+    setNuevoEstado("");
   };
 
   return (
     <div className="container mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
-      {/* Formulario para buscar por Fecha o DNI */}
       <form
         className="filterForm d-flex justify-content-center align-items-center gap-3"
         onSubmit={handleBuscar}
@@ -103,25 +143,14 @@ const TurnosSecretaria = () => {
           onChange={(e) => setDni(e.target.value)}
           className="form-control w-25"
         />
-
-        <hr />
-
         <div className="obtn">
-          <button
-            type="button"
-            className="btn btn-primary obtenerTurno"
-            onClick={(e) => handleBuscar(e)}
-          >
+          <button type="button" className="btn btn-primary obtenerTurno" onClick={handleBuscar}>
             Buscar
           </button>
         </div>
       </form>
-
-      {/* Mostrar mensajes de carga o error */}
       {loading && <p className="loading">Cargando...</p>}
       {error && <p className="error text-danger">{error}</p>}
-
-      {/* Mostrar tabla de turnos */}
       <div className="tableContainer">
         <table className="table table-striped table-hover">
           <thead>
@@ -131,13 +160,13 @@ const TurnosSecretaria = () => {
               <th>Tipo Animal</th>
               <th>Hora</th>
               <th>Estado</th>
-              <th>Finalizar</th>
+              <th>Cambiar estado</th>
             </tr>
           </thead>
           <tbody>
             {turnos.length > 0 ? (
               turnos.map((turno) => (
-                <tr key={turno.id}>
+                <tr key={turno.idHorario}>
                   <td className="text-uppercase">
                     {turno.nombre} {turno.apellido}
                   </td>
@@ -149,24 +178,24 @@ const TurnosSecretaria = () => {
                       className={`badge ${
                         turno.estado === "Pendiente"
                           ? "bg-success"
-                          : "bg-danger"
+                          : turno.estado === "Cancelado"
+                          ? "bg-danger"
+                          : "bg-primary"
                       }`}
                     >
                       {turno.estado}
                     </span>
                   </td>
                   <td>
-                    <a
-                      href="#"
-                      onClick={() => handleView(turno)}
-                      className="btn btn-separator"
-                    >
-                      <i
-                        title="Finalizar"
-                        className="fa fa-edit"
-                        aria-hidden="true"
-                      ></i>
-                    </a>
+                    {estadosPermitidos[turno.estado]?.map((estado) => (
+                      <button
+                        key={estado}
+                        className="btn btn-outline-primary btn-sm me-2"
+                        onClick={() => handleEstadoChange(turno, estado)}
+                      >
+                        {estado}
+                      </button>
+                    ))}
                   </td>
                 </tr>
               ))
@@ -181,62 +210,26 @@ const TurnosSecretaria = () => {
         </table>
       </div>
 
-      {/* Modal para finalizar turno */}
-      {showModal && selectedTurno && (
+      {confirmModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  Finalizar turno de {selectedTurno.nombre} {selectedTurno.apellido}
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  onClick={handleCloseModal}
-                >
+                <h5 className="modal-title">Confirmar cambio de estado</h5>
+                <button type="button" className="close" onClick={handleCloseModal}>
                   <span>&times;</span>
                 </button>
               </div>
               <div className="modal-body">
-                <div className="form-group">
-                  <label>Medicamento</label>
-                  <select className="form-control">
-                    <option>Seleccionar</option>
-                    <option>Medicamento 1</option>
-                    <option>Medicamento 2</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Dosis</label>
-                  <select className="form-control">
-                    <option>Seleccionar</option>
-                    <option>Dosis 1</option>
-                    <option>Dosis 2</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Veterinario</label>
-                  <select className="form-control">
-                    <option>Seleccionar</option>
-                    <option>Veterinario 1</option>
-                    <option>Veterinario 2</option>
-                  </select>
-                </div>
+                <p>
+                  ¿Estás seguro de que deseas cambiar el estado del turno de {selectedTurno.nombre} {selectedTurno.apellido} a "{nuevoEstado}"?
+                </p>
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => alert("Turno finalizado")}
-                >
-                  Finalizar
+                <button className="btn btn-primary" onClick={handleConfirmChange}>
+                  Continuar
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
+                <button className="btn btn-secondary" onClick={handleCloseModal}>
                   Cancelar
                 </button>
               </div>
