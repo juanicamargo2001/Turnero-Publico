@@ -7,6 +7,7 @@ using SistemaTurneroCastracion.BLL.Interfaces;
 using SistemaTurneroCastracion.BLL.Seguridad;
 using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
+using SistemaTurneroCastracion.DAL.Publisher;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
@@ -25,12 +26,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         protected readonly CentroCastracionContext _dbContext;
         private readonly IConfiguration _configuration;
         private readonly IAutorizacionService _autorizacionService;
+        private readonly EmailPublisher _emailPublisher;
 
-        public UsuarioRepository(CentroCastracionContext dbContext, IConfiguration configuration, IAutorizacionService autorizacionService) : base(dbContext)
+        public UsuarioRepository(CentroCastracionContext dbContext, IConfiguration configuration, IAutorizacionService autorizacionService,
+                                EmailPublisher emailPublisher) : base(dbContext)
         {
             _dbContext = dbContext;
             _configuration = configuration;
             _autorizacionService = autorizacionService;
+            _emailPublisher = emailPublisher;
         }
 
         public async Task<int?> crearUsuario(string nombre, string apellido, string contraseña, string email, string rol)
@@ -144,7 +148,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return await GuardarHistorialRefreshToken(usuario_encontrado.IdUsuario, tokenCreado, refreshTokenCreado);
 
         }
-        
+
+
+
         public async Task<ValidacionResultadosDTO> DevolverRefreshToken(RefreshTokenRequestDTO refreshTokenRequest, int idUsuario)
         {
             var refreshTokenEncontrado = _dbContext.HistorialRefreshTokens.FirstOrDefault(x =>
@@ -193,15 +199,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(httpContext);
 
             NombreApellidoDTO? nombreApellidoUsuario = await (from U in _dbContext.Usuarios
-                                                             where U.IdUsuario == idUsuario
+                                                              where U.IdUsuario == idUsuario
                                                               select new NombreApellidoDTO
-                                                             {
-                                                                 Nombre = U.Nombre,
-                                                                 Apellido = U.Apellido,
-                                                             }).FirstOrDefaultAsync();
+                                                              {
+                                                                  Nombre = U.Nombre,
+                                                                  Apellido = U.Apellido,
+                                                              }).FirstOrDefaultAsync();
 
             return nombreApellidoUsuario;
-            
+
 
         }
 
@@ -237,11 +243,51 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             {
                 usuario_encontrado.Contraseña = UtilidadesUsuario.EncriptarClave(request.NuevaContraseña);
 
-                if (!await Editar(usuario_encontrado)) 
+                if (!await Editar(usuario_encontrado))
                     return false;
             }
 
             return true;
+        }
+
+
+        public async Task<bool> RecuperarContraseña(EmailRequestDTO email)
+        {
+            Usuario? usuarioEmail = await Obtener(u => u.Email == email.Email);
+
+            if (usuarioEmail == null) 
+                return false;
+
+            string password = await GuardarContraseñaTemporal(usuarioEmail);
+
+            if (password == String.Empty)
+                return false;
+
+            string? mensajeCorreo = EnvioCorreosHTML.CrearHTMLCorreoRecuperacion(
+                new CorreoRecuperacionDTO(
+                    usuarioEmail.Nombre, 
+                    usuarioEmail.Email,
+                    password
+                ));
+
+            if (!await _emailPublisher.ConexionConRMQ(mensajeCorreo, "email_send_password"))
+                return false;
+
+            return true;
+
+        }
+
+        public async Task<string> GuardarContraseñaTemporal(Usuario usuarioContraseña)
+        {
+            string password = UtilidadesUsuario.GeneratePassword(8, 2);
+
+            usuarioContraseña.Contraseña = UtilidadesUsuario.EncriptarClave(password);
+
+            if (!await Editar(usuarioContraseña)) 
+                return String.Empty;
+
+            return password;
+
         }
 
     }

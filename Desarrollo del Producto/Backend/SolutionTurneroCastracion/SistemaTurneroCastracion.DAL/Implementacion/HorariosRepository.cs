@@ -185,7 +185,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             EmailDTO email = await this.ObtenerInformacionEmail(idUsuario, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
 
-            string mensaje = this.CambiarTexto(email, false);
+            string mensaje = this.CambiarTexto(email, esCancelacion: false);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
@@ -353,7 +353,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return false;
             
 
-            string mensaje = this.CambiarTexto(email, true);
+            string mensaje = this.CambiarTexto(email, esCancelacion: true);
 
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 

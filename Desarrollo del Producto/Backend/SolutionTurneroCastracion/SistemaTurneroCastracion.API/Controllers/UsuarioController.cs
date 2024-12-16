@@ -141,5 +141,15 @@ namespace SistemaTurneroCastracion.API.Controllers
             return NoContent();
         }
 
+
+        [HttpPut("recuperarContraseña")]
+        public async Task<IActionResult> RecuperarContraseña([FromBody] EmailRequestDTO request)
+        {
+            if (!await _usuarioRepository.RecuperarContraseña(request))
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al recuperar la contraseña!", Result = "" });
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "Se envió correctamente el correo" });
+        }
+
     }
 }
