@@ -22,11 +22,15 @@ html, body {
   
   .footer-image-container {
     text-align: center;
-    margin-top: 1rem;
   }
   
   .footer-image {
-    max-width: 100%;
+    max-width: 65%;
     height: auto;
   }
   
+  @media (max-width: 1200px) {
+    .footer-image {
+      max-width: 90%;
+    }
+  }

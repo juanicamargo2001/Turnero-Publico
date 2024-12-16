@@ -24,10 +24,10 @@ import TurnoVecino from "./components/Turnos_Vecino.jsx";
 
 import TurnosSecretaria from './components/Secretaria/TurnosSecretaria';
 
-import loginService from "./services/login.service.js";
 import RutaProtegida from "./components/RutasProtegidas/RutasProtegidas.jsx";
 import Default from "./components/Default/Default.jsx";
 import Inicio from "./components/Inicio.jsx";
+import BuscarTurnosPorDni from "./components/Admin/TurnosDNI.jsx";
 import Registro_Vecino_Minimo from "./components/Secretaria/Registro_Vecino_Minimo.jsx";
 import Turnos_Urgencia from "./components/Secretaria/Turnos_Urgencia.jsx"
 import EditarPerfil from "./components/Perfil/EditarPerfil.jsx";
@@ -181,7 +181,7 @@ function App() {
 
               <Route path="/misTurnos" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino", "secretaria"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "vecino", "secretaria"]}>
                   <TurnoVecino/>
                 </RutaProtegida>
                 } />
@@ -193,7 +193,13 @@ function App() {
                   <TurnosSecretaria />
                 </RutaProtegida>
                 } />
-                
+              
+              <Route path="/asignar/turno" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <BuscarTurnosPorDni/>
+                </RutaProtegida>
+                } />
               <Route path="/secretaria/registro-vecino-minimo" 
                 element={
                   <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>

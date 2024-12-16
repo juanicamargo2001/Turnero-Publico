@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './InicioSesion.css';
 import loginService from '../../services/login.service';
 import loginImage from '../../imgs/inicio.jpeg';
 import bienestarImage from '../../imgs/bienestar.png';
-import { useUserRole } from "./UserRoleContext";
+import UserRoleContext from './UserRoleContext';
 import { useNavigate } from 'react-router-dom';
 
 const LoginComponent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { setUserRole } = useUserRole();
+  const { userRole, setUserRole } = useContext(UserRoleContext);
   const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
@@ -34,7 +34,7 @@ const LoginComponent = () => {
     try {
       const response = await loginService.login(email, password);
       if (response.success) {
-        alert('Inicio de sesión exitoso');
+        // alert('Inicio de sesión exitoso');
         try {
           const rol = await loginService.userRol();
           const resNom = await loginService.userName();
@@ -69,7 +69,7 @@ const LoginComponent = () => {
 
         <div className="login-box">
           <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-logo-mobile">
+          <div className="form-logo-mobile pb-4 pt-4">
             <img src={bienestarImage} alt="Logo pequeño" />
           </div>
             <h3>Iniciar Sesión</h3>

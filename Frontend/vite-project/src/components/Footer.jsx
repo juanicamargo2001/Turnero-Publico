@@ -5,7 +5,7 @@ import "./footer.css";
 
 const Footer = () => {
   return (
-    <footer className="bg-light">
+    <footer className="bg-light pb-0">
       <div className="container">
         <div className="row justify-content-center text-center">
           <div className="col-md-4 p-4">
@@ -43,7 +43,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="footer-image-container">
+        <div className="footer-image-container mt-0">
           <img src={footerImg} alt="Logos del footer" className="footer-image" />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { mascotaService } from '../services/mascota.service';
+import mascotaService from '../services/mascota.service';
 import { sexosService } from '../services/sexo.service';
 import { tamanoService } from '../services/tamano.service';
 import { tipoAnimalService } from '../services/tipoAnimal.service';
@@ -12,9 +12,8 @@ const RegistroAnimal = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   const { register, handleSubmit, formState: { errors }, watch } = useForm({
-    mode: 'onChange', 
+    mode: 'onChange',
   });
 
   const onSubmit = async (data) => {
@@ -25,15 +24,14 @@ const RegistroAnimal = () => {
       sexo: data.sexo,
       tipoAnimal: data.tipoAnimal,
       tamaño: data.tamano,
-      vecino: parseInt(data.vecino) 
     };
   
     try {
-      await mascotaService.Grabar(nuevaMascota);
+      await mascotaService.grabar(nuevaMascota);
       alert("Mascota registrada con éxito");
       
       Object.keys(data).forEach((key) => {
-        if (key !== 'edad' && key !== 'vecino') {
+        if (key !== 'edad') {
           data[key] = ''; 
         }
       });
@@ -74,7 +72,6 @@ const RegistroAnimal = () => {
     fetchSexos();
     fetchTamanos();
     fetchTiposAnimal();
-
   }, []);
   
   return (
@@ -96,12 +93,13 @@ const RegistroAnimal = () => {
           <textarea
             className="form-control"
             id="descripcion"
-            rows="4"
+            rows="2"
             placeholder="Escriba una descripción (opcional)"
             {...register('descripcion')}
           />
         </div>
-        <div className="mb-3">
+        <div className="row mb-3">
+        <div className="col-md-6">
           <label htmlFor="edad" className="form-label">Edad</label>
           <input
             type="number"
@@ -118,9 +116,7 @@ const RegistroAnimal = () => {
           />
           {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 
         </div>
-
-
-        <div className="mb-3">
+        <div className="col-md-6">
           <label htmlFor="tipoAnimal" className="form-label">Tipo de Animal</label>
           <select
             className={`form-select ${errors.tipoAnimal ? 'is-invalid' : ''}`} 
@@ -137,26 +133,27 @@ const RegistroAnimal = () => {
           </select>
           {errors.tipoAnimal && <div className="invalid-feedback">{errors.tipoAnimal.message}</div>}
         </div>
-
-        <div className="mb-3">
-        <label htmlFor="sexo" className="form-label">Sexo</label>
-        <select
-          className={`form-select ${errors.sexo ? 'is-invalid' : ''}`} 
-          id="sexo"
-          defaultValue="" 
-          {...register('sexo', { required: 'El sexo es requerido' })} 
-        >
-          <option value="" disabled>Seleccionar sexo</option>
-          {sexos.map(sexo => (
-            <option key={sexo.idSexos} value={sexo.sexoTipo}>
-              {sexo.sexoTipo}
-            </option>
-          ))}
-        </select>
-        {errors.sexo && <div className="invalid-feedback">{errors.sexo.message}</div>} 
       </div>
 
-      <div className="mb-3">
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label htmlFor="sexo" className="form-label">Sexo</label>
+          <select
+            className={`form-select ${errors.sexo ? 'is-invalid' : ''}`} 
+            id="sexo"
+            defaultValue="" 
+            {...register('sexo', { required: 'El sexo es requerido' })} 
+          >
+            <option value="" disabled>Seleccionar sexo</option>
+            {sexos.map(sexo => (
+              <option key={sexo.idSexos} value={sexo.sexoTipo}>
+                {sexo.sexoTipo}
+              </option>
+            ))}
+          </select>
+          {errors.sexo && <div className="invalid-feedback">{errors.sexo.message}</div>} 
+        </div>
+        <div className="col-md-6">
           <label htmlFor="tamano" className="form-label">Tamaño</label>
           <select
             className={`form-select ${errors.tamano ? 'is-invalid' : ''}`}
@@ -172,18 +169,10 @@ const RegistroAnimal = () => {
             ))}
           </select>
           {errors.tamano && <div className="invalid-feedback">{errors.tamano.message}</div>} 
-     </div>
-
-        <div className="mb-3">
-          <label htmlFor="vecino" className="form-label">Número de Vecino</label>
-          <input
-            type="number"
-            className={`form-control ${errors.vecino ? 'is-invalid' : ''}`} 
-            id="vecino"
-            
-          />
-          {errors.vecino && <div className="invalid-feedback">{errors.vecino.message}</div>}
         </div>
+      </div>
+
+
         <div className="d-flex justify-content-between">
           <button type="submit" className="btn btn-primary ms-auto confir">Confirmar</button>
         </div>
@@ -191,4 +180,5 @@ const RegistroAnimal = () => {
     </div>
   );
 };
+
 export default RegistroAnimal;
