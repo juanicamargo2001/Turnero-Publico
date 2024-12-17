@@ -1,4 +1,5 @@
 import axios from 'axios';
+import loginService from "./login.service";
 
 const API_BASE_URL = 'https://deep-ghoul-socially.ngrok-free.app/api';
 
@@ -6,9 +7,12 @@ const medicamentosService = {
   // Crear una nueva unidad de medida
   crearUnidadMedida: async (unidadMedida) => {
     try {
+      const token = await loginService.obtenerTokenConRenovacion();
       const response = await axios.post(`${API_BASE_URL}/UnidadMedida/crearUnidadMedida`, unidadMedida, {
         headers: {
-          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
         },
       });
       return response.data;
@@ -21,7 +25,14 @@ const medicamentosService = {
   // Obtener todas las unidades de medida
   obtenerUnidadesMedida: async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/UnidadMedida/obtenerUnidadesMedida`);
+      const token = await loginService.obtenerTokenConRenovacion();
+      const response = await axios.get(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.error('Error al obtener las unidades de medida:', error);
@@ -32,9 +43,12 @@ const medicamentosService = {
   // Crear un nuevo medicamento
   crearMedicamento: async (medicamento) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/Medicamento/crearMedicamento`, medicamento, {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const response = await axios.post(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, medicamento, {
         headers: {
-          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
         },
       });
       return response.data;
@@ -47,7 +61,15 @@ const medicamentosService = {
   // Obtener todos los medicamentos
   obtenerMedicamentos: async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/Medicamento/obtenerMedicamentos`);
+      const token = await loginService.obtenerTokenConRenovacion();
+      const response = await axios.get(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('Error al obtener los medicamentos:', error);

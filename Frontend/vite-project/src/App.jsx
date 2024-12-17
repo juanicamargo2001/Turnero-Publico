@@ -33,6 +33,7 @@ import Turnos_Urgencia from "./components/Secretaria/Turnos_Urgencia.jsx"
 import EditarPerfil from "./components/Perfil/EditarPerfil.jsx";
 import Perfil from "./components/Perfil/Perfil.jsx";
 import CambiarContraseña from "./components/Perfil/CambiarContraseña.jsx";
+import ConsultarMedicamentos from "./components/Medicamentos/ConsultarMedicamentos.jsx"
 
 function App() {
   return (
@@ -220,6 +221,13 @@ function App() {
                     <Perfil/>
                   </RutaProtegida>
                 } />  
+
+                <Route path="/medicamentos"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <ConsultarMedicamentos/>
+                  </RutaProtegida>
+                } /> 
 
               <Route path="*" element={<Default/>} />
 

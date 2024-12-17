@@ -33,6 +33,7 @@ function Menu() {
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
       { label: "Turnos del dia", path: "/secretaria/turnos" },
+      { label: "Medicamentos", path: "/medicamentos" },
       // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
