@@ -3,19 +3,21 @@ import loginService from './login.service';
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Turnos'; 
 
-async function reservarTurno(idHorario) {
+async function reservarTurno(idHorario, idMascota) {
   try {
     // Obtener el token de sesión del usuario
     const token = await loginService.obtenerTokenConRenovacion();
 
+    const requestBody = {
+      idTurnoHorario: idHorario,
+      idMascota: idMascota
+    };
+
     // Realizar la solicitud POST para reservar el turno
     const response = await axios.post(
       `${API_URL}/reservarTurno`,
-      null,
+      requestBody,
       {
-        params: {
-          id_horario_turno: idHorario
-        },
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',
@@ -138,5 +140,5 @@ async function finalizarHorario(idHorario) {
 }
 
 export const turnosService = {
-  reservarTurno, reservarTurnoUrgencia, confirmarTurno, confirmarIngreso, finalizarHorario
+  reservarTurno, reservarTurnoUrgencia
 };

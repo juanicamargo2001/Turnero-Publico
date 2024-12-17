@@ -68,46 +68,45 @@ const TurnosSecretaria = () => {
     }
   };
 
-  const handleEstadoChange = async (turno, nuevoEstado) => {
-    if (nuevoEstado === "Cancelado") {
-      try {
-        setLoading(true);
-        await misTurnosService.cancelarTurno(turno.idHorario);
-        setTurnos((prevTurnos) =>
-          prevTurnos.map((t) =>
-            t.idHorario === turno.idHorario ? { ...t, estado: "Cancelado" } : t
-          )
-        );
-        console.log(`Turno con ID ${turno.idHorario} cancelado exitosamente.`);
-      } catch (err) {
-        setError("Error al cancelar el turno");
-        console.error("Error:", err);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setSelectedTurno(turno);
-      setNuevoEstado(nuevoEstado);
-      setConfirmModal(true);
-    }
+  const handleEstadoChange = (turno, nuevoEstado) => {
+    setSelectedTurno(turno); // Guardar turno seleccionado
+    setNuevoEstado(nuevoEstado); // Guardar nuevo estado
+    setConfirmModal(true); // Mostrar modal
   };
-
+  
   const handleConfirmChange = async () => {
+    setConfirmModal(false); // Cerrar modal
     try {
-      await turnosService.cambiarEstado(selectedTurno.id, nuevoEstado);
+      setLoading(true);
+      if (nuevoEstado === "Cancelado") {
+        await misTurnosService.cancelarTurno(selectedTurno.idHorario);
+      } else if (nuevoEstado === "Confirmado") {
+        await turnosService.confirmarTurno(selectedTurno.idHorario);
+      } else if (nuevoEstado === "Ingresado") {
+        await turnosService.confirmarIngreso(selectedTurno.idHorario);
+      } else if (nuevoEstado === "Realizado") {
+        await turnosService.finalizarHorario(selectedTurno.idHorario);
+      }
+  
+      // Actualizar estado de la tabla
       setTurnos((prevTurnos) =>
-        prevTurnos.map((turno) =>
-          turno.id === selectedTurno.id ? { ...turno, estado: nuevoEstado } : turno
+        prevTurnos.map((t) =>
+          t.idHorario === selectedTurno.idHorario
+            ? { ...t, estado: nuevoEstado }
+            : t
         )
       );
-      setConfirmModal(false);
-      setSelectedTurno(null);
-      setNuevoEstado("");
+      console.log(`Turno con ID ${selectedTurno.idHorario} actualizado a ${nuevoEstado}`);
     } catch (err) {
-      setError("Error al cambiar el estado del turno");
+      setError("Error al realizar la acción");
       console.error("Error:", err);
+    } finally {
+      setLoading(false);
     }
   };
+  
+
+ 
 
   const handleCloseModal = () => {
     setConfirmModal(false);
@@ -176,10 +175,15 @@ const TurnosSecretaria = () => {
                   <td>
                     <span
                       className={`badge ${
-                        turno.estado === "Pendiente"
+                        turno.estado === "Realizado"
                           ? "bg-success"
                           : turno.estado === "Cancelado"
                           ? "bg-danger"
+                          : turno.estado === "Confirmado"
+                          ? "bg-info"
+                          : turno.estado === "Ingresado"
+                          ? "bg-secondary"
+
                           : "bg-primary"
                       }`}
                     >
@@ -187,15 +191,15 @@ const TurnosSecretaria = () => {
                     </span>
                   </td>
                   <td>
-                    {estadosPermitidos[turno.estado]?.map((estado) => (
-                      <button
-                        key={estado}
-                        className="btn btn-outline-primary btn-sm me-2"
-                        onClick={() => handleEstadoChange(turno, estado)}
-                      >
-                        {estado}
-                      </button>
-                    ))}
+                  {estadosPermitidos[turno.estado]?.map((estado) => (
+                    <button
+                      key={estado}
+                      className="btn btn-outline-primary btn-sm me-2"
+                      onClick={() => handleEstadoChange(turno, estado)}
+                    >
+                      {estado}
+                    </button>
+                  ))}
                   </td>
                 </tr>
               ))
@@ -222,7 +226,7 @@ const TurnosSecretaria = () => {
               </div>
               <div className="modal-body">
                 <p>
-                  ¿Estás seguro de que deseas cambiar el estado del turno de {selectedTurno.nombre} {selectedTurno.apellido} a "{nuevoEstado}"?
+                  ¿Estás seguro de que deseas cambiar el estado del turno de {selectedTurno?.nombre} {selectedTurno?.apellido} a "{nuevoEstado}"?
                 </p>
               </div>
               <div className="modal-footer">

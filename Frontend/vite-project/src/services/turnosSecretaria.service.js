@@ -13,8 +13,8 @@ async function obtenerTurnosPorFecha(fecha) {
         {
           fechaDesde: fecha,
           fechaHasta: fecha,
-          horaDesde: "07:00:00",
-          horaHasta: "20:00:00",
+          horaDesde: "01:00:00",
+          horaHasta: "23:00:00",
         },
         {
           headers: {
@@ -54,7 +54,79 @@ async function obtenerTurnosPorDni(dni) {
     }
   }
 
+  async function confirmarTurno(idHorario) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const resp = await axios.post(`${API_URL}/confirmarTurno`,  idHorario , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (resp.status === 200) {
+        console.log(`Turno con ID ${idHorario} confirmado exitosamente.`);
+        return resp.data;
+      } else {
+        throw new Error("Error al confirmar el turno.");
+      }
+    } catch (error) {
+      console.error("Error al confirmar el turno:", error.response ? error.response.data : error.message);
+      throw error;
+    }
+  }
+  
+  async function confirmarIngreso(idHorario) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const resp = await axios.post(`${API_URL}/confirmarLlegada`,  idHorario , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (resp.status === 200) {
+        console.log(`Turno con ID ${idHorario} confirmado el ingreso exitosamente.`);
+        return resp.data;
+      } else {
+        throw new Error("Error al confirmar el ingreso del turno.");
+      }
+    } catch (error) {
+      console.error("Error al confirmar el ingreso del turno:", error.response ? error.response.data : error.message);
+      throw error;
+    }
+  }
+  
+  async function finalizarHorario(idHorario) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const resp = await axios.post(`${API_URL}/finalizarTurno`,  idHorario , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (resp.status === 200) {
+        console.log(`Turno con ID ${idHorario} finalizado exitosamente.`);
+        return resp.data;
+      } else {
+        throw new Error("Error al finalizar el turno.");
+      }
+    } catch (error) {
+      console.error("Error al finalizar el turno:", error.response ? error.response.data : error.message);
+      throw error;
+    }
+  }
+
 export default {
   obtenerTurnosPorFecha,
   obtenerTurnosPorDni,
+  confirmarTurno,
+  confirmarIngreso,
+  finalizarHorario
 };

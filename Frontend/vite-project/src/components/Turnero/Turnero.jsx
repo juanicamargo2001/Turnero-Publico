@@ -72,7 +72,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
     
         try {
             // Llama al servicio para reservar el turno, enviando el idHorario
-            await turnosService.reservarTurno(selectedTurno, idMascota); // Enviar solo el idHorario
+            await turnosService.reservarTurno(selectedTurno, idMascota);
             alert("¡Tu turno ha sido confirmado!");
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");
