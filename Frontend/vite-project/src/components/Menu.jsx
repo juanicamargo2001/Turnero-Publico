@@ -32,7 +32,7 @@ function Menu() {
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/secretaria/turnos" },
+      { label: "Turnos del dia", path: "/secretaria/turnos" },
       // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
