@@ -36,7 +36,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<bool> CrearTurnosAgenda(TurnoHorarioCentroDTO turnoHorarioDTO)
         {
-            List<Turnos> turnoNuevo = new List<Turnos>();
+            List<Turnos> turnoNuevo = [];
 
             int mes = turnoHorarioDTO.TurnosAgenda[0].Month;
 
@@ -79,6 +79,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
             return true;
@@ -86,31 +87,39 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         public async Task<List<TurnoDTO>> ObtenerTurnosHabiles(int IdCentroCastracion, DateTime dia, string tipoAnimal)
         {
-            var turnos = (from C in _dbContext.Centros
-                          join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
-                          join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
-                          join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
-                          join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
-                          join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
-                          where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
-                          && TT.NombreTipo == tipoAnimal
-                          group new { H, TT } by new { T.Dia } into g
-                          select new TurnoDTO
-                          {
-                              Dia = g.Key.Dia,
-                              Hora = g.Select(h => new HoraTurnoResponseDTO
-                              {
-                                  IdHorario = h.H.IdHorario,
-                                  Hora = h.H.Hora,
-                                  TipoTurno = h.TT.NombreTipo
-                              }).ToList()
-                          }).ToList();
+            DateTime ahora = DateTime.UtcNow.AddHours(-3);
 
-            return turnos;
+            if (DateTime.UtcNow.Day <= dia.Day)
+            {
+                var turnos = await (from C in _dbContext.Centros
+                              join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
+                              join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
+                              join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
+                              join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                              join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                              where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
+                              && TT.NombreTipo == tipoAnimal && (T.Dia > ahora.Date || H.Hora >= ahora.TimeOfDay)
+                                    group new { H, TT } by new { T.Dia } into g
+                              select new TurnoDTO
+                              {
+                                  Dia = g.Key.Dia,
+                                  Hora = g.Select(h => new HoraTurnoResponseDTO
+                                  {
+                                      IdHorario = h.H.IdHorario,
+                                      Hora = h.H.Hora,
+                                      TipoTurno = h.TT.NombreTipo
+                                  }).ToList()
+                              }).ToListAsync();
+
+                return turnos;
+            }
+            return [];
         }
 
         public async Task<List<DateTime>> ObtenerDiasTurnos(int IdCentroCastracion, string tipoAnimal)
         {
+            DateTime ahora = DateTime.UtcNow.AddHours(-3);
+
             var turnosDias = (from C in _dbContext.Centros
                               join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
                               join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
@@ -119,6 +128,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                               join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                               where C.Id_centro_castracion == IdCentroCastracion && TT.NombreTipo == tipoAnimal
                               && E.Nombre == EstadoTurno.Libre.ToString()
+                              && DateTime.UtcNow.Day <= T.Dia.Day 
+                              && (T.Dia > ahora.Date || H.Hora >= ahora.TimeOfDay)
                               select T.Dia
                              ).Distinct().ToList();
             return turnosDias;
@@ -174,7 +185,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     
                 }
                 catch (Exception ex) {
-                    
+
+                    Console.WriteLine(ex.Message);
                     return false;
                     
                 }

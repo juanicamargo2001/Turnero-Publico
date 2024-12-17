@@ -20,7 +20,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<bool> GuardarCorreoProgramado(EmailDTO datosEmail, int idHorario)
+        public async Task<bool> GuardarCorreoProgramado(EmailDTO? datosEmail, int idHorario)
         {
             var creado = await this.Crear(new CorreosProgramados 
             {
