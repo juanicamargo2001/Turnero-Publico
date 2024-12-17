@@ -22,7 +22,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [error, setError] = React.useState(null); // Estado para manejar errores
     const timesContainerRef = React.useRef(null); // Referencia al contenedor de horarios
     const location = useLocation();
-    const { tipoAnimal } = location.state || {}; // Obtiene tipoAnimal desde el estado
+    const { tipoAnimal,idMascota } = location.state || {}; // Obtiene tipoAnimal desde el estado
 
     React.useEffect(() => {
         // Llamada a la API para obtener las fechas del turno por ID
@@ -72,7 +72,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
     
         try {
             // Llama al servicio para reservar el turno, enviando el idHorario
-            await turnosService.reservarTurno(selectedTurno); // Enviar solo el idHorario
+            await turnosService.reservarTurno(selectedTurno, idMascota);
             alert("¡Tu turno ha sido confirmado!");
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");

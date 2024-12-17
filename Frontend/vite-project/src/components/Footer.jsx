@@ -1,13 +1,13 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import footerImg from "../imgs/footer.png"; // Ruta de la imagen
+import "./footer.css";
 
 const Footer = () => {
   return (
-    <footer className="bg-light">
-      <div className="container maven-pro-bodymaven-pro-body">
+    <footer className="bg-light pb-0">
+      <div className="container">
         <div className="row justify-content-center text-center">
-
           <div className="col-md-4 p-4">
             <h6 className="mb-3">Seguinos en nuestras redes</h6>
             <div className="d-flex justify-content-center gap-3">
@@ -29,8 +29,6 @@ const Footer = () => {
               </a>
             </div>
           </div>
-
-          {/* Solicitar turno */}
           <div className="col-md-4 p-4">
             <h6 className="mb-3">
               Podés solicitar un turno comunicándote al:
@@ -45,9 +43,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        {/* Imagen del footer */}
-        <div className="footer-image-container">
+        <div className="footer-image-container mt-0">
           <img src={footerImg} alt="Logos del footer" className="footer-image" />
         </div>
       </div>

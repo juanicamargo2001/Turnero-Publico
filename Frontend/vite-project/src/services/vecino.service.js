@@ -1,4 +1,5 @@
 import axios from "axios";
+import loginService from "./login.service";
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/vecino'; // Asegúrate de que esta URL sea correcta
 
@@ -33,6 +34,78 @@ async function ProcesarImagen(imagen) {
     }
 }
 
+async function obtenerVecinoXDNI(nroDNI) {
+  const token = await loginService.obtenerTokenConRenovacion()
+
+  try{
+    const response = await axios.get(`${API_URL}/dni?dni=${nroDNI}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+    });
+    return response.data
+  } catch (error) {
+    console.error(`Error al buscar el vecino con DNI ${nroDNI}: `, error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
+async function GrabarVecinoMinimo(vecinoMinimo) {
+  try {
+    const token = await loginService.obtenerTokenConRenovacion();
+
+    const response = await axios.post(`${API_URL}/vecinoMinimo`, vecinoMinimo,{
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+    });
+  return response.data;
+  } catch (error) {
+  console.error("Error al grabar el vecino:", error.response ? error.response.data : error.message);
+  throw error; 
+  }
+}
+
+async function ObtenerPerfil() {
+  try {
+    const token = await loginService.obtenerTokenConRenovacion();
+
+    const response = await axios.get(`${API_URL}/perfilPorUsuario`,{
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+    });
+  return response.data;
+  } catch (error) {
+  console.error("Error al obtener los datos del vecino:", error.response ? error.response.data : error.message);
+  throw error; 
+  }
+}
+
+async function EditarVecino(datosVecino) {
+  try {
+    const token = await loginService.obtenerTokenConRenovacion();
+
+    const response = await axios.put(`${API_URL}/editarVecino`, datosVecino, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` 
+      },
+    });
+  return response.data;
+  } catch (error) {
+  console.error("Error al modificar los datos del vecino:", error.response ? error.response.data : error.message);
+  throw error; 
+  }
+}
+
 /*async function BuscarTodos() {
     try {
         const response = await axios.get(`${API_URL}`, {
@@ -64,5 +137,5 @@ async function Modificar(nuevoCentro) {
 }*/
 
 export const vecinoService={
-    Grabar, ProcesarImagen
+    Grabar, ProcesarImagen, obtenerVecinoXDNI, GrabarVecinoMinimo, ObtenerPerfil, EditarVecino
 }

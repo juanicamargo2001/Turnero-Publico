@@ -1,0 +1,180 @@
+.parallax-container {
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+  }
+  
+  .parallax-layer {
+    position: absolute;
+    width: 100%;
+    height: 88%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .parallax-layer img {
+    width: auto;
+    object-fit: contain;
+  }
+  
+  .background {
+    background-color: #009EE2; /* Fondo azul */
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .text-container {
+    font-family: 'Maven Pro';
+    position: absolute;
+    color: rgb(255, 255, 255);
+    font-size: 5rem;
+    font-weight: bold;
+  }
+
+  .cat1 {
+    z-index: 3;
+    left: -20%;
+    
+  }
+  
+  .dog1 {
+    z-index: 2;
+    left: -35%;
+    top: 15%;
+  }
+
+  .cat2 {
+    z-index: 1;
+    left: -23%;
+    top: -3%;
+  }
+  
+  .dog2 {
+    z-index: 1;
+    top: -3%;
+    left: -30%;
+  }
+  
+  .text-container {
+    top: 35%;
+    left: 60%;
+  }
+
+  .parallax-layer.cat1 img {
+    height: 90vh; /* Tamaño específico para cat1 */
+  }
+
+  .parallax-layer.cat2 img {
+    height: 60vh; /* Tamaño específico para cat1 */
+  }
+
+  .parallax-layer.dog1 img {
+    height: 60vh; /* Tamaño específico para cat1 */
+  }
+
+  .parallax-layer.dog2 img {
+    height: 40vh; /* Tamaño específico para cat1 */
+  }
+
+  @media (max-width: 1180px) {
+    .cat2 {
+        left: -20%;
+    }
+  }
+
+  @media (max-width: 900px) {
+
+    .parallax-layer.cat1 img {
+        height: 80vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.cat2 img {
+        height: 50vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog1 img {
+        height: 40vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog2 img {
+        height: 30vh; /* Tamaño específico para cat1 */
+      }
+
+  }
+
+  @media (max-width: 900px) {
+
+    .parallax-layer.cat1 img {
+        height: 70vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.cat2 img {
+        height: 40vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog1 img {
+        height: 30vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog2 img {
+        height: 20vh; /* Tamaño específico para cat1 */
+      }
+
+  }
+
+  @media (max-width: 700px) {
+
+    .parallax-layer.cat1 img {
+        height: 60vh; /* Tamaño específico para cat1 */
+      }
+
+  }
+
+  @media (max-width: 550px) {
+
+    .parallax-layer.cat1 img {
+        height: 40vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.cat2 img {
+        height: 20vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog1 img {
+        height: 30vh; /* Tamaño específico para cat1 */
+      }
+    
+      .parallax-layer.dog2 img {
+        height: 20vh; /* Tamaño específico para cat1 */
+      }
+
+      .cat1 {
+        z-index: 3;
+        left: -20%;
+        
+      }
+      
+      .dog1 {
+        z-index: 2;
+        left: -35%;
+        top: 4%;
+      }
+    
+      .cat2 {
+        z-index: 1;
+        left: -20%;
+        top: -9%;
+      }
+      
+      .dog2 {
+        z-index: 1;
+        top: -10%;
+        left: -30%;
+      }
+
+
+
+  }

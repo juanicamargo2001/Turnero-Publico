@@ -45,7 +45,4 @@ async function cancelarTurno(idHorario) {
   }
 }
 
-export const turnosService = {
-  obtenerMisTurnos,
-  cancelarTurno
-};
+export default { obtenerMisTurnos, cancelarTurno };

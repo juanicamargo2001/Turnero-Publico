@@ -1,32 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from '../imgs/logoBiocCordoba.png'; // Ajusta la ruta según la ubicación del archivo
-import loginService from "../services/login.service";
-import { useUserRole } from "./Login/UserRoleContext";
+import UserRoleContext from "./Login/UserRoleContext";
 import Cookies from 'js-cookie';
 
 function Menu() {
-  // Simula el rol del usuario. Puedes obtenerlo desde un servicio o contexto en una aplicación real.
-  //const [userRole, setUserRole] = useState("default");// Cambia el rol para probar: "administrador" o "vecino"
-  const { userRole, setUserRole } = useUserRole();
+  const { userRole, setUserRole } = useContext(UserRoleContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const rol = await loginService.userRol();
-        setUserRole(rol); // Actualiza el estado con el rol obtenido
-      } catch (error) {
-        console.log("Error al obtener el rol", error);
-      }
-    };
-  
-    fetchUserRole();
-  }, []);
-
   const handleLogout = () => {
-    setUserRole("default");
+    setUserRole({nombre:"", rol:"default"});
 
     Cookies.remove('token');
     Cookies.remove('refreshToken');
@@ -38,27 +22,62 @@ function Menu() {
   // Opciones de menú según el rol
   const menuOptions = {
     default: [
-      { label: "inicio", path: "/" },
+      { label: "Iniciar Sesión", path: "/iniciarsesion" },
+      { label: "Registrarse", path: "/registrar/vecino" }
     ],
-    administrador: [
+    secretaria: [
+      { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
-      { label: "Habilitar turnero", path: "/habilitar/alberdi" },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" },
+      { label: "Turnos del dia", path: "/secretaria/turnos" },
+      { label: "Medicamentos", path: "/medicamentos" },
+      // { label: "Animal", path: "/registrar/animal" },
+    ],
+    administrador: [
+      { label: "Registrar Turno", path: "/asignar/turno" },
+      { label: "Veterinarios", path: "/modificar/veterinario" },
+      { label: "Centros", path: "/modificar/centro" },
+      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      {
+        label: "Habilitar turnero",
+        subOptions: [
+          { label: "Alberdi", path: "/habilitar/alberdi" },
+          { label: "La France", path: "/habilitar/lafrance" },
+          { label: "Villa Allende", path: "/habilitar/villallende" },
+        ],
+      },
+      { label: "Turnos", path: "/turno" },
+      
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },
-      { label: "Mis Turnos", path: "/misTurnos" },
+      // { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" },
+      { label: "Mi perfil", path: "/perfil"}
     ],
+    superAdministrador: [
+      { label: "Veterinarios", path: "/modificar/veterinario" },
+      { label: "Centros", path: "/modificar/centro" },
+      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      {
+        label: "Habilitar turnero",
+        subOptions: [
+          { label: "Alberdi", path: "/habilitar/alberdi" },
+          { label: "La France", path: "/habilitar/lafrance" },
+          { label: "Villa Allende", path: "/habilitar/villallende" },
+        ],
+      },
+      { label: "Registrar Vecino", path: "/registrar/vecino" },
+      { label: "Turnos", path: "/turno" },
+      { label: "Animal", path: "/registrar/animal" },
+    ]
   };
 
   // Selecciona las opciones del menú según el rol del usuario
-  const selectedMenuOptions = menuOptions[userRole] || [];
+  const selectedMenuOptions = menuOptions[userRole.rol] || [];
 
   return (
     <nav className="navbar navbar-expand-lg custom-menu-bg w-100">
@@ -88,31 +107,70 @@ function Menu() {
                 Inicio
               </a>
             </li>*/}
-            {selectedMenuOptions.map((option, index) => (
+            {/* {selectedMenuOptions.map((option, index) => (
               <li key={index} className="nav-item">
                 <a className="nav-link" href={option.path}>
                   {option.label}
                 </a>
               </li>
-            ))}
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="far fa-user"></i> Nombre Apellido
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#" onClick={handleLogout}>
-                    Cerrar Sesion
-                  </a>
-                </li>
-              </ul>
-            </li>
+            ))} */}
+            {selectedMenuOptions.map((option, index) => (
+                <React.Fragment key={index}>
+                  {option.subOptions ? (
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link dropdown-toggle"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        {option.label}
+                      </a>
+                      <ul className="dropdown-menu">
+                        {option.subOptions.map((subOption, subIndex) => (
+                          <li key={subIndex}>
+                            <NavLink className="dropdown-item" to={subOption.path}>
+                              {subOption.label}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ) : (
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to={option.path}>
+                        {option.label}
+                      </NavLink>
+                    </li>
+                  )}
+                </React.Fragment>
+              ))}
+            {userRole.nombre && (
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="far fa-user"></i> {userRole.nombre}
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href="/misTurnos">
+                      Mis Turnos
+                    </a>
+                  </li>
+                  <li>
+                    <a className="dropdown-item" href="#" onClick={handleLogout}>
+                      Cerrar Sesión
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            )}
           </ul>
         </div>
       </div>

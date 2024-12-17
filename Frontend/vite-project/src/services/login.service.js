@@ -3,7 +3,9 @@ import Cookies from 'js-cookie';
 
 const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarSesion';
 const ROL_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/rol';
+const NAME_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/NombreUsuario';
 const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
+const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña'
 
 const login = async (email, clave) => {
   try {
@@ -93,7 +95,57 @@ const userRol = async () => {
   }
 };
 
+const userName = async () => {
+  let token = null;
+  try {
+    token = await obtenerTokenConRenovacion();
+  } catch (error) {
+    console.log("Error al obtener token");
+    throw error;
+  }
+
+  try {
+    const response = await axios.get(NAME_URL, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error al obtener el nombre de usuario:", error.response ? error.response.data : error.message);
+    //return await refreshToken();
+    throw error;
+  }
+};
+
+const changePassword = async (passwordRequest) => {
+  let token = null;
+  try {
+    token = await obtenerTokenConRenovacion();
+  } catch (error) {
+    console.log("Error al obtener token");
+    throw error;
+  }
+
+  try {
+    const response = await axios.put(CHANGEPASS_URL, passwordRequest,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error al cambiar la contraseña:", error.response ? error.response.data : error.message);
+    //return await refreshToken();
+    throw error;
+  }
+};
+
 export default {
   login, obtenerToken,
-  obtenerTokenConRenovacion, userRol
+  obtenerTokenConRenovacion, userRol, userName, changePassword,
 };
