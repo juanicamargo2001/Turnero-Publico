@@ -13,7 +13,7 @@ async function obtenerTurnosPorFecha(fecha) {
         {
           fechaDesde: fecha,
           fechaHasta: fecha,
-          horaDesde: "01:00:00",
+          horaDesde: "00:00:00",
           horaHasta: "23:00:00",
         },
         {
@@ -100,10 +100,16 @@ async function obtenerTurnosPorDni(dni) {
     }
   }
   
-  async function finalizarHorario(idHorario) {
+  async function finalizarHorario(idHorario, idLegajoVeterinario, medicaciones) {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const resp = await axios.post(`${API_URL}/finalizarTurno`,  idHorario , {
+      const body = {
+        idHorario,
+        idLegajoVeterinario,
+        medicaciones,
+      };
+  
+      const resp = await axios.post(`${API_URL}/finalizarTurno`, body, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',
