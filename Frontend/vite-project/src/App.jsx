@@ -34,6 +34,7 @@ import EditarPerfil from "./components/Perfil/EditarPerfil.jsx";
 import Perfil from "./components/Perfil/Perfil.jsx";
 import CambiarContraseña from "./components/Perfil/CambiarContraseña.jsx";
 import ConsultarMedicamentos from "./components/Medicamentos/ConsultarMedicamentos.jsx"
+import ConsultarUnidadesMedida from "./components/Medicamentos/ConsultarUnidadesMedida.jsx"
 
 function App() {
   return (
@@ -226,6 +227,13 @@ function App() {
                 element={
                   <RutaProtegida rolesPermitidos={["secretaria"]}>
                     <ConsultarMedicamentos/>
+                  </RutaProtegida>
+                } /> 
+                
+                <Route path="/unidades"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <ConsultarUnidadesMedida/>
                   </RutaProtegida>
                 } /> 
 
