@@ -87,14 +87,14 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                         await emailPublisher.ConexionConRMQ(mensaje, "email_send_delayed");
 
                         correo.Estado = EstadoCorreo.Enviado.ToString();
-                        dbContext.CorreosProgramados.Update(correo);
                     }
                     catch (Exception ex)
                     {
                         correo.Estado = EstadoCorreo.Fallido.ToString();
-                        dbContext.CorreosProgramados.Update(correo);
                         Console.WriteLine(ex.Message);
                     }
+
+                    await dbContext.SaveChangesAsync();
                 }
 
 
@@ -113,9 +113,9 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                         catch (Exception ex)
                         {
                             correo.Estado = EstadoCorreo.Fallido.ToString();
-                            dbContext.CorreosProgramados.Update(correo);
                             Console.WriteLine(ex.Message);
                         }
+                        await dbContext.SaveChangesAsync();
                     }
                 }
 
@@ -127,11 +127,11 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                     {
                         try
                         {
-                            int estado = (from E in dbContext.Estados
+                            int estadoCancelado = (from E in dbContext.Estados
                                          where E.Nombre == EstadoTurno.Cancelado.ToString()
                                          select E.IdEstado).FirstOrDefault();
 
-                            turno.Id_Estado = estado;
+                            turno.Id_Estado = estadoCancelado;
 
                             dbContext.Horarios.Update(turno);
 
@@ -142,7 +142,6 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                         }
                     }
                 }
-
 
                 await dbContext.SaveChangesAsync();
             }

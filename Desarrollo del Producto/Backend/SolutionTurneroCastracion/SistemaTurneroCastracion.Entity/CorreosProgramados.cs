@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity
@@ -28,6 +29,7 @@ namespace SistemaTurneroCastracion.Entity
 
         public int IdHorario { get; set; }
 
+        [JsonIgnore]
         public virtual Horarios? Horarios { get; set; }
 
 

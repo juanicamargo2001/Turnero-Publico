@@ -23,14 +23,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         private readonly IHorariosRepository _horariosRepository;
 
-        private readonly IUsuarioRepository _usuarioRepository;
 
-
-        public TurnosRepository(CentroCastracionContext dbContext, IHorariosRepository horariosRepository, IUsuarioRepository usuarioRepository) : base(dbContext)
+        public TurnosRepository(CentroCastracionContext dbContext, IHorariosRepository horariosRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _horariosRepository = horariosRepository;
-            _usuarioRepository = usuarioRepository;
         }
 
 
