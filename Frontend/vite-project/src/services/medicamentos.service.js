@@ -54,7 +54,6 @@ const medicamentosService = {
       return response.data;
     } catch (error) {
       console.error('Error al crear el medicamento:', error);
-      loginService.refreshToken();
       throw error;
     }
   },
@@ -74,7 +73,6 @@ const medicamentosService = {
       return response.data;
     } catch (error) {
       console.error('Error al obtener los medicamentos:', error);
-      loginService.refreshToken();
       throw error;
     }
   },
