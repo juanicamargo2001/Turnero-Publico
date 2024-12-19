@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import turnosService from "../../services/turnosSecretaria.service";
 import misTurnosService from "../../services/misTurnos.service";
-import { useNavigate } from 'react-router-dom';
+import { veterinarioService } from "../../services/veterinario.service";
+import medicamentosService from "../../services/medicamentos.service";
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
@@ -11,9 +12,21 @@ const TurnosSecretaria = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedTurno, setSelectedTurno] = useState(null);
-  const navigate = useNavigate()
   const [confirmModal, setConfirmModal] = useState(false);
   const [nuevoEstado, setNuevoEstado] = useState("");
+  const [medicamentoData, setMedicamentoData] = useState({
+    veterinario: "",
+    medicamento: "",
+    dosis: "",
+    unidadMedida: "",
+    descripcion: "",
+  });
+  const [medicamentoModal, setMedicamentoModal] = useState(false);
+  const [veterinarios, setVeterinarios] = useState([]);
+  const [medicamentos, setMedicamentos] = useState([]);
+  const [dosisOptions, setDosisOptions] = useState([]);
+  const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
+  
 
   const estadosPermitidos = {
     Reservado: ["Confirmado", "Cancelado"],
@@ -68,27 +81,89 @@ const TurnosSecretaria = () => {
     }
   };
 
-  const handleEstadoChange = (turno, nuevoEstado) => {
-    setSelectedTurno(turno); // Guardar turno seleccionado
-    setNuevoEstado(nuevoEstado); // Guardar nuevo estado
-    setConfirmModal(true); // Mostrar modal
+  useEffect(() => {
+    const fetchVeterinarios = async () => {
+      try {
+        const data = await veterinarioService.BuscarTodos(); // Suponiendo que esta es la función para obtener veterinarios
+        setVeterinarios(data.result);
+      } catch (err) {
+        console.error("Error al obtener veterinarios:", err);
+      }
+    };
+
+    const fetchMedicamentos = async () => {
+      try {
+        const data = await medicamentosService.obtenerMedicamentos();
+        setMedicamentos(data.result);
+      } catch (err) {
+        console.error("Error al obtener medicamentos:", err);
+      }
+    };
+
+    const fetchUnidades = async () => {
+      try {
+        const data = await medicamentosService.obtenerUnidadesMedida();
+        setUnidadMedidaOptions(data.result);
+      } catch (err) {
+        console.error("Error al obtener unidades de medida:", err);
+      }
+    };
+
+    fetchVeterinarios();
+    fetchMedicamentos();
+    fetchUnidades();
+  }, []);
+
+  const handleMedicamentoInput = (e) => {
+    const { name, value } = e.target;
+    setMedicamentoData({ ...medicamentoData, [name]: value });
   };
-  
+
+  const handleMedicamentoSubmit = () => {
+    const { veterinario, medicamento, dosis, unidadMedida, descripcion } = medicamentoData;
+    if (!veterinario || !medicamento || !dosis || !unidadMedida || !descripcion) {
+      setError("Todos los campos son obligatorios.");
+      return;
+    }
+    setMedicamentoModal(false);
+    setConfirmModal(true); // Mostrar modal de confirmación
+  };
+
+  const handleEstadoChange = (turno, nuevoEstado) => {
+    setSelectedTurno(turno);
+    setNuevoEstado(nuevoEstado);
+
+    if (nuevoEstado === "Realizado") {
+      setMedicamentoModal(true); // Abrir modal para datos del medicamento
+    } else {
+      setConfirmModal(true); // Mostrar modal de confirmación
+    }
+  };
+
   const handleConfirmChange = async () => {
-    setConfirmModal(false); // Cerrar modal
+    setConfirmModal(false); // Cerrar modal de confirmación
     try {
       setLoading(true);
-      if (nuevoEstado === "Cancelado") {
+      if (nuevoEstado === "Realizado") {
+        
+        
+        const medicaciones = [{
+          medicamento: medicamentoData.medicamento,      // Asegúrate de que este valor corresponda al nombre del medicamento
+          dosis: parseInt(medicamentoData.dosis, 10),             // Dosis del medicamento
+          unidadMedida: medicamentoData.unidadMedida, // Unidad de medida (ml, mg, etc.)
+          descripcion: medicamentoData.descripcion  // Descripción del medicamento
+        }]
+
+        await turnosService.finalizarHorario(selectedTurno.idHorario, parseInt(medicamentoData.veterinario, 10), medicaciones);
+        
+      } else if (nuevoEstado === "Cancelado") {
         await misTurnosService.cancelarTurno(selectedTurno.idHorario);
       } else if (nuevoEstado === "Confirmado") {
         await turnosService.confirmarTurno(selectedTurno.idHorario);
       } else if (nuevoEstado === "Ingresado") {
         await turnosService.confirmarIngreso(selectedTurno.idHorario);
-      } else if (nuevoEstado === "Realizado") {
-        await turnosService.finalizarHorario(selectedTurno.idHorario);
       }
-  
-      // Actualizar estado de la tabla
+
       setTurnos((prevTurnos) =>
         prevTurnos.map((t) =>
           t.idHorario === selectedTurno.idHorario
@@ -96,7 +171,6 @@ const TurnosSecretaria = () => {
             : t
         )
       );
-      console.log(`Turno con ID ${selectedTurno.idHorario} actualizado a ${nuevoEstado}`);
     } catch (err) {
       setError("Error al realizar la acción");
       console.error("Error:", err);
@@ -104,19 +178,25 @@ const TurnosSecretaria = () => {
       setLoading(false);
     }
   };
-  
-
- 
 
   const handleCloseModal = () => {
     setConfirmModal(false);
+    setMedicamentoModal(false);
     setSelectedTurno(null);
     setNuevoEstado("");
+    setMedicamentoData({
+      veterinario: "",
+      medicamento: "",
+      dosis: "",
+      unidadMedida: "",
+      descripcion: "",
+    });
   };
 
   return (
     <div className="container mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
+      {/* Formulario de búsqueda de turnos */}
       <form
         className="filterForm d-flex justify-content-center align-items-center gap-3"
         onSubmit={handleBuscar}
@@ -148,8 +228,8 @@ const TurnosSecretaria = () => {
           </button>
         </div>
       </form>
-      {loading && <p className="loading">Cargando...</p>}
-      {error && <p className="error text-danger">{error}</p>}
+
+      {/* Tabla de turnos */}
       <div className="tableContainer">
         <table className="table table-striped table-hover">
           <thead>
@@ -166,40 +246,31 @@ const TurnosSecretaria = () => {
             {turnos.length > 0 ? (
               turnos.map((turno) => (
                 <tr key={turno.idHorario}>
-                  <td className="text-uppercase">
-                    {turno.nombre} {turno.apellido}
-                  </td>
+                  <td className="text-uppercase">{turno.nombre} {turno.apellido}</td>
                   <td>{turno.dni}</td>
                   <td>{turno.tipoServicio}</td>
                   <td>{turno.hora}</td>
                   <td>
-                    <span
-                      className={`badge ${
-                        turno.estado === "Realizado"
-                          ? "bg-success"
-                          : turno.estado === "Cancelado"
-                          ? "bg-danger"
-                          : turno.estado === "Confirmado"
-                          ? "bg-info"
-                          : turno.estado === "Ingresado"
-                          ? "bg-secondary"
-
-                          : "bg-primary"
-                      }`}
-                    >
+                    <span className={`badge ${
+                      turno.estado === "Realizado" ? "bg-success" : 
+                      turno.estado === "Cancelado" ? "bg-danger":
+                      turno.estado === "Ingresado" ? "bg-secondary":
+                      turno.estado === "Confirmado" ? "bg-info":
+                      turno.estado === "Ingresado" ? "bg-dark"
+                      : "bg-primary"}`}>
                       {turno.estado}
                     </span>
                   </td>
                   <td>
-                  {estadosPermitidos[turno.estado]?.map((estado) => (
-                    <button
-                      key={estado}
-                      className="btn btn-outline-primary btn-sm me-2"
-                      onClick={() => handleEstadoChange(turno, estado)}
-                    >
-                      {estado}
-                    </button>
-                  ))}
+                    {estadosPermitidos[turno.estado]?.map((estado) => (
+                      <button
+                        key={estado}
+                        className="btn btn-outline-primary btn-sm me-2"
+                        onClick={() => handleEstadoChange(turno, estado)}
+                      >
+                        {estado}
+                      </button>
+                    ))}
                   </td>
                 </tr>
               ))
@@ -214,37 +285,133 @@ const TurnosSecretaria = () => {
         </table>
       </div>
 
-      {confirmModal && (
+      {/* Modal de medicamento */}
+      {medicamentoModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Confirmar cambio de estado</h5>
+                <h5 className="modal-title">Registrar Medicamento</h5>
                 <button type="button" className="close" onClick={handleCloseModal}>
                   <span>&times;</span>
                 </button>
               </div>
               <div className="modal-body">
-                <p>
-                  ¿Estás seguro de que deseas cambiar el estado del turno de {selectedTurno?.nombre} {selectedTurno?.apellido} a "{nuevoEstado}"?
-                </p>
+                <form>
+                  <div className="form-group">
+                    <label>Veterinario:</label>
+                    <select
+                      name="veterinario"
+                      value={medicamentoData.veterinario}
+                      onChange={handleMedicamentoInput}
+                      className="form-control"
+                    >
+                      <option value="">Seleccione un veterinario</option>
+                      {veterinarios.map((veterinario) => (
+                        <option key={veterinario.idLegajo} value={veterinario.idLegajo}>
+                          {veterinario.nombre} {veterinario.apellido} - {veterinario.dni}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Medicamento:</label>
+                    <select
+                      name="medicamento"
+                      value={medicamentoData.medicamento}
+                      onChange={handleMedicamentoInput}
+                      className="form-control"
+                    >
+                      <option value="">Seleccione un medicamento</option>
+                      {medicamentos.map((medicamento) => (
+                        <option key={medicamento.id} value={medicamento.id}>
+                          {medicamento.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                  <label>Dosis:</label>
+                  <input
+                    type="number"
+                    name="dosis"
+                    value={medicamentoData.dosis}
+                    onChange={handleMedicamentoInput}
+                    className="form-control"
+                    min="1"   // valor mínimo
+                   
+                    step="1"  // paso de incremento
+                    placeholder="Escriba la dosis necesaria"
+                  />
+                </div>
+                  <div className="form-group">
+                    <label>Unidad de Medida:</label>
+                    <select
+                      name="unidadMedida"
+                      value={medicamentoData.unidadMedida}
+                      onChange={handleMedicamentoInput}
+                      className="form-control"
+                    >
+                      <option value="">Seleccione unidad</option>
+                      {unidadMedidaOptions.map((unidad) => (
+                      <option key={unidad.idUnidad} value={unidad.tipoUnidad}>
+                     {unidad.tipoUnidad}
+                    </option>
+                    ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Descripción:</label>
+                    <input
+                      type="text"
+                      name="descripcion"
+                      value={medicamentoData.descripcion}
+                      onChange={handleMedicamentoInput}
+                      className="form-control"
+                      placeholder="Descripción del medicamento"
+                    />
+                  </div>
+                </form>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-primary" onClick={handleConfirmChange}>
-                  Continuar
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                  Cerrar
                 </button>
-                <button className="btn btn-secondary" onClick={handleCloseModal}>
-                  Cancelar
+                <button type="button" className="btn btn-primary" onClick={handleMedicamentoSubmit}>
+                  Confirmar
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
-      <div>
-        <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3">Registrar Turno Urgencia</button>
-        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3" >Registrar Turno Telefono</button>
-      </div>
+
+      {/* Modal de confirmación */}
+      {confirmModal && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirmación de Acción</h5>
+                <button type="button" className="close" onClick={handleCloseModal}>
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                ¿Está seguro de que desea cambiar el estado del turno?
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                  Cancelar
+                </button>
+                <button type="button" className="btn btn-primary" onClick={handleConfirmChange}>
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

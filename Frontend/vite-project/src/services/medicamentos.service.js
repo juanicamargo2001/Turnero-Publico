@@ -26,7 +26,7 @@ const medicamentosService = {
   obtenerUnidadesMedida: async () => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.get(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, {
+      const response = await axios.get(`${API_BASE_URL}/UnidadMedida/obtenerUnidadesMedida`, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const medicamentosService = {
   crearMedicamento: async (medicamento) => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.post(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, medicamento, {
+      const response = await axios.post(`${API_BASE_URL}/Medicamento/crearMedicamento`, medicamento, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const medicamentosService = {
   obtenerMedicamentos: async () => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.get(`https://deep-ghoul-socially.ngrok-free.app/api/Medicamento/obtenerMedicamentos`, {
+      const response = await axios.get(`${API_BASE_URL}/Medicamento/obtenerMedicamentos`, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
