@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import turnosService from "../../services/turnosSecretaria.service";
 import misTurnosService from "../../services/misTurnos.service";
+import { useNavigate } from 'react-router-dom';
 import { veterinarioService } from "../../services/veterinario.service";
 import medicamentosService from "../../services/medicamentos.service";
 
@@ -26,12 +27,14 @@ const TurnosSecretaria = () => {
   const [medicamentos, setMedicamentos] = useState([]);
   const [dosisOptions, setDosisOptions] = useState([]);
   const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
-  
+  const navigate = useNavigate();
 
   const estadosPermitidos = {
     Reservado: ["Confirmado", "Cancelado"],
     Confirmado: ["Ingresado"],
     Ingresado: ["Realizado"],
+
+    
   };
 
   const fetchTurnosPorFecha = async (fecha) => {
@@ -425,7 +428,14 @@ const TurnosSecretaria = () => {
           </div>
         </div>
       )}
+
+
+    <div>
+        <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
+        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
+      </div>
     </div>
+
   );
 };
 
