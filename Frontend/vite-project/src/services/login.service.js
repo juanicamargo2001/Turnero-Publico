@@ -42,9 +42,11 @@ const refreshToken = async () => {
   try {
     // Enviar solicitud de refresco de token con el refreshToken
     const response = await axios.post(REFRESH_URL, {
-      tokenExpirado: Cookies.get('token'),
+      tokenExpirado: obtenerToken(),
+      
       refreshToken: refresh
     });
+    console.log(Cookies.get('refreshToken'));
 
     const { token, refreshToken } = response.data.result;
 

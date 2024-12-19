@@ -123,6 +123,7 @@ const TurnosSecretaria = () => {
     const { veterinario, medicamento, dosis, unidadMedida, descripcion } = medicamentoData;
     if (!veterinario || !medicamento || !dosis || !unidadMedida || !descripcion) {
       setError("Todos los campos son obligatorios.");
+      console.log("Error")
       return;
     }
     setMedicamentoModal(false);
@@ -234,8 +235,9 @@ const TurnosSecretaria = () => {
         <table className="table table-striped table-hover">
           <thead>
             <tr>
-              <th>Nombre y apellido</th>
+              <th>Nombre y Apellido</th>
               <th>DNI</th>
+              <th>Centro de Castración</th>
               <th>Tipo Animal</th>
               <th>Hora</th>
               <th>Estado</th>
@@ -248,6 +250,7 @@ const TurnosSecretaria = () => {
                 <tr key={turno.idHorario}>
                   <td className="text-uppercase">{turno.nombre} {turno.apellido}</td>
                   <td>{turno.dni}</td>
+                  <td>{turno.centroCastracion}</td>
                   <td>{turno.tipoServicio}</td>
                   <td>{turno.hora}</td>
                   <td>
@@ -289,14 +292,14 @@ const TurnosSecretaria = () => {
       {medicamentoModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content p-4">
               <div className="modal-header">
-                <h5 className="modal-title">Registrar Medicamento</h5>
-                <button type="button" className="close" onClick={handleCloseModal}>
-                  <span>&times;</span>
+                <h5 className="maven-pro-title">Registrar Medicamento</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}>
+                  
                 </button>
               </div>
-              <div className="modal-body">
+              <div className="maven-pro-body">
                 <form>
                   <div className="form-group">
                     <label>Veterinario:</label>
@@ -390,14 +393,14 @@ const TurnosSecretaria = () => {
       {confirmModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content p-4">
               <div className="modal-header">
-                <h5 className="modal-title">Confirmación de Acción</h5>
-                <button type="button" className="close" onClick={handleCloseModal}>
-                  <span>&times;</span>
+                <h5 className="maven-pro-title">Confirmación de Acción</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}>
+                  
                 </button>
               </div>
-              <div className="modal-body">
+              <div className="maven-pro-body p-4">
                 ¿Está seguro de que desea cambiar el estado del turno?
               </div>
               <div className="modal-footer">
