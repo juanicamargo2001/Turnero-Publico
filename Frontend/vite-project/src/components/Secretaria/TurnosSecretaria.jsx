@@ -126,6 +126,7 @@ const TurnosSecretaria = () => {
       console.log("Error")
       return;
     }
+    setError(null);
     setMedicamentoModal(false);
     setConfirmModal(true); // Mostrar modal de confirmación
   };
@@ -279,7 +280,7 @@ const TurnosSecretaria = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="7" className="text-center">
                   No se encontraron turnos.
                 </td>
               </tr>
@@ -299,7 +300,16 @@ const TurnosSecretaria = () => {
                   
                 </button>
               </div>
+
+
               <div className="maven-pro-body">
+
+              {error && ( // Mostrar mensaje de error si existe
+                 <div className="alert alert-danger" role="alert">
+                 {error}
+                  </div>
+               )}
+
                 <form>
                   <div className="form-group">
                     <label>Veterinario:</label>

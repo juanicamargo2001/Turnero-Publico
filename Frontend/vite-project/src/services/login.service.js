@@ -13,7 +13,7 @@ const login = async (email, clave) => {
     const { token, refreshToken } = response.data.result;
 
     // Guardar tokens en cookies con tiempos de expiración específicos
-    Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos = 1/48 de un día
+    Cookies.set('token', token, { expires: 50 / (24 * 60) }); // 50 minutos
     Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
 
     return response.data;
