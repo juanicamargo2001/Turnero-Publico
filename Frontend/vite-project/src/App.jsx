@@ -218,7 +218,7 @@ function App() {
 
               <Route path="/perfil"
                 element={
-                  <RutaProtegida rolesPermitidos={["vecino"]}>
+                  <RutaProtegida rolesPermitidos={["vecino", "secretaria", "administrador", "superAdministrador"]}>
                     <Perfil/>
                   </RutaProtegida>
                 } />  

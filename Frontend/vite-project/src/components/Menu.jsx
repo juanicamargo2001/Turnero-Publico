@@ -62,8 +62,7 @@ function Menu() {
     vecino: [
       { label: "Turnos", path: "/turno" },
       // { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" },
-      { label: "Mi perfil", path: "/perfil"}
+      { label: "Animal", path: "/registrar/animal" }
     ],
     superAdministrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
@@ -165,6 +164,11 @@ function Menu() {
                   <i className="far fa-user"></i> {userRole.nombre}
                 </a>
                 <ul className="dropdown-menu">
+                  <li>
+                    <a className="dropdown-item" href="/perfil">
+                      Mi perfil
+                    </a>
+                  </li>
                   <li>
                     <a className="dropdown-item" href="/misTurnos">
                       Mis Turnos

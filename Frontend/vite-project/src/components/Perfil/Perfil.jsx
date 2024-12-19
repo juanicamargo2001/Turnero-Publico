@@ -1,30 +1,52 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import loginService from '../../services/login.service'
 import EditarPerfil from './EditarPerfil'
 import CambiarContraseña from './CambiarContraseña'
+import EditarPeriflRol from './EditarPeriflRol'
 
 export default function Perfil() {
     const [nombreUsuario, setNombreUsuario] = useState(null)
     const [apellidoUsuario, setApellidoUsuario] = useState(null)
-    const [seccionActiva, setSeccionActiva] = useState("editarPerfil")
+    const [userRole, setUserRole] = useState(null)
+    const [seccionActiva, setSeccionActiva] = useState(null)
 
     const fetchNombreUsuario = async () => {
         try {
             const dataUsuario = await loginService.userName();
+            const rolUsuario = await loginService.userRol();
+
+            if (rolUsuario === "vecino") {
+              setSeccionActiva("editarPerfil");
+            } else {
+              setSeccionActiva("editarPerfil2");
+            }
+
+            setUserRole(rolUsuario)
             setNombreUsuario(dataUsuario.nombre)
             setApellidoUsuario(dataUsuario.apellido)
+
+            //console.log(userRole)
         } catch (error) {
             setNombreUsuario(null)
             alert("Error al cargar los datos del usuario")
         }
     }
 
+    const handleEditarPerfil = () =>{
+      if(userRole === "vecino"){
+        setSeccionActiva("editarPerfil")
+      }else{
+        setSeccionActiva("editarPerfil2")
+      }
+    }
+
     useEffect(() => {
-        fetchNombreUsuario()
+      setSeccionActiva(null);
+      fetchNombreUsuario()
     }, [])
 
-    if (!apellidoUsuario || !nombreUsuario) return <div>Cargando...</div>
+    if (!apellidoUsuario || !nombreUsuario || !userRole) return <div>Cargando...</div>
     
   return (
     <div className="container mt-4">
@@ -35,8 +57,9 @@ export default function Perfil() {
         <div style={{ flex: "0.3", borderRight: "1px solid #ddd" }}>
           <div>
             <button
-              className={`btn btn-link ${seccionActiva === "editarPerfil" ? "active" : ""}`}
-              onClick={() => setSeccionActiva("editarPerfil")}
+              className={`btn btn-link ${(seccionActiva === "editarPerfil" || 
+                                          seccionActiva === "editarPerfil2") ? "active" : ""}`}
+              onClick={() => handleEditarPerfil()}
             >
               Editar Perfil
             </button>
@@ -54,6 +77,11 @@ export default function Perfil() {
         {/* Columna de la derecha para renderizar componentes */}
         <div style={{ flex: "0.7", paddingLeft: "20px" }}>
           {seccionActiva === "editarPerfil" && <EditarPerfil />}
+          {seccionActiva === "editarPerfil2" && <EditarPeriflRol
+            nombre={nombreUsuario}
+            apellido={apellidoUsuario}
+            rol={userRole}
+          />}
           {seccionActiva === "cambiarContraseña" && <CambiarContraseña />}
         </div>
       </div>
