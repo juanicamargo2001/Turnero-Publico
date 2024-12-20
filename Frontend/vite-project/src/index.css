@@ -19,7 +19,7 @@
 }
 
 .maven-pro-body {
-  font-family: "Maven Pro", "Albert Sans", sans-serif;
+  font-family: "Albert Sans", sans-serif;
   font-optical-sizing: auto;
   font-weight: 500; 
   font-style: normal;
@@ -597,6 +597,27 @@ div.containerPaso1 {
   .card-option.maven-pro-body {
     align-self: stretch;
   }
+}
+
+/* Reportes */
+.custom-tabs .nav-link {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-bottom-color: transparent;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-tabs .nav-link.active,
+.custom-tabs .nav-item.show .nav-link {
+  background-color: #CDE9FF !important;
+  color: #4A4A4A !important;
+  border-color: #CDE9FF !important;
+}
+
+.custom-tabs .nav-link:hover:not(.active) {
+  background-color: #d1d1d1;
+  color: #495057;
 }
 
 

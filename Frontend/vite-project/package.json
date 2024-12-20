@@ -30,6 +30,8 @@
     "react-flatpickr": "^3.10.13",
     "react-hook-form": "^7.53.0",
     "react-router-dom": "^6.26.2",
+    "react-spinners": "^0.15.0",
+    "recharts": "^2.15.0",
     "sweetalert2": "^11.14.5"
   },
   "devDependencies": {

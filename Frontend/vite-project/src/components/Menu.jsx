@@ -76,9 +76,7 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
-      { label: "Registrar Vecino", path: "/registrar/vecino" },
-      { label: "Turnos", path: "/turno" },
-      { label: "Animal", path: "/registrar/animal" },
+      { label: "Estadisticas", path: "/reportes" },
     ]
   };
 
