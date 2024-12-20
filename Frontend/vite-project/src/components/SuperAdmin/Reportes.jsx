@@ -5,7 +5,6 @@ import { PieChart, Pie, Cell, Tooltip as PieTooltip } from "recharts";
 import { reportesService } from "../../services/reportes.service";
 import { DotLoader } from "react-spinners";
 
-
 const COLORS = ["#14B3B7", "#878BB6"]; 
 
 const Reportes = () => {
@@ -33,7 +32,8 @@ const Reportes = () => {
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
   }
-// circulos de carga 
+
+  // Cargando los gráficos
   if (!dataTipoAnimal || !dataCancelaciones) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
@@ -41,7 +41,16 @@ const Reportes = () => {
       </div>
     );
   }
-  
+
+  const pieDataTipoAnimal = [
+    { name: "Gatos", value: dataTipoAnimal.porcentajeGato },
+    { name: "Perros", value: dataTipoAnimal.porcentajePerro },
+  ];
+
+  const barDataTipoAnimal = [
+    { name: "Gatos", value: dataTipoAnimal.gatos, porcentaje: dataTipoAnimal.porcentajeGato },
+    { name: "Perros", value: dataTipoAnimal.perros, porcentaje: dataTipoAnimal.porcentajePerro },
+  ];
 
   const pieDataCancelaciones = [
     { name: "Cancelados", value: dataCancelaciones.porcentajeCancelados },
@@ -88,7 +97,7 @@ const Reportes = () => {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={pieDataCancelaciones}
+                        data={pieDataTipoAnimal}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
@@ -97,7 +106,7 @@ const Reportes = () => {
                         fill="#8884d8"
                         label={({ name, value }) => `${name}: ${value.toFixed(2)}%`}
                       >
-                        {pieDataCancelaciones.map((entry, index) => (
+                        {pieDataTipoAnimal.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
                             fill={COLORS[index % COLORS.length]}
@@ -114,7 +123,7 @@ const Reportes = () => {
               <Card>
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barDataCancelaciones}>
+                    <BarChart data={barDataTipoAnimal}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="name" />
                       <YAxis />
