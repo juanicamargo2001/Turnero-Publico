@@ -8,14 +8,19 @@ const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/Obte
 const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña';
 const RECOVER_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/recuperarContraseña';
 
+
+
 const login = async (email, clave) => {
   try {
     const response = await axios.post(API_URL, { email, clave });
     const { token, refreshToken } = response.data.result;
 
     // Guardar tokens en cookies con tiempos de expiración específicos
-    Cookies.set('token', token, { expires: 50 / (24 * 60) }); // 50 minutos
+    Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos
+    Cookies.set('tokenG', token, { expires: 1 });
     Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
+
+ 
 
     return response.data;
   } catch (error) {
@@ -43,16 +48,18 @@ const refreshToken = async () => {
   try {
     // Enviar solicitud de refresco de token con el refreshToken
     const response = await axios.post(REFRESH_URL, {
-      tokenExpirado: obtenerToken(),
+      tokenExpirado: Cookies.get('tokenG'),
       
       refreshToken: refresh
     });
     console.log(Cookies.get('refreshToken'));
 
     const { token, refreshToken } = response.data.result;
+   
 
     // Guardar los nuevos tokens en cookies
     Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos
+    Cookies.set('tokenG', token, { expires: 1 });
     Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
 
     return token; // Retorna el nuevo token

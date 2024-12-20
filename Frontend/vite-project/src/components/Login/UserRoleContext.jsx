@@ -82,9 +82,7 @@ export const UserRoleProvider = (props) => {
       sessionStorage.setItem('userRole', JSON.stringify(encryptedData));
       sessionStorage.setItem('cryptoKey', JSON.stringify(await crypto.subtle.exportKey('jwk', key)));
     };
-    if (userRole.rol !== 'default') {
-      storeUserRole();
-    }
+    storeUserRole();
   }, [userRole]);
 
   return (

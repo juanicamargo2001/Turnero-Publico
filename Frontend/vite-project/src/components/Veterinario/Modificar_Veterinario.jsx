@@ -94,11 +94,13 @@ const Veterinarios = () => {
     return (
         <div className="container mt-4">
             <h2 className="maven-pro-title">VETERINARIOS</h2>
-            <div className="d-flex justify-content-between mb-3">
-                <a href='/registrar/veterinario'>
-                    <button className="btn btn-primary confir2">Crear Veterinario</button>
+            <div className="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3"
+                style={{ gap: '10px' }}
+            >
+                <a href='/registrar/veterinario' className="mb-2 mb-md-0">
+                    <button className="btn btn-primary confir2 w-100 w-md-auto">Crear Veterinario</button>
                 </a>
-                <div className="input-group w-25">
+                <div className="input-group w-100 w-md-25">
                     <input 
                         type="number" 
                         className="form-control" 
@@ -113,7 +115,7 @@ const Veterinarios = () => {
                     </span>
                 </div>
             </div>
-            <table>
+            <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Legajo</th>

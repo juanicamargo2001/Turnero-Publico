@@ -50,7 +50,7 @@ const RegistroVeterinarioXCentro = () => {
     return (
         <div className="container mt-4">
             <h2 className="maven-pro-title">ASIGNAR CENTRO DE CASTRACIÓN A VETERINARIO</h2>
-            <table>
+            <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Legajo</th>

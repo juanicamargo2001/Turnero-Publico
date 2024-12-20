@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import turnosService from "../../services/turnosSecretaria.service";
 import misTurnosService from "../../services/misTurnos.service";
+import { useNavigate } from 'react-router-dom';
 import { veterinarioService } from "../../services/veterinario.service";
 import medicamentosService from "../../services/medicamentos.service";
+import "./turnosSecretaria.css";
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
@@ -26,12 +28,14 @@ const TurnosSecretaria = () => {
   const [medicamentos, setMedicamentos] = useState([]);
   const [dosisOptions, setDosisOptions] = useState([]);
   const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
-  
+  const navigate = useNavigate();
 
   const estadosPermitidos = {
     Reservado: ["Confirmado", "Cancelado"],
     Confirmado: ["Ingresado"],
     Ingresado: ["Realizado"],
+
+    
   };
 
   const fetchTurnosPorFecha = async (fecha) => {
@@ -199,41 +203,51 @@ const TurnosSecretaria = () => {
     <div className="container mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
       {/* Formulario de búsqueda de turnos */}
-      <form
-        className="filterForm d-flex justify-content-center align-items-center gap-3"
-        onSubmit={handleBuscar}
-      >
-        <label htmlFor="fecha" className="label">
-          Fecha:
-        </label>
-        <input
-          type="date"
-          id="fecha"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
-          className="form-control w-25"
-        />
-        <label htmlFor="dni" className="label">
-          DNI:
-        </label>
-        <input
-          type="text"
-          id="dni"
-          placeholder="Ej. 12345678"
-          value={dni}
-          onChange={(e) => setDni(e.target.value)}
-          className="form-control w-25"
-        />
-        <div className="obtn">
-          <button type="button" className="btn btn-primary obtenerTurno" onClick={handleBuscar}>
-            Buscar
-          </button>
-        </div>
-      </form>
+        <form
+          className="filterForm d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
+          onSubmit={handleBuscar}
+        >
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="fecha" className="label">
+              Fecha:
+            </label>
+            <input
+              type="date"
+              id="fecha"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="dni" className="label">
+              DNI:
+            </label>
+            <input
+              type="text"
+              id="dni"
+              placeholder="Ej. 12345678"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="obtn">
+            <button
+              type="button"
+              className="btn btn-primary obtenerTurno w-md-auto"
+              onClick={handleBuscar}
+            >
+              Buscar
+            </button>
+          </div>
+        </form>
+
+        <hr />
 
       {/* Tabla de turnos */}
       <div className="tableContainer">
-        <table className="table table-striped table-hover">
+        <table className="table maven-pro-body">
           <thead>
             <tr>
               <th>Nombre y Apellido</th>
@@ -267,13 +281,15 @@ const TurnosSecretaria = () => {
                   </td>
                   <td>
                     {estadosPermitidos[turno.estado]?.map((estado) => (
+                      <div className="button-container" key={estado}>
                       <button
-                        key={estado}
-                        className="btn btn-outline-primary btn-sm me-2"
+                       
+                        className="btn btn-outline-primary btn-sm me-2 m-1 uniform-button"
                         onClick={() => handleEstadoChange(turno, estado)}
                       >
                         {estado}
                       </button>
+                      </div>
                     ))}
                   </td>
                 </tr>
@@ -311,7 +327,7 @@ const TurnosSecretaria = () => {
                )}
 
                 <form>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Veterinario:</label>
                     <select
                       name="veterinario"
@@ -327,7 +343,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Medicamento:</label>
                     <select
                       name="medicamento"
@@ -343,7 +359,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                   <label>Dosis:</label>
                   <input
                     type="number"
@@ -357,7 +373,7 @@ const TurnosSecretaria = () => {
                     placeholder="Escriba la dosis necesaria"
                   />
                 </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Unidad de Medida:</label>
                     <select
                       name="unidadMedida"
@@ -373,7 +389,7 @@ const TurnosSecretaria = () => {
                     ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Descripción:</label>
                     <input
                       type="text"
@@ -425,7 +441,14 @@ const TurnosSecretaria = () => {
           </div>
         </div>
       )}
+
+
+    <div className="d-flex buttons-footer">
+        <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
+        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
+      </div>
     </div>
+
   );
 };
 

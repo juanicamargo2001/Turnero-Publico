@@ -115,7 +115,7 @@ export default function Modificar_Centro() {
                     <button className="btn btn-primary confir2">Crear centro de castración</button>
                 </a>
             </div>
-            <table>
+            <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Id</th>
