@@ -207,7 +207,7 @@ const TurnosSecretaria = () => {
           className="filterForm d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
           onSubmit={handleBuscar}
         >
-          <div className="form-group d-flex flex-row gap-3 align-items-center">
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
             <label htmlFor="fecha" className="label">
               Fecha:
             </label>
@@ -219,7 +219,7 @@ const TurnosSecretaria = () => {
               className="form-control"
             />
           </div>
-          <div className="form-group d-flex flex-row gap-3 align-items-center">
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
             <label htmlFor="dni" className="label">
               DNI:
             </label>
@@ -242,6 +242,8 @@ const TurnosSecretaria = () => {
             </button>
           </div>
         </form>
+
+        <hr />
 
       {/* Tabla de turnos */}
       <div className="tableContainer">
@@ -325,7 +327,7 @@ const TurnosSecretaria = () => {
                )}
 
                 <form>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Veterinario:</label>
                     <select
                       name="veterinario"
@@ -341,7 +343,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Medicamento:</label>
                     <select
                       name="medicamento"
@@ -357,7 +359,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                   <label>Dosis:</label>
                   <input
                     type="number"
@@ -371,7 +373,7 @@ const TurnosSecretaria = () => {
                     placeholder="Escriba la dosis necesaria"
                   />
                 </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Unidad de Medida:</label>
                     <select
                       name="unidadMedida"
@@ -387,7 +389,7 @@ const TurnosSecretaria = () => {
                     ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Descripción:</label>
                     <input
                       type="text"
