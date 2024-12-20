@@ -30,11 +30,13 @@ import Inicio from "./components/Inicio.jsx";
 import BuscarTurnosPorDni from "./components/Admin/TurnosDNI.jsx";
 import Registro_Vecino_Minimo from "./components/Secretaria/Registro_Vecino_Minimo.jsx";
 import Turnos_Urgencia from "./components/Secretaria/Turnos_Urgencia.jsx"
-import EditarPerfil from "./components/Perfil/EditarPerfil.jsx";
+
 import Perfil from "./components/Perfil/Perfil.jsx";
-import CambiarContraseña from "./components/Perfil/CambiarContraseña.jsx";
+import RecuperarContraseña from "./components/Perfil/RecuperarContraseña.jsx";
+
 import ConsultarMedicamentos from "./components/Medicamentos/ConsultarMedicamentos.jsx"
 import ConsultarUnidadesMedida from "./components/Medicamentos/ConsultarUnidadesMedida.jsx"
+
 
 function App() {
   return (
@@ -178,6 +180,8 @@ function App() {
                 
 
               <Route path="/iniciarsesion" element={<InicioSesion/>} />
+
+              <Route path="/recuperarContraseña" element={<RecuperarContraseña/>} />
 
               <Route path="/" element={<Inicio/>} />
 

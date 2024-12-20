@@ -5,7 +5,8 @@ const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarS
 const ROL_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/rol';
 const NAME_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/NombreUsuario';
 const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
-const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña'
+const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña';
+const RECOVER_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/recuperarContraseña';
 
 const login = async (email, clave) => {
   try {
@@ -147,7 +148,31 @@ const changePassword = async (passwordRequest) => {
   }
 };
 
+const recoverPassword = async (emailRequest) => {
+  let token = null;
+  try {
+    token = await obtenerTokenConRenovacion();
+  } catch (error) {
+    console.log("Error al obtener token");
+    throw error;
+  }
+
+  try {
+    const response = await axios.put(RECOVER_URL, emailRequest,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error al enviar el mail:", error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
 export default {
   login, obtenerToken,
-  obtenerTokenConRenovacion, userRol, userName, changePassword,
+  obtenerTokenConRenovacion, userRol, userName, changePassword, recoverPassword
 };

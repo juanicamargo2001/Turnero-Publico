@@ -96,6 +96,10 @@ const LoginComponent = () => {
               />
             </div>
 
+            <div className="register-link2">
+              ¿Has olvidado tu contraseña? <a href="/recuperarContraseña">Recuperar contraseña</a>
+            </div>
+
             <button type="submit">Ingresar</button>
 
             {error && <p className="error-message">{error}</p>}

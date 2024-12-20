@@ -129,6 +129,24 @@ button[type="submit"]:hover {
     text-decoration: underline;
 }
 
+.register-link2 {
+    margin-top: 2px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    text-align: left;
+    color: #333;
+}
+
+.register-link2 a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-link2 a:hover {
+    text-decoration: underline;
+}
+
+
 
 .form-logo-mobile {
     display: none;
