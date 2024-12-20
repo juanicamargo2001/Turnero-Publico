@@ -4,6 +4,7 @@ import misTurnosService from "../../services/misTurnos.service";
 import { useNavigate } from 'react-router-dom';
 import { veterinarioService } from "../../services/veterinario.service";
 import medicamentosService from "../../services/medicamentos.service";
+import "./turnosSecretaria.css";
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
@@ -236,7 +237,7 @@ const TurnosSecretaria = () => {
 
       {/* Tabla de turnos */}
       <div className="tableContainer">
-        <table className="table table-striped table-hover">
+        <table className="table maven-pro-body">
           <thead>
             <tr>
               <th>Nombre y Apellido</th>
@@ -270,13 +271,15 @@ const TurnosSecretaria = () => {
                   </td>
                   <td>
                     {estadosPermitidos[turno.estado]?.map((estado) => (
+                      <div className="button-container">
                       <button
                         key={estado}
-                        className="btn btn-outline-primary btn-sm me-2"
+                        className="btn btn-outline-primary btn-sm me-2 m-1"
                         onClick={() => handleEstadoChange(turno, estado)}
                       >
                         {estado}
                       </button>
+                      </div>
                     ))}
                   </td>
                 </tr>
