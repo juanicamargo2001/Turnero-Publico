@@ -203,37 +203,45 @@ const TurnosSecretaria = () => {
     <div className="container mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
       {/* Formulario de búsqueda de turnos */}
-      <form
-        className="filterForm d-flex justify-content-center align-items-center gap-3"
-        onSubmit={handleBuscar}
-      >
-        <label htmlFor="fecha" className="label">
-          Fecha:
-        </label>
-        <input
-          type="date"
-          id="fecha"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
-          className="form-control w-25"
-        />
-        <label htmlFor="dni" className="label">
-          DNI:
-        </label>
-        <input
-          type="text"
-          id="dni"
-          placeholder="Ej. 12345678"
-          value={dni}
-          onChange={(e) => setDni(e.target.value)}
-          className="form-control w-25"
-        />
-        <div className="obtn">
-          <button type="button" className="btn btn-primary obtenerTurno" onClick={handleBuscar}>
-            Buscar
-          </button>
-        </div>
-      </form>
+        <form
+          className="filterForm d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
+          onSubmit={handleBuscar}
+        >
+          <div className="form-group d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="fecha" className="label">
+              Fecha:
+            </label>
+            <input
+              type="date"
+              id="fecha"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="form-group d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="dni" className="label">
+              DNI:
+            </label>
+            <input
+              type="text"
+              id="dni"
+              placeholder="Ej. 12345678"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="obtn">
+            <button
+              type="button"
+              className="btn btn-primary obtenerTurno w-md-auto"
+              onClick={handleBuscar}
+            >
+              Buscar
+            </button>
+          </div>
+        </form>
 
       {/* Tabla de turnos */}
       <div className="tableContainer">
@@ -271,10 +279,10 @@ const TurnosSecretaria = () => {
                   </td>
                   <td>
                     {estadosPermitidos[turno.estado]?.map((estado) => (
-                      <div className="button-container">
+                      <div className="button-container" key={estado}>
                       <button
-                        key={estado}
-                        className="btn btn-outline-primary btn-sm me-2 m-1"
+                       
+                        className="btn btn-outline-primary btn-sm me-2 m-1 uniform-button"
                         onClick={() => handleEstadoChange(turno, estado)}
                       >
                         {estado}
@@ -433,7 +441,7 @@ const TurnosSecretaria = () => {
       )}
 
 
-    <div>
+    <div className="d-flex buttons-footer">
         <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
         <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
       </div>
