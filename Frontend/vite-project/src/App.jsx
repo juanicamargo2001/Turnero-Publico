@@ -35,6 +35,9 @@ import Perfil from "./components/Perfil/Perfil.jsx";
 import CambiarContraseña from "./components/Perfil/CambiarContraseña.jsx";
 import ConsultarMedicamentos from "./components/Medicamentos/ConsultarMedicamentos.jsx"
 import ConsultarUnidadesMedida from "./components/Medicamentos/ConsultarUnidadesMedida.jsx"
+import CentrosCastracionSecre from "./components/Admin/Centro_Secre.jsx";
+import TipoAnimal_Admin from "./components/Admin/TipoAnimal_admin.jsx";
+import Turnero_Admin from "./components/Admin/Turnero_Admin"
 
 function App() {
   return (
@@ -236,6 +239,31 @@ function App() {
                     <ConsultarUnidadesMedida/>
                   </RutaProtegida>
                 } /> 
+                {/* Turno telefonico */}
+                <Route path="/centros" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <CentrosCastracionSecre/>
+                </RutaProtegida>
+                } />
+                <Route path="/animales/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <TipoAnimal_Admin/>
+                </RutaProtegida>
+                } />
+                <Route path="/turno/telefonico/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <Turnero_Admin nombreCentro={"Alberdi"} turnoId={14} />
+                </RutaProtegida>
+                } />
+                <Route path="/turno/telefonico/alberdi'" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <TipoAnimal_Admin/>
+                </RutaProtegida>
+                } />
 
               <Route path="*" element={<Default/>} />
 

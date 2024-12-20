@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { turnosService } from "../../services/turnosVecino.service";
+import { useNavigate } from "react-router-dom";
 
 function BuscarTurnosPorDni() {
   const [dni, setDni] = useState("");
   const [resultado, setResultado] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate(); 
 
   const handleBuscar = async () => {
     try {
@@ -25,6 +27,19 @@ function BuscarTurnosPorDni() {
       setError(err.message || "Error al buscar turnos. Intenta de nuevo.");
     }
   };
+  const handleContinuar = () => {
+    if (resultado.length > 0) {
+      navigate("/centros", {
+        state: {
+          idUsuario: resultado[0].idUsuario,
+          dni: resultado[0].dni,
+        },
+      });
+    } else {
+      setError("No se puede continuar sin resultados de búsqueda.");
+    }
+  };
+
 
   return (
     <div className="container mt-5 maven-pro-body">
@@ -90,7 +105,16 @@ function BuscarTurnosPorDni() {
             ))}
         </tbody>
         </table>
-        <p className="mt-4">ID Usuario: {resultado[0].IdUsuario}</p>
+        <p className="mt-4">ID Usuario: {resultado[0].idUsuario}</p>
+        <div className="d-flex justify-content-between">
+      <button
+        type="submit"
+        className="btn btn-primary ms-auto confir"
+        onClick={handleContinuar}
+      >
+        Confirmar
+      </button>
+    </div>
 
     </>
     )}
