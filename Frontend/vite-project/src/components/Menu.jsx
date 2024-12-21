@@ -29,7 +29,7 @@ function Menu() {
       { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
-      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      //{ label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
       // { label: "Turnos", path: "/turno" },
       { label: "Turnos del dia", path: "/secretaria/turnos" },

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import {veterinarioService} from '../../services/veterinario.service';
+import UserRoleContext from '../Login/UserRoleContext';
 
 
 const Veterinarios = () => {
@@ -11,6 +12,7 @@ const Veterinarios = () => {
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { userRole } = useContext(UserRoleContext);
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -97,9 +99,12 @@ const Veterinarios = () => {
             <div className="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3"
                 style={{ gap: '10px' }}
             >
+                {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
+                {userRole.rol !== 'secretaria' && (
                 <a href='/registrar/veterinario' className="mb-2 mb-md-0">
                     <button className="btn btn-primary confir2 w-100 w-md-auto">Crear Veterinario</button>
                 </a>
+                )}
                 <div className="input-group w-100 w-md-25">
                     <input 
                         type="number" 

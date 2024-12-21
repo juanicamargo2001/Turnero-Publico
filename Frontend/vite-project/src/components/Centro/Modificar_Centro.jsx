@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import { centroService } from '../../services/centro.service';
 import Informacion_VxC from './Informacion_VxC.JSX';
+import UserRoleContext from '../Login/UserRoleContext';
 
 export default function Modificar_Centro() {
     const [error, setError] = useState(null);
@@ -14,6 +15,7 @@ export default function Modificar_Centro() {
     const [nombreCentro, setNombreCentro] = useState([]);
     const [veterinarios, setVeterinarios] = useState([]); 
     const [showVeterinarios, setShowVeterinarios] = useState(false); 
+    const { userRole } = useContext(UserRoleContext);
 
     const openModal = (item) => {
         setSelectedItem(item);
@@ -110,11 +112,14 @@ export default function Modificar_Centro() {
   return (
     <div className="container mt-4">
             <h2 className="maven-pro-title">CENTROS DE CASTRACIÓN</h2>
-            <div className="d-flex justify-content-between mb-3">
-                <a href='/registrar/centro'>
-                    <button className="btn btn-primary confir2">Crear centro de castración</button>
-                </a>
-            </div>
+           {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
+           {userRole.rol !== 'secretaria' && (
+                <div className="d-flex justify-content-between mb-3">
+                    <a href='/registrar/centro'>
+                        <button className="btn btn-primary confir2">Crear centro de castración</button>
+                    </a>
+                </div>
+            )}
             <table className='responsive-table'>
                 <thead>
                     <tr>

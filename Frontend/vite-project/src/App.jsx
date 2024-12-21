@@ -180,7 +180,7 @@ function App() {
               
               <Route path="/registrar/veterinarioXcentro" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
                   <RegistroVeterinarioXCentro/>
                 </RutaProtegida>
                 } />
