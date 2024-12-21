@@ -61,7 +61,7 @@ function Menu() {
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },
-      // { label: "Mis Turnos", path: "/misTurnos" },
+      { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" }
     ],
     superAdministrador: [
@@ -165,11 +165,6 @@ function Menu() {
                   <li>
                     <a className="dropdown-item" href="/perfil">
                       Mi perfil
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="/misTurnos">
-                      Mis Turnos
                     </a>
                   </li>
                   <li>
