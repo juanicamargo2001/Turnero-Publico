@@ -259,7 +259,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost("filtroPorDni")]
         public async Task<IActionResult> ObtenerTurnosPorDNI([FromBody] long dni)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", "superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["secretaria", RolesEnum.administrador.ToString(), "superAdministrador"]);
 
             if (!isValid)
             {
@@ -296,7 +296,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<HorariosCanceladosResponse> turnosCancelados = await _horariosRepository.ObtenerCanceladosPorCentro(filtro, HttpContext);
+            List<HorariosCanceladosResponse> turnosCancelados = await _horariosRepository.ObtenerCanceladosPorCentro(filtro);
 
             if (!turnosCancelados.Any())
             {
@@ -349,6 +349,29 @@ namespace SistemaTurneroCastracion.API.Controllers
             if (!await _horariosRepository.FinalizarHorario(request))
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al finalizar el turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
+        [HttpPost("cancelacionMasiva")]
+        public async Task<IActionResult> CancelacionMasiva([FromBody] RequestCancelacionesMasivas request)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.administrador.ToString(), "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if (!await _horariosRepository.CancelacionMasiva(request))
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al cancelar los turnos!", Result = "" });
             }
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });

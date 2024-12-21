@@ -22,7 +22,7 @@ namespace SistemaTurneroCastracion.Entity
         public int? RolId { get; set; }
 
         [JsonIgnore]
-        public virtual Rol? Rol {  get; set; }
+        public virtual Rol? Rol { get; set; }
 
         [JsonIgnore]
         public virtual Vecino? Vecino { get; set; }
@@ -35,6 +35,9 @@ namespace SistemaTurneroCastracion.Entity
 
         [JsonIgnore]
         public ICollection<SecretariaxCentro>? SecretariaxCentros { get; set; } = [];
+
+        [JsonIgnore]
+        public virtual Calificacion? Calificacion { get; set; } 
 
     }
 }

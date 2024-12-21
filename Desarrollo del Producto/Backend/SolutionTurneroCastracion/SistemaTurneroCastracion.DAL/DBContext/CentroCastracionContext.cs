@@ -60,6 +60,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<UnidadMedida> UnidadMedidas { get; set; }
 
+    public virtual DbSet<Calificacion> Calificacions { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -218,6 +220,12 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.HoraLaboralFin)
             .HasColumnName("horaLaboralFin");
+
+            entity.HasOne(c => c.Calificacion)
+            .WithMany(cc => cc.CentroCastracions)
+            .HasForeignKey(e => e.Id_centro_castracion)
+            .HasConstraintName("FK_calificaciones_centro");
+
 
         });
 
@@ -467,6 +475,12 @@ public partial class CentroCastracionContext : DbContext
                   .HasForeignKey(u => u.RolId)
                   .HasConstraintName("FK_usuarios_roles");
 
+            entity.HasOne(c => c.Calificacion)
+            .WithMany(u => u.Usuarios)
+            .HasForeignKey(e => e.IdUsuario)
+            .HasConstraintName("FK_calificaciones_usuario");
+
+
         });
 
         modelBuilder.Entity<HistorialRefreshToken>(entity =>
@@ -632,6 +646,30 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.TipoUnidad).HasColumnName("tipo_unidad");
 
+
+        });
+
+
+        modelBuilder.Entity<Calificacion>(entity =>
+        {
+            entity.ToTable("calificaciones");
+
+            entity.HasKey(e => e.IdCalificacion).HasName("PK_calificaciones");
+
+            entity.Property(e => e.IdCalificacion)
+            .HasColumnName("id_calificacion");
+
+            entity.Property(e => e.NumeroCalifacion)
+            .HasColumnName("numero_calificacion");
+
+            entity.Property(e => e.Descripcion)
+            .HasColumnName("descripcion");
+
+            entity.Property(e => e.IdCentroCastracion)
+            .HasColumnName("id_centro_castracion");
+
+            entity.Property(e => e.IdUsuario)
+            .HasColumnName("id_usuario");
 
         });
 

@@ -142,22 +142,14 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-
-            try
+            List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(null, idUsuario);
+            
+            if (mascotasVecino.Count == 0)
             {
-                List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(null, idUsuario);
-
-                if (mascotasVecino == null)
-                {
-                    return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró la mascota!", Result = "" });
-                }
-
-                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotasVecino });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontró la mascota!", Result = "" });
             }
-            catch
-            {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
-            }
+            
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotasVecino });
 
         }
 

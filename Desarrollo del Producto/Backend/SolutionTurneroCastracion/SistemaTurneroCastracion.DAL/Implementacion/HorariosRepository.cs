@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using SistemaTurneroCastracion.BLL;
 using SistemaTurneroCastracion.DAL.DBContext;
@@ -300,12 +301,27 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             DateTime? fechaFin = agendaTurno!.Fecha_fin;
 
+            var tieneEmergencias = await (from H in _dbContext.Horarios
+                                          join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                          join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                                          where H.Id_Usuario == idUsuario
+                                                && TT.NombreTipo == "EMERGENCIA"
+                                                && T.Dia.Year == fechaFin!.Value.Year
+                                                && T.Dia.Month == fechaFin.Value.Month
+                                          select H).AnyAsync();
+
+            if (tieneEmergencias)
+                return false;
+
             return await (from H in _dbContext.Horarios
                           join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                          join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                           where H.Id_Usuario == idUsuario
-                                && T.Dia.Year == fechaFin!.Value.Year
+                                && TT.NombreTipo != "EMERGENCIA"
+                                && T.Dia.Year == fechaFin.Value.Year
                                 && T.Dia.Month == fechaFin.Value.Month
                           select H).AnyAsync();
+
 
         }
 
@@ -532,8 +548,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                             Dia = T.Dia,
                                             Hora = H.Hora,
                                             Estado = E.Nombre,
-                                            CentroCastracion = C.Nombre
-
+                                            CentroCastracion = C.Nombre,
+                                            IdUsuario = U.IdUsuario
                                         }).ToListAsync();
 
             return turnosHorarios;
@@ -541,17 +557,15 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<List<HorariosCanceladosResponse>> ObtenerCanceladosPorCentro (TurnosSecretariaDTO filtro, HttpContext context)
+        public async Task<List<HorariosCanceladosResponse>> ObtenerCanceladosPorCentro (TurnosSecretariaDTO filtro)
         {
-            int? idCentro = await this.ObtenerIdCentroXSecretaria(context);
 
             var turnosCancelados = await (from H in _dbContext.Horarios
                                           join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
                                           join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                                           join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
                                           join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
-                                          where C.Id_centro_castracion == idCentro 
-                                                && E.Nombre == EstadoTurno.Cancelado.ToString()
+                                          where E.Nombre == EstadoTurno.Cancelado.ToString()
                                                 && T.Dia >= filtro.FechaDesde && T.Dia <= filtro.FechaHasta
                                                 && H.Hora >= filtro.HoraDesde && H.Hora <= filtro.HoraHasta
                                           select new HorariosCanceladosResponse
@@ -559,7 +573,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                               IdHorario = H.IdHorario,
                                               Dia = T.Dia,
                                               Hora = H.Hora,
-                                              Estado = E.Nombre
+                                              Estado = E.Nombre,
+                                              CentroCastracion = C.Nombre
 
                                           }).ToListAsync();
 
@@ -776,5 +791,52 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return sexo!;
         }
 
+
+        public async Task<bool> CancelacionMasiva(RequestCancelacionesMasivas request)
+        {
+            List<CancelacionMasivaDTO> cancelacionesBatch = await (from H in _dbContext.Horarios
+                                                                   join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                                                   join U in _dbContext.Usuarios on H.Id_Usuario equals U.IdUsuario
+                                                                   join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                                                   join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                                                   join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                                                   where request.IdCentroCastracion.Contains(A.IdCentroCastracion)
+                                                                   && T.Dia.Day == request.DiaCancelacion.Day
+                                                                   && (E.Nombre == EstadoTurno.Reservado.ToString() ||
+                                                                       E.Nombre == EstadoTurno.Confirmado.ToString())
+                                                                   select new CancelacionMasivaDTO
+                                                                   {
+                                                                       Nombre = U.Nombre,
+                                                                       Motivo = request.Motivo,
+                                                                       Hora = H.Hora.Value,
+                                                                       Email = U.Email,
+                                                                       Dia = T.Dia,
+                                                                       Horario = H
+                                                                   }).ToListAsync();
+
+
+            foreach (var cancelacion in cancelacionesBatch)
+            {
+                try
+                {
+                    string mensaje = EnvioCorreosHTML.CrearHTMLCancelacionMasiva(cancelacion);
+                    await _emailPublisher.ConexionConRMQ(mensaje, "email_send_bach");
+                    cancelacion.Horario.Id_Estado = BuscarEstado(EstadoTurno.Libre.ToString());
+                    cancelacion.Horario.Id_Usuario = null;
+                    cancelacion.Horario.Id_mascota = null;
+                    cancelacion.Horario.Id_Legajo = null;
+
+                    await Editar(cancelacion.Horario);
+
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

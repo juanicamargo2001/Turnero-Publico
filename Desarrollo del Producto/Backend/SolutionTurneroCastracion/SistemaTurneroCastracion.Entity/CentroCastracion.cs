@@ -36,5 +36,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public ICollection<SecretariaxCentro>? SecretariaxCentros { get; set; } = [];
 
+        [JsonIgnore]
+        public virtual Calificacion? Calificacion { get; set; }
+
     }
 }

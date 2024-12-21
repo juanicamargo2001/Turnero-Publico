@@ -147,7 +147,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   {
                                       IdHorario = H.IdHorario,
                                       Hora = H.Hora,
-                                      TipoTurno = TT.NombreTipo,
+                                      TipoTurno = TT.NombreTipo,    
                                       DiaTurno = T.Dia,
                                       Estado = E.Nombre
                                   }

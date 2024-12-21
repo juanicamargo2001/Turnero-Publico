@@ -4,7 +4,6 @@ using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity.Dtos;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SistemaTurneroCastracion.API.Controllers
 {

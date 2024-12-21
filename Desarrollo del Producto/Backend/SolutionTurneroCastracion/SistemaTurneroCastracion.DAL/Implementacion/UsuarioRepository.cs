@@ -86,7 +86,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Token = token,
                 RefreshToken = refreshToken,
                 FechaCreacion = DateTime.UtcNow,
-                FechaExpiracion = DateTime.UtcNow.AddDays(1)
+                FechaExpiracion = DateTime.UtcNow.AddHours(8)
             };
 
 

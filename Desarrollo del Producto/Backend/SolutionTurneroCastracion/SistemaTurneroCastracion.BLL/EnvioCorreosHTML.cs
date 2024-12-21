@@ -81,7 +81,7 @@ namespace SistemaTurneroCastracion.BLL
                               <tr>
                                 <td align=""left"" style=""padding: 20px 0 10px 20px; background-color: #3a5475;"">
                                   <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin: auto;"">
-                                  <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCORDOBA</p>
+                                  <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCÓRDOBA</p>
                                 </td>
                               </tr>
                           
@@ -114,9 +114,15 @@ namespace SistemaTurneroCastracion.BLL
 
                               " + noMedicamentosHTML + @"
                               <tr>
-                                <td>
+                              <td>
                                   <p style=""padding: 10px;  color: #555555; font-size: 14px; text-align: center; margin: 10px 0;"">
                                     ℹ️ Consulte siempre con el veterinario para ajustar las dosis según el peso y estado de salud del animal.
+                                  </p>
+                                  <p style=""padding: 10px; text-align: center; margin: 10px 0;"">
+                                    <a href=""centrocastracion.com/encuesta"" 
+                                      style=""text-decoration: none; color: #FFFFFF; background-color: #007BFF; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-family: Arial, sans-serif; display: inline-block; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"">
+                                      ⭐ Contanos sobre tu experiencia completando nuestra encuesta ⭐
+                                    </a>
                                   </p>
                                 </td>
                               </tr>
@@ -255,7 +261,7 @@ namespace SistemaTurneroCastracion.BLL
                                 <!-- Header -->
                                 <div class=""email-header"">
                                   <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"">
-                                  <p>Municipio BIOCORDOBA</p>
+                                  <p>Municipio BIOCÓRDOBA</p>
                                 </div>
                             
                                 <div class=""email-body"">
@@ -350,7 +356,7 @@ namespace SistemaTurneroCastracion.BLL
                                 <tr>
                                   <td align=""left"" style=""padding: 20px 0 10px 20px; background-color: #3a5475;"">
                                     <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin: auto;"">
-                                    <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCORDOBA</p>
+                                    <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCÓRDOBA</p>
                                   </td>
                                 </tr>
 
@@ -495,7 +501,7 @@ namespace SistemaTurneroCastracion.BLL
                                <tr>
                                  <td align=""left"" style=""padding: 20px 0 10px 20px; background-color: #3a5475;"">
                                    <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"" style=""width: 50px; height: auto; display: block; margin: auto;"">
-                                   <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCORDOBA</p>
+                                   <p style=""margin: 17px 0 5px; color: #e6e6e6; font-size: 16px; text-align: center; font-family:Arial, Helvetica, sans-serif"">Municipio BIOCÓRDOBA</p>
                                  </td>
                                </tr>
 
@@ -574,6 +580,152 @@ namespace SistemaTurneroCastracion.BLL
                            </html>";
 
             return Body;
+        }
+
+
+        public static string CrearHTMLCancelacionMasiva(CancelacionMasivaDTO cancelacionMasiva)
+        {
+            TextInfo textInfo = new CultureInfo("es-ES", false).TextInfo;
+
+            string nombreFormateado = textInfo.ToTitleCase(cancelacionMasiva.Nombre.ToLower());
+
+            string tiempoFormateado = $"{cancelacionMasiva.Hora.Hours}:{cancelacionMasiva.Hora.Minutes:D2} Hrs";
+
+            string fechaFormateada = cancelacionMasiva.Dia.ToString("dd-MM-yyyy");
+
+            string body = $"{cancelacionMasiva.Email}\n" + @"
+                            <!DOCTYPE html>
+                            <html lang=""es"">
+                            <head>
+                              <meta charset=""UTF-8"">
+                              <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                              <title>Cancelación de Turno</title>
+                              <style>
+                                body {
+                                  margin: 0;
+                                  padding: 0;   
+                                  font-family: Arial, sans-serif;
+                                  color: #333333;
+                                }
+                                .container {
+                                  max-width: 600px;
+                                  margin: 20px auto;
+                                  background-color: #ffffff;
+                                  border-radius: 8px;
+                                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                  overflow: hidden;
+                                }
+                                .header {
+                                  background-color: #3a5475;
+                                  text-align: center;
+                                  padding: 20px;
+                                }
+                                .header img {
+                                  width: 60px;
+                                  height: auto;
+                                }
+                                .header p {
+                                  margin: 10px 0 0;
+                                  color: #ffffff;
+                                  font-size: 18px;
+                                }
+                                .content {
+                                  padding: 20px;
+                                  font-size: 16px;
+                                  line-height: 1.5;
+                                }
+                                .content h2 {
+                                  color: #0072bc;
+                                  font-size: 24px;
+                                  margin-top: 0;
+                                }
+                                .highlight {
+                                  background-color: #fbe9e9;
+                                  color: #d9534f;
+                                  padding: 10px;
+                                  border-radius: 4px;
+                                  text-align: center;
+                                  font-weight: bold;
+                                  margin: 20px 0;
+                                }
+                                .footer {
+                                  padding: 20px;
+                                  text-align: center;
+                                  font-size: 12px;
+                                  color: #999999;
+                                }
+                                .divider {
+                                  display: flex;
+                                  height: 4px;
+                                }
+                                .divider div {
+                                  flex: 1;
+                                }
+                                .button {
+                                  display: inline-block;
+                                  padding: 10px 20px;
+                                  background-color: #0072bc;
+                                  text-decoration: none;
+                                  border-radius: 4px;
+                                  margin-top: 10px;
+                            
+                                }
+                                .button:hover {
+                                  background-color: #005a99;
+                                }
+                              </style>
+                            </head>
+                            <body style=""margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;"">
+                              <div class=""container"">
+                                <div class=""header"">
+                                  <img src=""https://biocordoba.cordoba.gob.ar/wp-content/uploads/sites/14/2022/02/cropped-favicon.png"" alt=""Logo de la Empresa"">
+                                  <p>Municipio BIOCÓRDOBA</p>
+                                </div>
+                            
+                                <div class=""content"">
+                                  <h2>Cancelación de Turno</h2>
+                                  <p>Hola, <strong>" + nombreFormateado + @"</strong>,</p>
+                                  <p>Queremos informarle que su turno programado para el día <strong>" + fechaFormateada + @"</strong> a las <strong>" + tiempoFormateado + @"</strong> ha sido cancelado debido a:</p>
+                            
+                                  <div class=""highlight"">
+                                    " + cancelacionMasiva.Motivo + @"
+                                  </div>
+                            
+                                  <p >Le pedimos disculpas por los inconvenientes ocasionados. Puede reprogramar su turno llamando al <strong>0800-888-0404</strong> o accediendo a nuestra página web:</p>
+                                  
+                                  <div style=""text-align: center;"">
+                                    <a href=""centrocastraciones.com"" class=""button"" style=""color: #ffffff;"">Reprogramar Turno</a>
+                                  </div>
+                                </div>
+                            
+                                <table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""600"" style=""border-collapse: collapse; background-color: #ffffff;"">
+                                    <tr>
+                                        <td style=""padding: 20px;"">
+                                          <table width=""100%"" cellspacing=""0"" cellpadding=""0"">
+                                            <tr>
+                                              <td width=""25%"" style=""background-color: #e8b434; height: 4px;""></td>
+                                              <td width=""25%"" style=""background-color: #e64545; height: 4px;""></td>
+                                              <td width=""25%"" style=""background-color: #b855d8; height: 4px;""></td>
+                                              <td width=""25%"" style=""background-color: #0072bc; height: 4px;""></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+  
+                                      <tr>
+                                        <td style=""padding: 10px 20px; text-align: center; color: #999999; font-size: 12px;"">
+                                          Este mensaje se envió de forma automática. Por favor, no responda.<br>
+                                          En caso de no haber solicitado ningún cambio de contraseña, desestime este mail.
+                                        </td>
+                                      </tr>
+                                    </table>
+                              </div>
+                            </body>
+                            </html>
+                            ";
+
+            return body;
+
         }
 
     }
