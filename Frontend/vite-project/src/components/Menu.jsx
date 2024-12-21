@@ -31,7 +31,7 @@ function Menu() {
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
       { label: "Registrar Vecino", path: "/registrar/vecino" },
-      { label: "Turnos", path: "/turno" },
+      // { label: "Turnos", path: "/turno" },
       { label: "Turnos del dia", path: "/secretaria/turnos" },
       {
         label: "Medicamentos",
@@ -44,7 +44,7 @@ function Menu() {
       // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
-      { label: "Registrar Turno", path: "/asignar/turno" },
+      { label: "Cancelar turnos", path: "/cancelar/masivo" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },

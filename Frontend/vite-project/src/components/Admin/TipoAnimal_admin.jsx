@@ -88,7 +88,7 @@ Tamaño: ${mascota.tamaño}`);
   }
 
   if (error) {
-    return <div className="container text-center mt-5">Error al cargar las mascotas</div>;
+    return <div className="container text-center mt-5">No se encontraron mascotas registradas</div>;
   }
 
   return (

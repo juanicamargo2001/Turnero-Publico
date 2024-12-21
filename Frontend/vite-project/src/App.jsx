@@ -40,6 +40,7 @@ import CentrosCastracionSecre from "./components/Admin/Centro_Secre.jsx";
 import TipoAnimal_Admin from "./components/Admin/TipoAnimal_admin.jsx";
 import Turnero_Admin from "./components/Admin/Turnero_Admin"
 import Reportes from "./components/SuperAdmin/Reportes.jsx";
+import CancelacionMasiva from "./components/SuperAdmin/Cancelacion_Masiva.jsx";
 import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.jsx";
 import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
 
@@ -293,7 +294,14 @@ function App() {
                   <Reportes/>
                 </RutaProtegida>
                 } />
+                {/* Cancelacion masiva  */}
 
+                <Route path="/cancelar/masivo" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <CancelacionMasiva/>
+                </RutaProtegida>
+                } />
               <Route path="*" element={<Default/>} />
 
             </Routes>
