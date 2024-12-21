@@ -32,7 +32,7 @@ const TurnosSecretaria = () => {
 
   const estadosPermitidos = {
     Reservado: ["Confirmado", "Cancelado"],
-    Confirmado: ["Ingresado"],
+    Confirmado: ["Ingresado", "Cancelado"],
     Ingresado: ["Realizado"],
 
     
@@ -200,7 +200,7 @@ const TurnosSecretaria = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="contenedor mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
       {/* Formulario de búsqueda de turnos */}
         <form
@@ -250,9 +250,11 @@ const TurnosSecretaria = () => {
         <table className="table maven-pro-body">
           <thead>
             <tr>
+              <th>Dia</th>
               <th>Nombre y Apellido</th>
               <th>DNI</th>
               <th>Centro de Castración</th>
+              <th>Telefono</th>
               <th>Tipo Animal</th>
               <th>Hora</th>
               <th>Estado</th>
@@ -261,13 +263,28 @@ const TurnosSecretaria = () => {
           </thead>
           <tbody>
             {turnos.length > 0 ? (
-              turnos.map((turno) => (
+              turnos.map((turno) => {
+                
+                const dia = turno.dia.split("T")[0];
+                const hora = turno.hora.split(":")[0];
+                const minutos = turno.hora.split(":")[1];
+                const nombre = turno.nombre.toUpperCase();
+                const mensaje = `¡Hola, qué tal! \n\n *${nombre}*, le escribimos del *${turno.centroCastracion}*.\n\n Usted tiene un turno programado para el día *${dia}* a las *${hora}:${minutos}*.\n\nPor favor, confirme su asistencia, sino se cancelará el turno. ¡Gracias!`;
+                
+                
+                const url = `https://wa.me/${turno.telefono}?text=${encodeURIComponent(mensaje)}`;
+
+                return (
                 <tr key={turno.idHorario}>
+                  <td>{dia}</td>
                   <td className="text-uppercase">{turno.nombre} {turno.apellido}</td>
                   <td>{turno.dni}</td>
                   <td>{turno.centroCastracion}</td>
+                  <td>
+                    <a href={url} target="blank" rel="noopener noreferrer">{turno.telefono}</a>
+                    </td>
                   <td>{turno.tipoServicio}</td>
-                  <td>{turno.hora}</td>
+                  <td>{hora}:{minutos}</td>
                   <td>
                     <span className={`badge ${
                       turno.estado === "Realizado" ? "bg-success" : 
@@ -281,10 +298,10 @@ const TurnosSecretaria = () => {
                   </td>
                   <td>
                     {estadosPermitidos[turno.estado]?.map((estado) => (
-                      <div className="button-container" key={estado}>
+                      <div className="button-container d-inline" key={estado}>
                       <button
                        
-                        className="btn btn-outline-primary btn-sm me-2 m-1 uniform-button"
+                        className="btn btn-outline-primary btn-sm me-2 m-1 uniform-button "
                         onClick={() => handleEstadoChange(turno, estado)}
                       >
                         {estado}
@@ -293,10 +310,11 @@ const TurnosSecretaria = () => {
                     ))}
                   </td>
                 </tr>
-              ))
+              );
+            })
             ) : (
               <tr>
-                <td colSpan="7" className="text-center">
+                <td colSpan="9" className="text-center">
                   No se encontraron turnos.
                 </td>
               </tr>
@@ -443,7 +461,7 @@ const TurnosSecretaria = () => {
       )}
 
 
-    <div className="d-flex buttons-footer">
+    <div className="d-flex buttons-footer justify-content-center">
         <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
         <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
       </div>

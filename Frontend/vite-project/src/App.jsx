@@ -40,6 +40,8 @@ import CentrosCastracionSecre from "./components/Admin/Centro_Secre.jsx";
 import TipoAnimal_Admin from "./components/Admin/TipoAnimal_admin.jsx";
 import Turnero_Admin from "./components/Admin/Turnero_Admin"
 import Reportes from "./components/SuperAdmin/Reportes.jsx";
+import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.jsx";
+import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
 
 
 function App() {
@@ -244,6 +246,21 @@ function App() {
                     <ConsultarUnidadesMedida/>
                   </RutaProtegida>
                 } /> 
+
+                <Route path="/registrar/medicamento"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <RegistroMedicamento/>
+                  </RutaProtegida>
+                } /> 
+
+                <Route path="/registrar/unidad-medida"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <RegistroUnidadMedida/>
+                  </RutaProtegida>
+                } /> 
+
                 {/* Turno telefonico */}
                 <Route path="/centros" 
                 element={
