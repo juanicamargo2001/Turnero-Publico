@@ -43,7 +43,7 @@ function BuscarTurnosPorDni() {
 
   return (
     <div className="container mt-5 maven-pro-body">
-      <h1 className="mb-4 maven-pro-title">Registrar turno</h1>
+      <h2 className="mb-4 maven-pro-title">Registrar turno telefonico</h2>
 
       <div className="row align-items-center mb-3">
         <div className="col-auto">
@@ -54,7 +54,7 @@ function BuscarTurnosPorDni() {
             type="text"
             id="dniInput"
             className="form-control"
-            placeholder="Ej: 94340042"
+            placeholder="Ej: 41250045"
             value={dni}
             onChange={(e) => setDni(e.target.value.replace(/\D/g, ""))}
           />
