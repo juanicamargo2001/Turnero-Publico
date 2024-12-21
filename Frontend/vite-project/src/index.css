@@ -668,6 +668,10 @@ div.containerPaso1 {
   border: none; /* Asegúrate de que no haya bordes alrededor del iframe */
 }
 
+.dropdown-menu[data-bs-popper] {
+  left: -60% !important; 
+}
+
 /* Estilos responsivos: para dispositivos tablet y celulares */
 @media (max-width: 768px) {
   div.container {
