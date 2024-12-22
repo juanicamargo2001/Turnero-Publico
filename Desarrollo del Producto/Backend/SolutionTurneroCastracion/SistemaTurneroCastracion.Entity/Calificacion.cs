@@ -21,10 +21,10 @@ namespace SistemaTurneroCastracion.Entity
         public int IdUsuario { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Usuario> Usuarios { get; set; } = [];
+        public virtual Usuario Usuario { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<CentroCastracion> CentroCastracions { get; set; } = [];
+        public virtual CentroCastracion CentroCastracion { get; set; }
 
 
     }

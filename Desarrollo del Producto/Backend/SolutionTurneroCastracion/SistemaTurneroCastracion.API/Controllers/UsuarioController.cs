@@ -151,5 +151,56 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "Se envió correctamente el correo" });
         }
 
+
+        [HttpPost("crearAdmin")]
+        public async Task<IActionResult> CrearUsuarioAdmin([FromBody] RequestUsuarioAdminSuperAdmin request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.superAdministrador.ToString()]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            int? adminCreado = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña, request.Email, RolesEnum.administrador.ToString());
+
+
+            if (!(adminCreado.HasValue && adminCreado > 0))
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al crear la/el Admin!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
+        [HttpPost("crearSuperAdmin")]
+        public async Task<IActionResult> CrearUsuarioSuperAdmin([FromBody] RequestUsuarioAdminSuperAdmin request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.superAdministrador.ToString()]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            int? adminCreado = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña, request.Email, RolesEnum.superAdministrador.ToString());
+
+
+            if (!(adminCreado.HasValue && adminCreado > 0))
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al crear la/el superAdmin!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+        }
+
     }
 }

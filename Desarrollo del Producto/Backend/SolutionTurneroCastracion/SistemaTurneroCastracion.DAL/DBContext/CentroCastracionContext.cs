@@ -221,12 +221,6 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.HoraLaboralFin)
             .HasColumnName("horaLaboralFin");
 
-            entity.HasOne(c => c.Calificacion)
-            .WithMany(cc => cc.CentroCastracions)
-            .HasForeignKey(e => e.Id_centro_castracion)
-            .HasConstraintName("FK_calificaciones_centro");
-
-
         });
 
         modelBuilder.Entity<VeterinarioxCentro>(entity =>
@@ -474,13 +468,6 @@ public partial class CentroCastracionContext : DbContext
                   .WithMany(r => r.Usuarios)
                   .HasForeignKey(u => u.RolId)
                   .HasConstraintName("FK_usuarios_roles");
-
-            entity.HasOne(c => c.Calificacion)
-            .WithMany(u => u.Usuarios)
-            .HasForeignKey(e => e.IdUsuario)
-            .HasConstraintName("FK_calificaciones_usuario");
-
-
         });
 
         modelBuilder.Entity<HistorialRefreshToken>(entity =>
@@ -670,6 +657,17 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.IdUsuario)
             .HasColumnName("id_usuario");
+
+            entity.HasOne(c => c.Usuario)
+            .WithMany(u => u.Calificaciones)
+            .HasForeignKey(c => c.IdUsuario)
+            .HasConstraintName("FK_calificaciones_usuario");
+
+
+            entity.HasOne(c => c.CentroCastracion)
+            .WithMany(u => u.Calificaciones)
+            .HasForeignKey(c => c.IdCentroCastracion)
+            .HasConstraintName("FK_calificaciones_centro");
 
         });
 
