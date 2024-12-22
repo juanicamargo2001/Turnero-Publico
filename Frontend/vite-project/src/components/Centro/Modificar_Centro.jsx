@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import { centroService } from '../../services/centro.service';
-import Informacion_VxC from './Informacion_VxC.JSX';
+import Informacion_VxC from './Informacion_VxC.jsx';
 import UserRoleContext from '../Login/UserRoleContext';
 
 export default function Modificar_Centro() {
