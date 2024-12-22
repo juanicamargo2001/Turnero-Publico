@@ -43,6 +43,7 @@ import Reportes from "./components/SuperAdmin/Reportes.jsx";
 import CancelacionMasiva from "./components/SuperAdmin/Cancelacion_Masiva.jsx";
 import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.jsx";
 import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
+import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
 
 
 function App() {
@@ -302,7 +303,14 @@ function App() {
                   <CancelacionMasiva/>
                 </RutaProtegida>
                 } />
+
               <Route path="*" element={<Default/>} />
+
+              <Route path="/crear-Personal" element={
+                <RutaProtegida rolesPermitidos={["superAdministrador"]}>
+                <CrearPersonal/>
+                </RutaProtegida>
+                } />
 
             </Routes>
           </div>

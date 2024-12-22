@@ -68,6 +68,7 @@ function Menu() {
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      {label: "Crear Personal", path: "/crear-Personal"},
       {
         label: "Habilitar turnero",
         subOptions: [

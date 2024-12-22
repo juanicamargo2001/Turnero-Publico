@@ -7,8 +7,9 @@ const NAME_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/NombreU
 const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
 const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña';
 const RECOVER_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/recuperarContraseña';
-
-
+const CREAR_SECRETARIA = 'https://deep-ghoul-socially.ngrok-free.app/api/SecretariaXCentro/crearSecretaria';
+const CREAR_ADMIN = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/crearAdmin';
+const CREAR_SUPER_ADMIN = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/crearSuperAdmin';
 
 const login = async (email, clave) => {
   try {
@@ -179,7 +180,80 @@ const recoverPassword = async (emailRequest) => {
   }
 }
 
+const crearSecretaria = async (nombre, apellido, contraseña, email, idCentroCastracion) => {
+  try {
+    const token = await obtenerTokenConRenovacion();
+    const body = {
+      nombre,
+      apellido,
+      contraseña,
+      email,
+      idCentroCastracion
+    };
+
+    const response = await axios.post(CREAR_SECRETARIA, body, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear la secretaria:', error);
+    throw error;
+  }
+}
+
+  const crearAdmin = async (nombre, apellido, contraseña, email) => {
+    try {
+      const token = await obtenerTokenConRenovacion();
+      const body = {
+        nombre,
+        apellido,
+        contraseña,
+        email
+      };
+  
+      const response = await axios.post(CREAR_ADMIN, body, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error al crear el admin:', error);
+      throw error;
+    }
+};
+
+const crearSuperAdmin = async (nombre, apellido, contraseña, email) => {
+  try {
+    const token = await obtenerTokenConRenovacion();
+    const body = {
+      nombre,
+      apellido,
+      contraseña,
+      email
+    };
+
+    const response = await axios.post(CREAR_SUPER_ADMIN, body, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear el super admin:', error);
+    throw error;
+  }
+};
+
 export default {
   login, obtenerToken,
-  obtenerTokenConRenovacion, userRol, userName, changePassword, recoverPassword
+  obtenerTokenConRenovacion, userRol, userName, changePassword, recoverPassword, crearSecretaria, crearAdmin, crearSuperAdmin
 };
