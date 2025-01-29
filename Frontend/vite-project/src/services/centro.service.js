@@ -2,7 +2,7 @@ import axios from "axios";
 import loginService from "./login.service";
 import urlServidor from "../config"
 
-const API_URL =  urlServidor + '/api/centroCastracion';
+const API_URL = import.meta.env.VITE_CENTRO_CASTRACION_URL;
 
 async function Grabar(nuevoCentro) {
     try {

@@ -1,15 +1,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarSesion';
-const ROL_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/rol';
-const NAME_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/NombreUsuario';
-const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
-const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña';
-const RECOVER_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/recuperarContraseña';
-const CREAR_SECRETARIA = 'https://deep-ghoul-socially.ngrok-free.app/api/SecretariaXCentro/crearSecretaria';
-const CREAR_ADMIN = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/crearAdmin';
-const CREAR_SUPER_ADMIN = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/crearSuperAdmin';
+const API_URL = import.meta.env.VITE_INICIAR_SESION_URL;
+const ROL_URL = import.meta.env.VITE_ROL_URL;
+const NAME_URL = import.meta.env.VITE_NAME_URL;
+const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
+const CHANGEPASS_URL = import.meta.env.VITE_CHANGEPASS_URL;
+const RECOVER_URL = import.meta.env.VITE_RECOVER_URL;
+const CREAR_SECRETARIA = import.meta.env.VITE_CREAR_SECRETARIA_URL;
+const CREAR_ADMIN = import.meta.env.VITE_CREAR_ADMIN_URL;
+const CREAR_SUPER_ADMIN = import.meta.env.VITE_CREAR_SUPER_ADMIN_URL;
 
 const login = async (email, clave) => {
   try {

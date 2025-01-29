@@ -1,8 +1,8 @@
 import axios from "axios";
 import loginService from "./login.service";
 
-const urlResourceTipoAnimal = "https://deep-ghoul-socially.ngrok-free.app/api/Reportes/informesTipoAnimal";
-const urlResourceCancelaciones = "https://deep-ghoul-socially.ngrok-free.app/api/Reportes/informesCancelaciones"; // URL del informe de cancelaciones
+const urlResourceTipoAnimal = import.meta.env.VITE_INFORME_TIPO_ANIMAL_URL;
+const urlResourceCancelaciones = import.meta.env.VITE_INFORME_CANCELACIONES_URL; // URL del informe de cancelaciones
 
 async function obtenerInformeTipoAnimal() {
   try {

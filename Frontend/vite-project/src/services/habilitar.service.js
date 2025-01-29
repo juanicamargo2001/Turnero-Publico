@@ -1,7 +1,7 @@
 import axios from 'axios';
 import loginService from "./login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Agenda'; 
+const API_URL = import.meta.env.VITE_AGENDA_URL; 
 
 export const agendaService = {
   async Grabar(nuevaAgenda) {

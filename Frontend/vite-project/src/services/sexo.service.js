@@ -1,7 +1,7 @@
 import axios from "axios";
 import loginService from "./login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/sexo";
+const urlResource = import.meta.env.VITE_SEXO_URL;
 
 async function Buscar() {
   try {

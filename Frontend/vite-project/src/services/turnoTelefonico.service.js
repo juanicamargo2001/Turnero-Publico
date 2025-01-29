@@ -1,8 +1,8 @@
 import axios from 'axios';
 import loginService from './login.service';
 
-const urlMascotasNoCastradas = 'https://deep-ghoul-socially.ngrok-free.app/api/Mascota/MascotasNoCastradasSecre';
-const urlTurnoTelefonico = 'https://deep-ghoul-socially.ngrok-free.app/api/Turnos/turnoTelefonico';
+const urlMascotasNoCastradas = import.meta.env.VITE_MASCOTAS_NO_CASTRADAS_URL;
+const urlTurnoTelefonico = import.meta.env.VITE_TURNO_TELEFONICO_URL;
 
 async function obtenerMascotasNoCastradas(dni) {
   try {

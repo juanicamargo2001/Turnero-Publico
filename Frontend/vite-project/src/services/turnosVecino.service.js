@@ -1,7 +1,7 @@
 import axios from 'axios';
 import loginService from './login.service';
 
-const urlFiltroPorDni = 'https://deep-ghoul-socially.ngrok-free.app/api/Turnos/filtroPorDni';
+const urlFiltroPorDni = import.meta.env.VITE_FILTRO_DNI_URL;
 
 async function filtrarPorDni(dni) {
   try {

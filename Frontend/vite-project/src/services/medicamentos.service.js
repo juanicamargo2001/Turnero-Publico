@@ -1,14 +1,17 @@
 import axios from 'axios';
 import loginService from "./login.service";
 
-const API_BASE_URL = 'https://deep-ghoul-socially.ngrok-free.app/api';
+const API_CREAR_UNIDAD_MEDIDA = import.meta.env.VITE_CREAR_UNIDAD_MEDIDA_URL;
+const API_OBTENER_UNIDADES_MEDIDA = import.meta.env.VITE_OBTENER_UNIDAD_MEDIDA_URL;
+const API_CREAR_MEDICAMENTO = import.meta.env.VITE_CREAR_MEDICAMENTO_URL;
+const API_OBTENER_MEDICAMENTOS = import.meta.env.VITE_OBTENER_MEDICAMENTOS_URL;
 
 const medicamentosService = {
   // Crear una nueva unidad de medida
   crearUnidadMedida: async (unidadMedida) => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.post(`${API_BASE_URL}/UnidadMedida/crearUnidadMedida`, unidadMedida, {
+      const response = await axios.post(API_CREAR_UNIDAD_MEDIDA, unidadMedida, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
@@ -26,7 +29,7 @@ const medicamentosService = {
   obtenerUnidadesMedida: async () => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.get(`${API_BASE_URL}/UnidadMedida/obtenerUnidadesMedida`, {
+      const response = await axios.get(API_OBTENER_UNIDADES_MEDIDA, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
@@ -44,7 +47,7 @@ const medicamentosService = {
   crearMedicamento: async (medicamento) => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.post(`${API_BASE_URL}/Medicamento/crearMedicamento`, medicamento, {
+      const response = await axios.post(API_CREAR_MEDICAMENTO, medicamento, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',
@@ -62,7 +65,7 @@ const medicamentosService = {
   obtenerMedicamentos: async () => {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
-      const response = await axios.get(`${API_BASE_URL}/Medicamento/obtenerMedicamentos`, {
+      const response = await axios.get(API_OBTENER_MEDICAMENTOS, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
             'Content-Type': 'application/json',

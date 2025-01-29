@@ -1,7 +1,7 @@
 import axios from 'axios';
 import loginService from "./login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Turnos';
+const API_URL = import.meta.env.VITE_TURNOS_URL;
 
 const horarios = {
     async obtenerHorarios(turnoId, dia, tipoAnimal) {

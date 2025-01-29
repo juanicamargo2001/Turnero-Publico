@@ -1,7 +1,7 @@
 import axios from 'axios';
 import loginService from "./login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/veterinario';
+const API_URL = import.meta.env.VITE_VETERINARIO_URL;
 
 
 async function Grabar(nuevoVeterinario) {

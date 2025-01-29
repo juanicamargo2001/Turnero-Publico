@@ -1,7 +1,7 @@
 import axios from "axios";
 import loginService from "./login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos/cancelacionMasiva";
+const urlResource = import.meta.env.VITE_CANCELACION_MASIVA_URL;
 
 async function CancelarMasivamente(requestCancelacionesMasivas) {
   try {

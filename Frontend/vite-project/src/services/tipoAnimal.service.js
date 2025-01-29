@@ -1,7 +1,7 @@
 import axios from "axios";
 import loginService from "./login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/tipoanimal";
+const urlResource = import.meta.env.VITE_TIPO_ANIMAL_URL;
 
 async function Buscar() {
   try {
