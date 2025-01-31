@@ -1,5 +1,5 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
 const urlResource = import.meta.env.VITE_OBTENER_TURNOS_ANIMAL_URL;
 

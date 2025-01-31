@@ -1,6 +1,6 @@
 import axios from "axios";
-import loginService from "./login.service";
-import urlServidor from "../config"
+import loginService from "../login/login.service";
+import urlServidor from "../../config"
 
 const API_URL = import.meta.env.VITE_CENTRO_CASTRACION_URL;
 

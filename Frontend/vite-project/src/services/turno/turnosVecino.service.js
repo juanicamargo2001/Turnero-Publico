@@ -1,5 +1,5 @@
 import axios from 'axios';
-import loginService from './login.service';
+import loginService from '../login/login.service';
 
 const urlFiltroPorDni = import.meta.env.VITE_FILTRO_DNI_URL;
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import loginService from './login.service';
+import loginService from '../login/login.service';
 
 const urlMascotasNoCastradas = import.meta.env.VITE_MASCOTAS_NO_CASTRADAS_URL;
 const urlTurnoTelefonico = import.meta.env.VITE_TURNO_TELEFONICO_URL;
