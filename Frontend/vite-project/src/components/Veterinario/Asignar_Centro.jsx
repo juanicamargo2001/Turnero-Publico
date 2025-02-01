@@ -83,7 +83,7 @@ const RegistroVeterinarioXCentro = () => {
                                 </option>
                                 ))}
                             </select>
-                            <button type="submit" class="btn btn-success" onClick={() => handleSubmit(row.idLegajo)}>Guardar</button>
+                            <button type="submit" class="btn btn-primary confir" onClick={() => handleSubmit(row.idLegajo)}>Guardar</button>
                         </td>
                     </tr>
                     ))}

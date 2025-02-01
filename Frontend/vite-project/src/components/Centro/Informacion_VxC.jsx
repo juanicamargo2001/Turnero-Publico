@@ -5,7 +5,7 @@ export default function Informacion_VxC({ veterinarios, nombreCentro }) {
     <div className="veterinarios-info mt-3">
       <h5>Veterinarios del centro {nombreCentro}:</h5>
       {veterinarios.length > 0 ? (
-        <table className="responsive-table responsive-table-dark">
+        <table className="responsive-table">
           <thead>
             <tr>
               <th>Legajo</th>

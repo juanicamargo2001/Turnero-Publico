@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const CentroCastracionCard = ({ nombre, calle, altura, barrio, horaInicio, horaFin, imagen, ruta, idUsuario, dni }) => {
   return (
-    <div className="card turno mb-3 maven-pro-body m-4" style={{ width: '21.75rem'}}>
+    <div className="card turno mb-3 maven-pro-body">
       <img 
         src={imagen} 
         alt={`Centro ${nombre}`} 

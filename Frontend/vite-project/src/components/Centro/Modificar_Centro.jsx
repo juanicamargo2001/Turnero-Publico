@@ -116,7 +116,7 @@ export default function Modificar_Centro() {
            {userRole.rol !== 'secretaria' && (
                 <div className="d-flex justify-content-between mb-3">
                     <a href='/registrar/centro'>
-                        <button className="btn btn-primary confir2">Crear centro de castración</button>
+                        <button className="btn btn-primary confir3">Crear centro de castración</button>
                     </a>
                 </div>
             )}
@@ -177,7 +177,7 @@ export default function Modificar_Centro() {
                 veterinarios={veterinarios} 
                 nombreCentro={nombreCentro}
                 />
-                <button className="btn btn-secondary mt-3" onClick={handleCloseInfo}>Cerrar</button>
+                <button className="btn btn-primary confir mt-3" onClick={handleCloseInfo}>Cerrar</button>
             </div>
             }
         </div>
