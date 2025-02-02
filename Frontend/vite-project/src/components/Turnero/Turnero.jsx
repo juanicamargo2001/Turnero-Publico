@@ -6,9 +6,9 @@ import { DateCalendar, PickersDay, DayCalendarSkeleton } from '@mui/x-date-picke
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
-import { horarios } from '../../services/horarios.service'; // Importa el servicio de horarios
-import { turneroService } from '../../services/turnero.service'; // Importa el servicio de turnero
-import { turnosService } from '../../services/turnos.service';
+import { horarios } from '../../services/agenda/horarios.service'; // Importa el servicio de horarios
+import { turneroService } from '../../services/turno/turnero.service'; // Importa el servicio de turnero
+import { turnosService } from '../../services/turno/turnos.service';
 import { useLocation } from 'react-router-dom';
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {

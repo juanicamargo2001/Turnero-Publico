@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import loginService from '../../services/login.service';
-import { centroService } from '../../services/centro.service';
+import loginService from '../../services/login/login.service';
+import { centroService } from '../../services/centro/centro.service';
 
 const CrearPersonal = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -162,7 +162,10 @@ const CrearPersonal = () => {
 
                 {renderSecretarioField()}
 
-                <button type="submit" className="btn btn-primary">Crear</button>
+                <div className="text-end">
+                 <button type="submit" className="btn btn-primary confir">Crear</button>
+                </div>
+
             </form>
 
             {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}

@@ -3,22 +3,21 @@ import { Form, Row, Col } from 'react-bootstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; 
-import { agendaService } from '../../services/agenda/habilitar.service';
-import Swal from 'sweetalert2';
+import { agendaService } from '../../services/habilitar.service';
 
 const HabilitarTurneroAlberi = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [enabledTime, setEnabledTime] = useState('10:00:00'); 
   const [turnosPorDia, setTurnosPorDia] = useState({
     shifts: [
-      { horaInicio: '07:00:00', horarioFin: '08:30:00', idTipoTurno: 1, cantidad: 8 }, // Gatos
-      { horaInicio: '08:30:00', horarioFin: '10:00:00', idTipoTurno: 2, cantidad: 8 }, // Perros
-      { horaInicio: '10:00:00', horarioFin: '11:30:00', idTipoTurno: 1, cantidad: 8 }, // Gatos
-      { horaInicio: '11:30:00', horarioFin: '13:00:00', idTipoTurno: 2, cantidad: 8 }, // Perros
-      { horaInicio: '13:00:00', horarioFin: '14:30:00', idTipoTurno: 1, cantidad: 8 }, // Gatos
-      { horaInicio: '14:30:00', horarioFin: '16:00:00', idTipoTurno: 2, cantidad: 8 }, // Perros
-      { horaInicio: '16:00:00', horarioFin: '17:30:00', idTipoTurno: 1, cantidad: 8 }, // Gatos
-      { horaInicio: '17:30:00', horarioFin: '19:00:00', idTipoTurno: 2, cantidad: 8 }  // Perros
+      { horaInicio: '07:00:00', horarioFin: '08:30:00', idTipoTurno: 1, cantidad: 8 }, 
+      { horaInicio: '08:30:00', horarioFin: '10:00:00', idTipoTurno: 2, cantidad: 8 },
+      { horaInicio: '10:00:00', horarioFin: '11:30:00', idTipoTurno: 1, cantidad: 8 },
+      { horaInicio: '11:30:00', horarioFin: '13:00:00', idTipoTurno: 2, cantidad: 8 },
+      { horaInicio: '13:00:00', horarioFin: '14:30:00', idTipoTurno: 1, cantidad: 8 },
+      { horaInicio: '14:30:00', horarioFin: '16:00:00', idTipoTurno: 2, cantidad: 8 },
+      { horaInicio: '16:00:00', horarioFin: '17:30:00', idTipoTurno: 1, cantidad: 8 },
+      { horaInicio: '17:30:00', horarioFin: '19:00:00', idTipoTurno: 2, cantidad: 8 } 
     ],
   });
 
@@ -66,13 +65,6 @@ const HabilitarTurneroAlberi = () => {
     console.log("Datos que se envían:", JSON.stringify(nuevaAgenda, null, 2)); 
     try {
       const response = await agendaService.Grabar(nuevaAgenda);
-      Swal.fire({
-        title: "¡Éxito!",
-        text: "La agenda fue registrada con éxito.",
-        icon: "success",
-        confirmButtonColor: "#E15562",
-        confirmButtonText: "OK",
-      });
       console.log('Agenda registrada con éxito:', response);
     } catch (error) {
       console.error('Error al registrar la agenda:', error);
@@ -193,7 +185,7 @@ const HabilitarTurneroAlberi = () => {
                     <Form.Label>Hora Fin*</Form.Label>
                     <Form.Control 
                       type="time" 
-                      value={shift.horarioFin.split(':').slice(0, 2).join(':')}
+                      value={shift.horarioFin.split(':').slice(0, 2).join(':')} // Muestra solo hora y minuto
                       onChange={(e) => handleShiftChange(index + 4, 'horarioFin', e.target.value)} 
                     />
                   </Form.Group>

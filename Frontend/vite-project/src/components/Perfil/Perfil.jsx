@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect, useContext } from 'react'
-import loginService from '../../services/login.service'
+import loginService from '../../services/login/login.service'
 import EditarPerfil from './EditarPerfil'
 import CambiarContraseña from './CambiarContraseña'
 import EditarPeriflRol from './EditarPeriflRol'

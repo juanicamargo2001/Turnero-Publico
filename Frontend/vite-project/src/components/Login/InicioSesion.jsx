@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import './InicioSesion.css';
-import loginService from '../../services/login.service';
+import loginService from '../../services/login/login.service';
 import bienestarImage from '../../imgs/bienestar.png';
 import UserRoleContext from './UserRoleContext';
 import { useNavigate } from 'react-router-dom';

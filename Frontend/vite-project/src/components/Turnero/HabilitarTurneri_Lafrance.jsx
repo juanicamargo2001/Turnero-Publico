@@ -3,7 +3,8 @@ import { Form, Row, Col } from 'react-bootstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; 
-import { agendaService } from '../../services/habilitar.service';
+import { agendaService } from '../../services/agenda/habilitar.service';
+import Swal from 'sweetalert2';
 
 const HabilitarTurneroAlberi = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -66,6 +67,13 @@ const HabilitarTurneroAlberi = () => {
     try {
       const response = await agendaService.Grabar(nuevaAgenda);
       console.log('Agenda registrada con éxito:', response);
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "La agenda fue registrada con éxito.",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      });
     } catch (error) {
       console.error('Error al registrar la agenda:', error);
     }

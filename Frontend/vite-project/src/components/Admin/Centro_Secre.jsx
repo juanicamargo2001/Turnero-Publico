@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
-import { centroService } from '../../services/centro.service';
+import { centroService } from '../../services/centro/centro.service';
 import CentroCastracionCard from '../Turnero/CentroCard';
 import alberdiImg from '../../imgs/alberdi.jpg'; 
 import lafranceImg from '../../imgs/lafrance.jfif';

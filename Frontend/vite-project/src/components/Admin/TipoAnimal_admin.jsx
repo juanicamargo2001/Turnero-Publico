@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import gatoImg from '../../imgs/gato.png';
 import perroImg from '../../imgs/perro.png';
-import { mascotasService as turnoTelefonico } from '../../services/turnoTelefonico.service';
+import { mascotasService as turnoTelefonico } from '../../services/turno/turnoTelefonico.service';
 
 
 const TipoAnimal_Admin = () => {

@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { vecinoService } from '../../services/vecino.service';
+import { vecinoService } from '../../services/vecino/vecino.service';
 
 const Paso3Visual = ({updateFormData, prevStep, formData}) => {
     const { register, handleSubmit, formState: { errors } } = useForm();

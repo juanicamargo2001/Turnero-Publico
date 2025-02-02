@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {veterinarioService} from "../../services/veterinario.service";
-import {centroService} from "../../services/centro.service"
-import { veterinarioCentroService } from '../../services/veterinarioXcentro';
+import {veterinarioService} from "../../services/veterinario/veterinario.service";
+import {centroService} from "../../services/centro/centro.service"
+import { veterinarioCentroService } from '../../services/veterinario/veterinarioXcentro';
 
 const RegistroVeterinarioXCentro = () => {
     const [data, setData] = useState([]);

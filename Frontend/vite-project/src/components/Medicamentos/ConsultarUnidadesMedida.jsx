@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import medicamentosService from '../../services/medicamentos.service';
+import medicamentosService from '../../services/medicamento/medicamentos.service';
 import Modal from '../Visual_Modificador';
 
 const ConsultarUnidadesMedida = () => {
@@ -44,7 +44,7 @@ const ConsultarUnidadesMedida = () => {
         <div>
           <div className="d-flex justify-content-between mb-3">
             <a href='/registrar/unidad-medida'>
-              <button className="btn btn-primary confir2">Crear Unidad de Medida</button>
+              <button className="btn btn-primary confir">Crear</button>
             </a>
           </div>
           <table className="">

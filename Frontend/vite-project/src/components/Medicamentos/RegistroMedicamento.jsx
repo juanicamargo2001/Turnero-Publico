@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import medicamentosService from '../../services/medicamentos.service';
+import medicamentosService from '../../services/medicamento/medicamentos.service';
 
 const RegistroMedicamento = () => {
   const { 

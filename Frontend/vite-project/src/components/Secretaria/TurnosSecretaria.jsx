@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import turnosService from "../../services/turnosSecretaria.service";
-import misTurnosService from "../../services/misTurnos.service";
+import turnosService from "../../services/turno/turnosSecretaria.service";
+import misTurnosService from "../../services/turno/misTurnos.service";
 import { useNavigate } from 'react-router-dom';
-import { veterinarioService } from "../../services/veterinario.service";
-import medicamentosService from "../../services/medicamentos.service";
+import { veterinarioService } from "../../services/veterinario/veterinario.service";
+import medicamentosService from "../../services/medicamento/medicamentos.service";
 import "./turnosSecretaria.css";
 
 const TurnosSecretaria = () => {
@@ -235,7 +235,7 @@ const TurnosSecretaria = () => {
           <div className="obtn">
             <button
               type="button"
-              className="btn btn-primary obtenerTurno w-md-auto"
+              className="btn btn-primary  confir w-md-auto"
               onClick={handleBuscar}
             >
               Buscar

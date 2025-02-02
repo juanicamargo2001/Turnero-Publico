@@ -6,11 +6,12 @@ import { DateCalendar, PickersDay, DayCalendarSkeleton } from '@mui/x-date-picke
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
-import { horarios } from '../../services/horarios.service'; // Importa el servicio de horarios
-import { turneroService } from '../../services/turnero.service'; // Importa el servicio de turnero
+import { horarios } from '../../services/agenda/horarios.service'; // Importa el servicio de horarios
+import { turneroService } from '../../services/turno/turnero.service'; // Importa el servicio de turnero
 // import { turnosService } from '../../services/turnos.service';
-import { mascotasService } from '../../services/turnoTelefonico.service';
+import { mascotasService } from '../../services/turno/turnoTelefonico.service';
 import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [value, setValue] = React.useState(null); // Fecha seleccionada
@@ -80,7 +81,13 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         try {
             // Llama al servicio para reservar el turno, enviando el idHorario
             await mascotasService.crearTurnoTelefonico(selectedTurno, idMascota, idUsuario);
-            alert("¡Tu turno ha sido confirmado!");
+             Swal.fire({
+                    title: "¡Éxito!",
+                    text: "El turno fue registrado con éxito.",
+                    icon: "success",
+                    confirmButtonColor: "#E15562",
+                    confirmButtonText: "OK",
+                  });
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");
             console.error("Error al confirmar el turno:", error);

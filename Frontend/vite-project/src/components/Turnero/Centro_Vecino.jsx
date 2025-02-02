@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { centroService } from '../../services/centro.service';
+import { centroService } from '../../services/centro/centro.service';
 import CentroCastracionCard from './CentroCard';
 import alberdiImg from '../../imgs/alberdi.jpg'; 
 import lafranceImg from '../../imgs/lafrance.jfif';

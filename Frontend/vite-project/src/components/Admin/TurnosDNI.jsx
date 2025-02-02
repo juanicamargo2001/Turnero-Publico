@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { turnosService } from "../../services/turnosVecino.service";
+import { turnosService } from "../../services/turno/turnosVecino.service";
 import { useNavigate } from "react-router-dom";
 
 function BuscarTurnosPorDni() {

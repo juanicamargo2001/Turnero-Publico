@@ -1,6 +1,6 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import loginService from '../../services/login.service'
+import loginService from '../../services/login/login.service'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import MensajeRecuperacion from './MensajeRecuperacion'

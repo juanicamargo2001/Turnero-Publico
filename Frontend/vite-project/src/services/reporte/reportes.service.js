@@ -1,5 +1,5 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
 const urlResourceTipoAnimal = import.meta.env.VITE_INFORME_TIPO_ANIMAL_URL;
 const urlResourceCancelaciones = import.meta.env.VITE_INFORME_CANCELACIONES_URL; // URL del informe de cancelaciones

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Tab, Tabs, Row, Col, Card } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Text } from "recharts";
 import { PieChart, Pie, Cell, Tooltip as PieTooltip } from "recharts";
-import { reportesService } from "../../services/reportes.service";
+import { reportesService } from "../../services/reporte/reportes.service";
 import { DotLoader } from "react-spinners";
 
 const COLORS = ["#14B3B7", "#878BB6"]; 

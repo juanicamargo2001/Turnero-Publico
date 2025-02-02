@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import misTurnosService from '../services/misTurnos.service';
+import misTurnosService from '../services/turno/misTurnos.service';
 import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 

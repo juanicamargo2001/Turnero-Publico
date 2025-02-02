@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
-import {veterinarioService} from '../../services/veterinario.service';
+import {veterinarioService} from '../../services/veterinario/veterinario.service';
 import UserRoleContext from '../Login/UserRoleContext';
 
 
@@ -102,7 +102,7 @@ const Veterinarios = () => {
                 {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
                 {userRole.rol !== 'secretaria' && (
                 <a href='/registrar/veterinario' className="mb-2 mb-md-0">
-                    <button className="btn btn-primary confir2 w-100 w-md-auto">Crear Veterinario</button>
+                    <button className="btn btn-primary confir w-100 w-md-auto">Crear Veterinario</button>
                 </a>
                 )}
                 <div className="input-group w-100 w-md-25">

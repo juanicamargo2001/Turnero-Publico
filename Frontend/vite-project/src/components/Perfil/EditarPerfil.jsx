@@ -1,9 +1,10 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { vecinoService } from '../../services/vecino.service'
-import { provinciaService } from '../../services/provinciasService'
+import { vecinoService } from '../../services/vecino/vecino.service'
+import { provinciaService } from '../../services/provincia/provincia.service'
 import './Perfil.css'
+import Swal from 'sweetalert2';
 
 export default function EditarPerfil() {
     const { register, handleSubmit, formState: { errors }, setValue} = useForm({ mode: 'onChange' })
@@ -93,7 +94,13 @@ export default function EditarPerfil() {
 
       try {
         await vecinoService.EditarVecino(datosVecino);
-        alert("Datos del vecino modificados con éxito");
+        Swal.fire({
+                title: "¡Éxito!",
+                text: "Datos del vecino modificados con éxito.",
+                icon: "success",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              });
         return
       } catch (error) {
         console.error("Error al modificar los datos del vecino:", error.response ? error.response.data : error);

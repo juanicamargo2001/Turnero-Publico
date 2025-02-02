@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form } from "react-bootstrap";
 import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/material_blue.css"; // Tema azul claro
+import "flatpickr/dist/themes/material_blue.css"; 
 import { Spanish } from "flatpickr/dist/l10n/es.js";
-import { turnosService } from "../../services/cancelacionMasiva.service";
+import { turnosService } from "../../services/turno/cancelacionMasiva.service";
+import Swal from 'sweetalert2';
 
 function CancelacionMasiva() {
 
@@ -36,7 +37,13 @@ function CancelacionMasiva() {
   
     try {
       const response = await turnosService.CancelarMasivamente(requestCancelacionesMasivas);
-      alert("Cancelación masiva realizada con éxito");
+      Swal.fire({
+              title: "¡Éxito!",
+              text: "Cancelado con éxito",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            });
       console.log("Respuesta del servidor:", response);
     } catch (error) {
       alert("Error al realizar la cancelación masiva.");

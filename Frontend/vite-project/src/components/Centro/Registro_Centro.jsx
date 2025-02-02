@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { centroService } from '../../services/centro.service';
-import { provinciaService } from '../../services/provinciasService';
+import { centroService } from '../../services/centro/centro.service';
+import { provinciaService } from '../../services/provincia/provincia.service';
 import { useState } from 'react';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import {useNavigate} from "react-router-dom"

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
 const API_CREAR_UNIDAD_MEDIDA = import.meta.env.VITE_CREAR_UNIDAD_MEDIDA_URL;
 const API_OBTENER_UNIDADES_MEDIDA = import.meta.env.VITE_OBTENER_UNIDAD_MEDIDA_URL;
