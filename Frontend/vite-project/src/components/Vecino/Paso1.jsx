@@ -5,7 +5,7 @@ import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import uploadImage from '../../imgs/upload2.png';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
-import { vecinoService } from '../../services/vecino.service';
+import { vecinoService } from '../../services/vecino/vecino.service';
 import { useNavigate } from "react-router-dom";
 
 const Paso1Visual = ({ formData, updateFormData, nextStep})=> {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {veterinarioService} from "../../services/veterinario.service";
-import {centroService} from "../../services/centro.service"
-import { veterinarioCentroService } from '../../services/veterinarioXcentro';
+import {veterinarioService} from "../../services/veterinario/veterinario.service";
+import {centroService} from "../../services/centro/centro.service"
+import { veterinarioCentroService } from '../../services/veterinario/veterinarioXcentro';
 
 const RegistroVeterinarioXCentro = () => {
     const [data, setData] = useState([]);
@@ -50,7 +50,7 @@ const RegistroVeterinarioXCentro = () => {
     return (
         <div className="container mt-4">
             <h2 className="maven-pro-title">ASIGNAR CENTRO DE CASTRACIÓN A VETERINARIO</h2>
-            <table>
+            <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Legajo</th>
@@ -83,7 +83,7 @@ const RegistroVeterinarioXCentro = () => {
                                 </option>
                                 ))}
                             </select>
-                            <button type="submit" class="btn btn-success" onClick={() => handleSubmit(row.idLegajo)}>Guardar</button>
+                            <button type="submit" class="btn btn-primary confir" onClick={() => handleSubmit(row.idLegajo)}>Guardar</button>
                         </td>
                     </tr>
                     ))}

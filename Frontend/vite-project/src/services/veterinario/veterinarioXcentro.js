@@ -1,7 +1,7 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/VeterinarioXCentro'; // Asegúrate de que esta URL sea correcta
+const API_URL = import.meta.env.VITE_VETERINARIO_X_CENTRO_URL; // Asegúrate de que esta URL sea correcta
 
 async function AsignarCentro(legajo, centro) {
     try {

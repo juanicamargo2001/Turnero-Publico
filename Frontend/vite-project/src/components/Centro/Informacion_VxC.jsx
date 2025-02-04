@@ -5,7 +5,7 @@ export default function Informacion_VxC({ veterinarios, nombreCentro }) {
     <div className="veterinarios-info mt-3">
       <h5>Veterinarios del centro {nombreCentro}:</h5>
       {veterinarios.length > 0 ? (
-        <table className="table">
+        <table className="responsive-table">
           <thead>
             <tr>
               <th>Legajo</th>
@@ -26,8 +26,8 @@ export default function Informacion_VxC({ veterinarios, nombreCentro }) {
                 <td>{vet.dni}</td>
                 <td>{vet.email}</td>
                 <td>{vet.habilitado ? 
-                                <span style={{ color: 'green' }}>✓</span> : 
-                                <span style={{ color: 'red' }}>✗</span>}
+                                <span style={{ color: '#00FF00' }}>✓</span> : 
+                                <span style={{ color: '#FF0000' }}>✗</span>}
                 </td>
                 <td>{vet.telefono}</td>
               </tr>

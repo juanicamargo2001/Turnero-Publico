@@ -1,8 +1,7 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/sexo";
-
+const urlResource = import.meta.env.VITE_TAMANO_URL;
 async function Buscar() {
   try {
     const token = await loginService.obtenerTokenConRenovacion();
@@ -16,11 +15,10 @@ async function Buscar() {
     });
     return resp.data; // Asegúrate de que esta línea esté devolviendo la respuesta correctamente
   } catch (error) {
-    console.error("Error al cargar los sexos:", error); // Captura cualquier error
+    console.error("Error al cargar los tamaños:", error); // Captura cualquier error
     throw error; // Re-lanza el error para manejarlo en el componente
   }
 }
-
-export const sexosService = {
+export const tamanoService = {
   Buscar
 };

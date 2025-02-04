@@ -1,7 +1,7 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos/obtenerTurnosAnimal";
+const urlResource = import.meta.env.VITE_OBTENER_TURNOS_ANIMAL_URL;
 
 async function Buscar(idCentroCastracion, tipoAnimal) {
   try {

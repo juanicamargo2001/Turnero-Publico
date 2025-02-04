@@ -1,10 +1,11 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import loginService from '../../services/login.service';
+import loginService from '../../services/login/login.service';
 import './Perfil.css'
+import Swal from 'sweetalert2';
 
 export default function CambiarContraseña() {
-     const { register, handleSubmit, formState: { errors }, watch} = useForm()
+     const { register, handleSubmit, formState: { errors }, watch, reset} = useForm()
 
      const onSubmit = async (data) =>{
         if(data.nuevaContraseña !== data.contraseñaAnterior){
@@ -16,7 +17,15 @@ export default function CambiarContraseña() {
             try{
                 const response = await loginService.changePassword(passwordRequest)
                 console.log(response)
-                alert("Contraseña cambiada con exito")
+                Swal.fire({
+                        title: "¡Éxito!",
+                        text: "Contraseña cambiada con éxito.",
+                        icon: "success",
+                        confirmButtonColor: "#E15562",
+                        confirmButtonText: "OK",
+                      }).then(() => {
+                        reset();
+                    });
             }catch(error){
                 console.log(error)
             }

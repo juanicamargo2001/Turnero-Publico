@@ -1,7 +1,7 @@
 import axios from 'axios';
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/mascota';
+const API_URL = import.meta.env.VITE_MASCOTA_URL;
 
 const mascotaService = {
   async grabar(nuevaMascota) {

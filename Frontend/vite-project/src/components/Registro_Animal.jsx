@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import mascotaService from '../services/mascota.service';
-import { sexosService } from '../services/sexo.service';
-import { tamanoService } from '../services/tamano.service';
-import { tipoAnimalService } from '../services/tipoAnimal.service';
+import mascotaService from '../services/animal/mascota.service';
+import { sexosService } from '../services/animal/sexo.service';
+import { tamanoService } from '../services/animal/tamano.service';
+import { tipoAnimalService } from '../services/animal/tipoAnimal.service';
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
 
 const RegistroAnimal = () => {
   const [sexos, setSexos] = useState([]);
@@ -12,7 +13,7 @@ const RegistroAnimal = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm({
     mode: 'onChange',
   });
 
@@ -29,7 +30,15 @@ const RegistroAnimal = () => {
     try {
       await mascotaService.grabar(nuevaMascota);
       alert("Mascota registrada con éxito");
-      
+      Swal.fire({
+              title: "¡Éxito!",
+              text: "La agenda fue registrada con éxito.",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            }).then(() => {
+              reset(); 
+          });
       Object.keys(data).forEach((key) => {
         if (key !== 'edad') {
           data[key] = ''; 

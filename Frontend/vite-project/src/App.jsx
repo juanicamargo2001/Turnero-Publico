@@ -30,11 +30,21 @@ import Inicio from "./components/Inicio.jsx";
 import BuscarTurnosPorDni from "./components/Admin/TurnosDNI.jsx";
 import Registro_Vecino_Minimo from "./components/Secretaria/Registro_Vecino_Minimo.jsx";
 import Turnos_Urgencia from "./components/Secretaria/Turnos_Urgencia.jsx"
-import EditarPerfil from "./components/Perfil/EditarPerfil.jsx";
+
 import Perfil from "./components/Perfil/Perfil.jsx";
-import CambiarContraseña from "./components/Perfil/CambiarContraseña.jsx";
+import RecuperarContraseña from "./components/Perfil/RecuperarContraseña.jsx";
+
 import ConsultarMedicamentos from "./components/Medicamentos/ConsultarMedicamentos.jsx"
 import ConsultarUnidadesMedida from "./components/Medicamentos/ConsultarUnidadesMedida.jsx"
+import CentrosCastracionSecre from "./components/Admin/Centro_Secre.jsx";
+import TipoAnimal_Admin from "./components/Admin/TipoAnimal_admin.jsx";
+import Turnero_Admin from "./components/Admin/Turnero_Admin"
+import Reportes from "./components/SuperAdmin/Reportes.jsx";
+import CancelacionMasiva from "./components/SuperAdmin/Cancelacion_Masiva.jsx";
+import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.jsx";
+import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
+import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
+
 
 function App() {
   return (
@@ -171,13 +181,15 @@ function App() {
               
               <Route path="/registrar/veterinarioXcentro" 
                 element={
-                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
                   <RegistroVeterinarioXCentro/>
                 </RutaProtegida>
                 } />
                 
 
               <Route path="/iniciarsesion" element={<InicioSesion/>} />
+
+              <Route path="/recuperarContraseña" element={<RecuperarContraseña/>} />
 
               <Route path="/" element={<Inicio/>} />
 
@@ -218,7 +230,7 @@ function App() {
 
               <Route path="/perfil"
                 element={
-                  <RutaProtegida rolesPermitidos={["vecino"]}>
+                  <RutaProtegida rolesPermitidos={["vecino", "secretaria", "administrador", "superAdministrador"]}>
                     <Perfil/>
                   </RutaProtegida>
                 } />  
@@ -237,7 +249,68 @@ function App() {
                   </RutaProtegida>
                 } /> 
 
+                <Route path="/registrar/medicamento"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <RegistroMedicamento/>
+                  </RutaProtegida>
+                } /> 
+
+                <Route path="/registrar/unidad-medida"
+                element={
+                  <RutaProtegida rolesPermitidos={["secretaria"]}>
+                    <RegistroUnidadMedida/>
+                  </RutaProtegida>
+                } /> 
+
+                {/* Turno telefonico */}
+                <Route path="/centros" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <CentrosCastracionSecre/>
+                </RutaProtegida>
+                } />
+                <Route path="/animales/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <TipoAnimal_Admin/>
+                </RutaProtegida>
+                } />
+                <Route path="/turno/telefonico/alberdi" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "vecino"]}>
+                  <Turnero_Admin nombreCentro={"Alberdi"} turnoId={14} />
+                </RutaProtegida>
+                } />
+                <Route path="/turno/telefonico/alberdi'" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <TipoAnimal_Admin/>
+                </RutaProtegida>
+                } />
+                {/* Reportes  */}
+                <Route path="/reportes" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador"]}>
+                  <Reportes/>
+                </RutaProtegida>
+                } />
+                {/* Cancelacion masiva  */}
+
+                <Route path="/cancelar/masivo" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <CancelacionMasiva/>
+                </RutaProtegida>
+                } />
+
               <Route path="*" element={<Default/>} />
+
+              <Route path="/crear-Personal" element={
+                <RutaProtegida rolesPermitidos={["superAdministrador"]}>
+                <CrearPersonal/>
+                </RutaProtegida>
+                } />
 
             </Routes>
           </div>

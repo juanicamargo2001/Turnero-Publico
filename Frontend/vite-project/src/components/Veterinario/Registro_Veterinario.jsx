@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
-import {veterinarioService} from "../../services/veterinario.service";
-import { provinciaService } from '../../services/provinciasService';
+import {veterinarioService} from "../../services/veterinario/veterinario.service";
+import { provinciaService } from '../../services/provincia/provincia.service';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
 
 const RegistroVeterinario = () => {
   const { 
     register, 
     handleSubmit, 
     formState: { errors },
-    setValue 
+    setValue
   } = useForm();
 
   const today = new Date();
@@ -76,7 +77,6 @@ const RegistroVeterinario = () => {
       );
       setSugerencias(filtrados);
     } else {
-      // Limpiar sugerencias si no hay texto o es menor a 3 caracteres
       setSugerencias([]);
     }
   };
@@ -106,7 +106,16 @@ const RegistroVeterinario = () => {
 
     try {
       await veterinarioService.Grabar(nuevoVeterinario);
-      alert("Veterinario registrado con éxito");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "Veterinario registrado con éxito",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate("/modificar/veterinario");
+      });
+  
       navigate("/modificar/veterinario");
     } catch (error) {
       console.error("Error al registrar el veterinario:", error.response ? error.response.data : error);
@@ -284,7 +293,7 @@ const RegistroVeterinario = () => {
         </div>
         <div className="d-flex justify-content-end">
           <a href='/modificar/veterinario'>
-              <button type='button' className="btn btn-primary me-2 ms-auto confir">Volver</button>
+              <button type='button' className="btn btn-secondary me-2 ms-auto confir2">Volver</button>
           </a>
           <button type="submit" className="btn btn-primary confir">Confirmar</button>
         </div>

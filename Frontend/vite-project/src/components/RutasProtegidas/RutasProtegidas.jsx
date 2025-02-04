@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import loginService from "../../services/login.service";
+import loginService from "../../services/login/login.service";
 import React from "react";
 import Default from "../Default/Default";
 

@@ -5,7 +5,7 @@ import React from 'react'
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
-import { vecinoService } from "../../services/vecino.service";
+import { vecinoService } from "../../services/vecino/vecino.service";
 
 export default function Registro_Vecino_Minimo() {
 

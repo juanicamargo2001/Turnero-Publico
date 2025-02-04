@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { centroService } from '../../services/centro.service';
+import { centroService } from '../../services/centro/centro.service';
 import CentroCastracionCard from './CentroCard';
 import alberdiImg from '../../imgs/alberdi.jpg'; 
 import lafranceImg from '../../imgs/lafrance.jfif';
@@ -46,7 +46,7 @@ const CentrosCastracionList = () => {
         <div className="row justify-content-center">
           {Array.isArray(centros) && centros.length > 0 ? (
             centros.map((centro) => (
-              <div className="col-md-4" key={centro.id_centro_castracion}>
+              <div className="col-md-4 col-sm-6" key={centro.id_centro_castracion}>
                 <CentroCastracionCard
                   nombre={centro.nombre}
                   calle={centro.calle}

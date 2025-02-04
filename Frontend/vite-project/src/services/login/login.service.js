@@ -1,11 +1,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/IniciarSesion';
-const ROL_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/rol';
-const NAME_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/NombreUsuario';
-const REFRESH_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/ObtenerRefreshToken';
-const CHANGEPASS_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/Usuario/cambiarContraseña'
+const API_URL = import.meta.env.VITE_INICIAR_SESION_URL;
+const ROL_URL = import.meta.env.VITE_ROL_URL;
+const NAME_URL = import.meta.env.VITE_NAME_URL;
+const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
+const CHANGEPASS_URL = import.meta.env.VITE_CHANGEPASS_URL;
+const RECOVER_URL = import.meta.env.VITE_RECOVER_URL;
+const CREAR_SECRETARIA = import.meta.env.VITE_CREAR_SECRETARIA_URL;
+const CREAR_ADMIN = import.meta.env.VITE_CREAR_ADMIN_URL;
+const CREAR_SUPER_ADMIN = import.meta.env.VITE_CREAR_SUPER_ADMIN_URL;
 
 const login = async (email, clave) => {
   try {
@@ -13,8 +17,11 @@ const login = async (email, clave) => {
     const { token, refreshToken } = response.data.result;
 
     // Guardar tokens en cookies con tiempos de expiración específicos
-    Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos = 1/48 de un día
+    Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos
+    Cookies.set('tokenG', token, { expires: 1 });
     Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
+
+ 
 
     return response.data;
   } catch (error) {
@@ -42,14 +49,18 @@ const refreshToken = async () => {
   try {
     // Enviar solicitud de refresco de token con el refreshToken
     const response = await axios.post(REFRESH_URL, {
-      tokenExpirado: Cookies.get('token'),
+      tokenExpirado: Cookies.get('tokenG'),
+      
       refreshToken: refresh
     });
+    console.log(Cookies.get('refreshToken'));
 
     const { token, refreshToken } = response.data.result;
+   
 
     // Guardar los nuevos tokens en cookies
     Cookies.set('token', token, { expires: 1 / 48 }); // 30 minutos
+    Cookies.set('tokenG', token, { expires: 1 });
     Cookies.set('refreshToken', refreshToken, { expires: 1 }); // 1 día
 
     return token; // Retorna el nuevo token
@@ -145,7 +156,104 @@ const changePassword = async (passwordRequest) => {
   }
 };
 
+const recoverPassword = async (emailRequest) => {
+  let token = null;
+  try {
+    token = await obtenerTokenConRenovacion();
+  } catch (error) {
+    console.log("Error al obtener token");
+    throw error;
+  }
+
+  try {
+    const response = await axios.put(RECOVER_URL, emailRequest,{
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.result;
+  } catch (error) {
+    console.error("Error al enviar el mail:", error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
+const crearSecretaria = async (nombre, apellido, contraseña, email, idCentroCastracion) => {
+  try {
+    const token = await obtenerTokenConRenovacion();
+    const body = {
+      nombre,
+      apellido,
+      contraseña,
+      email,
+      idCentroCastracion
+    };
+
+    const response = await axios.post(CREAR_SECRETARIA, body, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear la secretaria:', error);
+    throw error;
+  }
+}
+
+  const crearAdmin = async (nombre, apellido, contraseña, email) => {
+    try {
+      const token = await obtenerTokenConRenovacion();
+      const body = {
+        nombre,
+        apellido,
+        contraseña,
+        email
+      };
+  
+      const response = await axios.post(CREAR_ADMIN, body, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error al crear el admin:', error);
+      throw error;
+    }
+};
+
+const crearSuperAdmin = async (nombre, apellido, contraseña, email) => {
+  try {
+    const token = await obtenerTokenConRenovacion();
+    const body = {
+      nombre,
+      apellido,
+      contraseña,
+      email
+    };
+
+    const response = await axios.post(CREAR_SUPER_ADMIN, body, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al crear el super admin:', error);
+    throw error;
+  }
+};
+
 export default {
   login, obtenerToken,
-  obtenerTokenConRenovacion, userRol, userName, changePassword,
+  obtenerTokenConRenovacion, userRol, userName, changePassword, recoverPassword, crearSecretaria, crearAdmin, crearSuperAdmin
 };

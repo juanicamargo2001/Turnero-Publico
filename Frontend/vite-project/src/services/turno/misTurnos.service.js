@@ -1,8 +1,8 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const urlResource = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos/misTurnos";
-const urlCancelarTurno = "https://deep-ghoul-socially.ngrok-free.app/api/Turnos/cancelarTurno";
+const urlResource = import.meta.env.VITE_MIS_TURNOS_URL;
+const urlCancelarTurno = import.meta.env.VITE_CANCELAR_TURNO_URL;
 
 async function obtenerMisTurnos() {
   try {

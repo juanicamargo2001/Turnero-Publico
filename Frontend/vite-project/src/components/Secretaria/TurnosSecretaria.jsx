@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import turnosService from "../../services/turnosSecretaria.service";
-import misTurnosService from "../../services/misTurnos.service";
-import { veterinarioService } from "../../services/veterinario.service";
-import medicamentosService from "../../services/medicamentos.service";
+import turnosService from "../../services/turno/turnosSecretaria.service";
+import misTurnosService from "../../services/turno/misTurnos.service";
+import { useNavigate } from 'react-router-dom';
+import { veterinarioService } from "../../services/veterinario/veterinario.service";
+import medicamentosService from "../../services/medicamento/medicamentos.service";
+import "./turnosSecretaria.css";
 
 const TurnosSecretaria = () => {
   const [turnos, setTurnos] = useState([]);
@@ -26,12 +28,14 @@ const TurnosSecretaria = () => {
   const [medicamentos, setMedicamentos] = useState([]);
   const [dosisOptions, setDosisOptions] = useState([]);
   const [unidadMedidaOptions, setUnidadMedidaOptions] = useState([]);
-  
+  const navigate = useNavigate();
 
   const estadosPermitidos = {
     Reservado: ["Confirmado", "Cancelado"],
-    Confirmado: ["Ingresado"],
+    Confirmado: ["Ingresado", "Cancelado"],
     Ingresado: ["Realizado"],
+
+    
   };
 
   const fetchTurnosPorFecha = async (fecha) => {
@@ -123,8 +127,10 @@ const TurnosSecretaria = () => {
     const { veterinario, medicamento, dosis, unidadMedida, descripcion } = medicamentoData;
     if (!veterinario || !medicamento || !dosis || !unidadMedida || !descripcion) {
       setError("Todos los campos son obligatorios.");
+      console.log("Error")
       return;
     }
+    setError(null);
     setMedicamentoModal(false);
     setConfirmModal(true); // Mostrar modal de confirmación
   };
@@ -194,48 +200,61 @@ const TurnosSecretaria = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="contenedor mt-4">
       <h2 className="maven-pro-title">Turnos del Día</h2>
       {/* Formulario de búsqueda de turnos */}
-      <form
-        className="filterForm d-flex justify-content-center align-items-center gap-3"
-        onSubmit={handleBuscar}
-      >
-        <label htmlFor="fecha" className="label">
-          Fecha:
-        </label>
-        <input
-          type="date"
-          id="fecha"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
-          className="form-control w-25"
-        />
-        <label htmlFor="dni" className="label">
-          DNI:
-        </label>
-        <input
-          type="text"
-          id="dni"
-          placeholder="Ej. 12345678"
-          value={dni}
-          onChange={(e) => setDni(e.target.value)}
-          className="form-control w-25"
-        />
-        <div className="obtn">
-          <button type="button" className="btn btn-primary obtenerTurno" onClick={handleBuscar}>
-            Buscar
-          </button>
-        </div>
-      </form>
+        <form
+          className="filterForm d-flex flex-column flex-md-row justify-content-center align-items-center gap-3"
+          onSubmit={handleBuscar}
+        >
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="fecha" className="label">
+              Fecha:
+            </label>
+            <input
+              type="date"
+              id="fecha"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="form-group-secretaria d-flex flex-row gap-3 align-items-center">
+            <label htmlFor="dni" className="label">
+              DNI:
+            </label>
+            <input
+              type="text"
+              id="dni"
+              placeholder="Ej. 12345678"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              className="form-control"
+            />
+          </div>
+          <div className="obtn">
+            <button
+              type="button"
+              className="btn btn-primary  confir w-md-auto"
+              onClick={handleBuscar}
+            >
+              Buscar
+            </button>
+          </div>
+        </form>
+
+        <hr />
 
       {/* Tabla de turnos */}
       <div className="tableContainer">
-        <table className="table table-striped table-hover">
+        <table className="table maven-pro-body">
           <thead>
             <tr>
-              <th>Nombre y apellido</th>
+              <th>Dia</th>
+              <th>Nombre y Apellido</th>
               <th>DNI</th>
+              <th>Centro de Castración</th>
+              <th>Telefono</th>
               <th>Tipo Animal</th>
               <th>Hora</th>
               <th>Estado</th>
@@ -244,12 +263,28 @@ const TurnosSecretaria = () => {
           </thead>
           <tbody>
             {turnos.length > 0 ? (
-              turnos.map((turno) => (
+              turnos.map((turno) => {
+                
+                const dia = turno.dia.split("T")[0];
+                const hora = turno.hora.split(":")[0];
+                const minutos = turno.hora.split(":")[1];
+                const nombre = turno.nombre.toUpperCase();
+                const mensaje = `¡Hola, qué tal! \n\n *${nombre}*, le escribimos del *${turno.centroCastracion}*.\n\n Usted tiene un turno programado para el día *${dia}* a las *${hora}:${minutos}*.\n\nPor favor, confirme su asistencia, sino se cancelará el turno. ¡Gracias!`;
+                
+                
+                const url = `https://wa.me/${turno.telefono}?text=${encodeURIComponent(mensaje)}`;
+
+                return (
                 <tr key={turno.idHorario}>
+                  <td>{dia}</td>
                   <td className="text-uppercase">{turno.nombre} {turno.apellido}</td>
                   <td>{turno.dni}</td>
+                  <td>{turno.centroCastracion}</td>
+                  <td>
+                    <a href={url} target="blank" rel="noopener noreferrer">{turno.telefono}</a>
+                    </td>
                   <td>{turno.tipoServicio}</td>
-                  <td>{turno.hora}</td>
+                  <td>{hora}:{minutos}</td>
                   <td>
                     <span className={`badge ${
                       turno.estado === "Realizado" ? "bg-success" : 
@@ -263,20 +298,23 @@ const TurnosSecretaria = () => {
                   </td>
                   <td>
                     {estadosPermitidos[turno.estado]?.map((estado) => (
+                      <div className="button-container d-inline" key={estado}>
                       <button
-                        key={estado}
-                        className="btn btn-outline-primary btn-sm me-2"
+                       
+                        className="btn btn-outline-primary btn-sm me-2 m-1 uniform-button "
                         onClick={() => handleEstadoChange(turno, estado)}
                       >
                         {estado}
                       </button>
+                      </div>
                     ))}
                   </td>
                 </tr>
-              ))
+              );
+            })
             ) : (
               <tr>
-                <td colSpan="6" className="text-center">
+                <td colSpan="9" className="text-center">
                   No se encontraron turnos.
                 </td>
               </tr>
@@ -289,16 +327,25 @@ const TurnosSecretaria = () => {
       {medicamentoModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content p-4">
               <div className="modal-header">
-                <h5 className="modal-title">Registrar Medicamento</h5>
-                <button type="button" className="close" onClick={handleCloseModal}>
-                  <span>&times;</span>
+                <h5 className="maven-pro-title">Registrar Medicamento</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}>
+                  
                 </button>
               </div>
-              <div className="modal-body">
+
+
+              <div className="maven-pro-body">
+
+              {error && ( // Mostrar mensaje de error si existe
+                 <div className="alert alert-danger" role="alert">
+                 {error}
+                  </div>
+               )}
+
                 <form>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Veterinario:</label>
                     <select
                       name="veterinario"
@@ -314,7 +361,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Medicamento:</label>
                     <select
                       name="medicamento"
@@ -330,7 +377,7 @@ const TurnosSecretaria = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                   <label>Dosis:</label>
                   <input
                     type="number"
@@ -344,7 +391,7 @@ const TurnosSecretaria = () => {
                     placeholder="Escriba la dosis necesaria"
                   />
                 </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Unidad de Medida:</label>
                     <select
                       name="unidadMedida"
@@ -360,7 +407,7 @@ const TurnosSecretaria = () => {
                     ))}
                     </select>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group-secretaria">
                     <label>Descripción:</label>
                     <input
                       type="text"
@@ -390,14 +437,14 @@ const TurnosSecretaria = () => {
       {confirmModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content p-4">
               <div className="modal-header">
-                <h5 className="modal-title">Confirmación de Acción</h5>
-                <button type="button" className="close" onClick={handleCloseModal}>
-                  <span>&times;</span>
+                <h5 className="maven-pro-title">Confirmación de Acción</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}>
+                  
                 </button>
               </div>
-              <div className="modal-body">
+              <div className="maven-pro-body p-4">
                 ¿Está seguro de que desea cambiar el estado del turno?
               </div>
               <div className="modal-footer">
@@ -412,7 +459,14 @@ const TurnosSecretaria = () => {
           </div>
         </div>
       )}
+
+
+    <div className="d-flex buttons-footer justify-content-center">
+        <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
+        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
+      </div>
     </div>
+
   );
 };
 

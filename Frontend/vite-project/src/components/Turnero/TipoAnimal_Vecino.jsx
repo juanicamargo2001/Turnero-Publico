@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import gatoImg from '../../imgs/gato.png';
 import perroImg from '../../imgs/perro.png';
-import mascotaService from '../../services/mascota.service'; // Update with correct path
+import mascotaService from '../../services/animal/mascota.service'; // Update with correct path
 
 const TipoAnimal_Vecino = () => {
   const location = useLocation();

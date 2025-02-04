@@ -3,7 +3,8 @@ import { Form, Row, Col } from 'react-bootstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; 
-import { agendaService } from '../../services/habilitar.service';
+import { agendaService } from '../../services/agenda/habilitar.service';
+import Swal from 'sweetalert2';
 
 const HabilitarTurneroAlberi = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -65,6 +66,13 @@ const HabilitarTurneroAlberi = () => {
     console.log("Datos que se envían:", JSON.stringify(nuevaAgenda, null, 2)); 
     try {
       const response = await agendaService.Grabar(nuevaAgenda);
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "La agenda fue registrada con éxito.",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      });
       console.log('Agenda registrada con éxito:', response);
     } catch (error) {
       console.error('Error al registrar la agenda:', error);
@@ -185,7 +193,7 @@ const HabilitarTurneroAlberi = () => {
                     <Form.Label>Hora Fin*</Form.Label>
                     <Form.Control 
                       type="time" 
-                      value={shift.horarioFin.split(':').slice(0, 2).join(':')} // Muestra solo hora y minuto
+                      value={shift.horarioFin.split(':').slice(0, 2).join(':')}
                       onChange={(e) => handleShiftChange(index + 4, 'horarioFin', e.target.value)} 
                     />
                   </Form.Group>

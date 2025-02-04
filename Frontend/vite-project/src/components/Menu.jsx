@@ -29,9 +29,6 @@ function Menu() {
       { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
-      { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
-      { label: "Registrar Vecino", path: "/registrar/vecino" },
-      { label: "Turnos", path: "/turno" },
       { label: "Turnos del dia", path: "/secretaria/turnos" },
       {
         label: "Medicamentos",
@@ -44,7 +41,7 @@ function Menu() {
       // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
-      { label: "Registrar Turno", path: "/asignar/turno" },
+      { label: "Cancelar turnos", path: "/cancelar/masivo" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
@@ -56,19 +53,18 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
-      { label: "Turnos", path: "/turno" },
       
     ],
     vecino: [
       { label: "Turnos", path: "/turno" },
-      // { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" },
-      { label: "Mi perfil", path: "/perfil"}
+      { label: "Mis Turnos", path: "/misTurnos" },
+      { label: "Animal", path: "/registrar/animal" }
     ],
     superAdministrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
+      {label: "Crear Personal", path: "/crear-Personal"},
       {
         label: "Habilitar turnero",
         subOptions: [
@@ -77,9 +73,7 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
-      { label: "Registrar Vecino", path: "/registrar/vecino" },
-      { label: "Turnos", path: "/turno" },
-      { label: "Animal", path: "/registrar/animal" },
+      { label: "Estadisticas", path: "/reportes" },
     ]
   };
 
@@ -166,8 +160,8 @@ function Menu() {
                 </a>
                 <ul className="dropdown-menu">
                   <li>
-                    <a className="dropdown-item" href="/misTurnos">
-                      Mis Turnos
+                    <a className="dropdown-item" href="/perfil">
+                      Mi perfil
                     </a>
                   </li>
                   <li>

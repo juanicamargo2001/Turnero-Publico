@@ -1,12 +1,14 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { vecinoService } from '../../services/vecino.service'
-import { tipoAnimalService } from '../../services/tipoAnimal.service'
-import { sexosService } from '../../services/sexo.service'
-import { tamanoService } from '../../services/tamano.service'
-import { turnosService} from '../../services/turnos.service'
+import { vecinoService } from '../../services/vecino/vecino.service'
+import { tipoAnimalService } from '../../services/animal/tipoAnimal.service'
+import { sexosService } from '../../services/animal/sexo.service'
+import { tamanoService } from '../../services/animal/tamano.service'
+import { turnosService} from '../../services/turno/turnos.service'
 import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2';
+
 
 export default function Turnos_Urgencia() {
   
@@ -93,7 +95,13 @@ export default function Turnos_Urgencia() {
 
     try {
       await turnosService.reservarTurnoUrgencia(nuevoTurnoUrgencia)
-      alert("Turno urgente grabado con exito")
+      Swal.fire({
+              title: "¡Éxito!",
+              text: "Turno de emergencia registrado con éxito.",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            });
       navigate("/secretaria/turnos")
     } catch (error) {
       setError("Error al grabar el turno")

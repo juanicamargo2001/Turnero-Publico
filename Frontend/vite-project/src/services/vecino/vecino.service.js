@@ -1,7 +1,7 @@
 import axios from "axios";
-import loginService from "./login.service";
+import loginService from "../login/login.service";
 
-const API_URL = 'https://deep-ghoul-socially.ngrok-free.app/api/vecino'; // Asegúrate de que esta URL sea correcta
+const API_URL = import.meta.env.VITE_VECINO_URL; // Asegúrate de que esta URL sea correcta
 
 async function Grabar(nuevoVecino) {
     try {
