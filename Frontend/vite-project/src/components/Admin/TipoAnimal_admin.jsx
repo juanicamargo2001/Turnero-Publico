@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import gatoImg from '../../imgs/gato.png';
 import perroImg from '../../imgs/perro.png';
 import { mascotasService as turnoTelefonico } from '../../services/turno/turnoTelefonico.service';
-
+import Swal from 'sweetalert2';
 
 const TipoAnimal_Admin = () => {
   const location = useLocation();
@@ -62,8 +62,7 @@ const TipoAnimal_Admin = () => {
   };
 
   const handleConfirm = () => {
-    if (!selectedMascota) {
-      alert('Por favor, selecciona una mascota.');
+    if (!selectedMascota) {     
       return;
     }
     navigate(turneroPath, { 
@@ -76,11 +75,24 @@ const TipoAnimal_Admin = () => {
   };
 
   const handleShowDetails = (mascota) => {
-    alert(`Detalles de la Mascota:
-Nombre: ${mascota.nombre}
-Edad: ${mascota.edad}
-Sexo: ${mascota.sexo}
-Tamaño: ${mascota.tamaño}`);
+    Swal.fire({
+        title: "Detalles de la Mascota",
+        html: `<div style="font-size: 16px; line-height: 1.8;">
+               <strong>Nombre:</strong> ${mascota.nombre 
+                 ? mascota.nombre.charAt(0).toUpperCase() + mascota.nombre.slice(1).toLowerCase() 
+                 : ""}<br>
+               <strong>Edad:</strong> ${mascota.edad ?? ""}<br>
+               <strong>Sexo:</strong> ${mascota.sexo 
+                 ? mascota.sexo.charAt(0).toUpperCase() + mascota.sexo.slice(1).toLowerCase() 
+                 : ""}<br>
+               <strong>Tamaño:</strong> ${mascota.tamaño 
+                 ? mascota.tamaño.charAt(0).toUpperCase() + mascota.tamaño.slice(1).toLowerCase() 
+                 : ""}
+              </div>`,
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+    });
+  
   };
 
   if (loading) {

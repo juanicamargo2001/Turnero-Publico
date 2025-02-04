@@ -10,6 +10,7 @@ import { horarios } from '../../services/agenda/horarios.service'; // Importa el
 import { turneroService } from '../../services/turno/turnero.service'; // Importa el servicio de turnero
 import { turnosService } from '../../services/turno/turnos.service';
 import { useLocation } from 'react-router-dom';
+import "dayjs/locale/es"
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [value, setValue] = React.useState(null); // Fecha seleccionada
@@ -121,13 +122,13 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         <div className="container turnero mt-4">
             <h1 className="maven-pro-title">Turnero {nombreCentro}</h1>
             
-            <div className="calendar-time-row">
+            <div className="calendar-time-row" >
                 
-                <div className="calendar-container">
+                <div className="calendar-container" >
                     <h2 className='subtituloturnero'>Elige el día</h2>
                     
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <StyledDateCalendar
+                    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
+                        <StyledDateCalendar 
                             value={value}
                             onChange={handleDateChange}
                             loading={isLoading} // Mostrar esqueleto si está cargando

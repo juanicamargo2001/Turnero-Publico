@@ -73,7 +73,7 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
-      { label: "Estadisticas", path: "/reportes" },
+      { label: "Estadísticas", path: "/reportes" },
     ]
   };
 

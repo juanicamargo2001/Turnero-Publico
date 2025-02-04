@@ -130,6 +130,9 @@
     .parallax-layer.cat1 img {
         height: 60vh; /* Tamaño específico para cat1 */
       }
+      .parallax-text {
+        font-size: 1.45rem;
+      }
 
   }
 

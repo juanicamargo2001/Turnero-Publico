@@ -32,11 +32,11 @@ export default function RecuperarContraseña() {
       }
 
   return (
-    <div className='container mt-4'>
+    <div className='container mt-4 page-container'>
         <h3 className='maven-pro-title'>Recuperar contraseña</h3>
         <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="email" style={{fontSize: "15px"}} className="form-label">Email</label>
           <input
             type="text"
             className="form-control"
@@ -49,7 +49,7 @@ export default function RecuperarContraseña() {
                   }
              })}
           />
-          {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+          {errors.email && <p style={{ color: 'red', padding: "5px 5px 0"}}>{errors.email.message}</p>}
         </div>
         <div className="d-flex justify-content-end">
           <button type="submit" className="btn btn-primary confir">Confirmar</button>

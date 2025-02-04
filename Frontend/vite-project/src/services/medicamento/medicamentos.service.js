@@ -2,7 +2,7 @@ import axios from 'axios';
 import loginService from "../login/login.service";
 
 const API_CREAR_UNIDAD_MEDIDA = import.meta.env.VITE_CREAR_UNIDAD_MEDIDA_URL;
-const API_OBTENER_UNIDADES_MEDIDA = import.meta.env.VITE_OBTENER_UNIDAD_MEDIDA_URL;
+const API_OBTENER_UNIDADES_MEDIDA = import.meta.env.VITE_OBTENER_UNIDADES_MEDIDA_URL;
 const API_CREAR_MEDICAMENTO = import.meta.env.VITE_CREAR_MEDICAMENTO_URL;
 const API_OBTENER_MEDICAMENTOS = import.meta.env.VITE_OBTENER_MEDICAMENTOS_URL;
 
@@ -36,6 +36,7 @@ const medicamentosService = {
             'Authorization': `Bearer ${token}`,
         },
       });
+
       return response.data;
     } catch (error) {
       console.error('Error al obtener las unidades de medida:', error);

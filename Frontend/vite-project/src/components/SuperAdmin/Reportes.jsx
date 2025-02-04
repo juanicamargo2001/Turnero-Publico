@@ -81,7 +81,7 @@ const Reportes = () => {
 
   return (
     <div className="container mt-4 maven-pro-body">
-      <h3 className="text-center mb-4 maven-pro-title">Estadisticas de turnos</h3>
+      <h3 className="text-center mb-4 maven-pro-title">Estadísticas de turnos</h3>
       <Tabs
         activeKey={key}
         onSelect={(k) => setKey(k)}

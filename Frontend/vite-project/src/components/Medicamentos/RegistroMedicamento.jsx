@@ -42,11 +42,11 @@ const RegistroMedicamento = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="maven-pro-title">REGISTRO DE MEDICAMENTO</h2>
+    <div className="container mt-4 page-container">
+      <h2 className="maven-pro-title mb-3">REGISTRO DE MEDICAMENTO</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre</label>
+          <label htmlFor="nombre" className="form-label" style={{fontSize: "1rem"}}>Nombre</label>
           <input
             type="text"
             className="form-control"
@@ -58,7 +58,7 @@ const RegistroMedicamento = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="descripcion" className="form-label">Descripción</label>
+          <label htmlFor="descripcion" className="form-label" style={{fontSize: "1rem"}}>Descripción</label>
           <textarea
             className="form-control"
             id="descripcion"

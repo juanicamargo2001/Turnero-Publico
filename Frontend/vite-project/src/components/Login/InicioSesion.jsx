@@ -115,7 +115,7 @@ const LoginComponent = () => {
 
               <button type="submit" className="btn btn-primary w-100">Ingresar</button>
 
-              {error && <p className="error-message">{error}</p>}
+              {error && <p style={{paddingTop: "5px"}} className="error-message">{error}</p>}
 
               <div className="register-link">
                 ¿Aún no estás registrado? <a href="/registrar/vecino">Crea una cuenta</a>

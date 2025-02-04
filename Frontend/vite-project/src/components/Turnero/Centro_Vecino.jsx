@@ -4,9 +4,11 @@ import CentroCastracionCard from './CentroCard';
 import alberdiImg from '../../imgs/alberdi.jpg'; 
 import lafranceImg from '../../imgs/lafrance.jfif';
 import villaImg from '../../imgs/villaall.webp';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CentrosCastracionList = () => {
   const [centros, setCentros] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -64,7 +66,7 @@ const CentrosCastracionList = () => {
           )}
         </div>
         <div className="d-flex justify-content-end p-2">
-        <button type="button" className="btn btn-dark me-2 confir2">Volver</button>
+        <button type="button" className="btn btn-dark me-2 confir2" style={{marginTop: "10px"}} onClick={() => navigate("/")}>Volver</button>
       </div>
       </div>
       

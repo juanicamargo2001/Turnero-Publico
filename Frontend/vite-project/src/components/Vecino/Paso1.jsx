@@ -306,7 +306,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
               <div className="d-flex mt-3">
                 <button className="btn btn-primary btn-lg d-flex align-items-center" onClick={handleOtherOptionClick2}>
-                    <span className="me-2">Verificar domicilio con DNI</span>
+                    <span style={{ fontSize: "1rem", "@media (max-width: 768px)": { fontSize: "0.95rem" } }} className="me-1">Verificar domicilio con DNI</span>
                 </button>
               </div>
               <div className="mb-3">

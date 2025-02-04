@@ -35,7 +35,7 @@ const ConsultarMedicamentos = () => {
   }, []);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-container">
       <h2 className="maven-pro-title">LISTA DE MEDICAMENTOS</h2>
       {error && <p className="text-danger">{error}</p>}
       {medicamentos.length === 0 && !error ? (
@@ -44,7 +44,7 @@ const ConsultarMedicamentos = () => {
         <div>
           <div className="d-flex justify-content-between mb-3">
             <a href='/registrar/medicamento'>
-              <button className="btn btn-primary confir">Crear</button>
+              <button className="btn btn-primary confir" style={{fontSize: "1rem"}}>Crear</button>
             </a>
           </div>
           <table className="">

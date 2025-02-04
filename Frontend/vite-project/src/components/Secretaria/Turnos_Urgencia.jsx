@@ -46,7 +46,12 @@ export default function Turnos_Urgencia() {
 
   const handleRegistro = () =>{
     if(selectedRow === null){
-        alert("Debe seleccionar un vecino primero")
+        Swal.fire({
+              icon: "warning",
+              text: `Debe seleccionar un vecino primero`,
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            });
         setShowRegistro(false)
       }
     else{
@@ -116,23 +121,23 @@ export default function Turnos_Urgencia() {
   }, [])
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-container">
             <h2 className="maven-pro-title">Turnos de emergencia</h2>
-            <div className="d-flex justify-content-between mb-3">
-                <div className="input-group w-25">
-                    <input 
-                        type="number" 
-                        className="form-control" 
-                        placeholder="Ingrese DNI del vecino" 
-                        aria-label="Buscar vecino"
-                        value={busqueda}
-                        onChange={(e) => setBusqueda(e.target.value)}
-                        onKeyDown={manejarBusqueda} 
-                    />
-                    <span className="input-group-text" onClick={manejarBusqueda} style={{ cursor: 'pointer' }}>
-                        <i className="fa fa-search"></i>
-                    </span>
-                </div>
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+              <div className="input-group w-100 w-md-50 w-lg-25">
+                <input 
+                  type="number" 
+                  className="form-control" 
+                  placeholder="Ingrese DNI del vecino" 
+                  aria-label="Buscar vecino"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  onKeyDown={manejarBusqueda} 
+                />
+                <span className="input-group-text" onClick={manejarBusqueda} style={{ cursor: 'pointer' }}>
+                  <i className="fa fa-search"></i>
+                </span>
+              </div>
             </div>
             <table className='table'>
                 <thead>
@@ -166,11 +171,11 @@ export default function Turnos_Urgencia() {
                     ))}
                 </tbody>
             </table>
-            <div>
-              <button type="button" onClick={() => handleRegistro()} className="btn btn-success confir">Contiunar</button>
-              <button type="button" onClick={() => navigate("/secretaria/registro-vecino-minimo")} className="btn btn-success confir3">Registrar nuevo vecino</button>
-            </div>
-            
+            <div>   
+            <button style={{marginRight: "10px"}}  type="button" onClick={() => handleRegistro()} className="btn btn-success confir" >Continuar</button>
+
+            <button style={{width: "180px"}} type="button" onClick={() => navigate("/secretaria/registro-vecino-minimo")} className="btn btn-success confir">Registrar nuevo vecino</button>
+            </div>  
             <div>
             {showRegistro === true &&(
                <div className="container mt-4">
@@ -244,6 +249,10 @@ export default function Turnos_Urgencia() {
                         value: 20,
                         message: 'La edad no puede ser mayor a 20 años',
                       },
+                      min:{
+                        value: 0,
+                        message: 'La edad no puede ser negativa'
+                      }
                     })}
                   />
                   {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 

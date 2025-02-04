@@ -110,7 +110,7 @@ export default function Modificar_Centro() {
     }, []);
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-container">
             <h2 className="maven-pro-title">CENTROS DE CASTRACIÓN</h2>
            {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
            {userRole.rol !== 'secretaria' && (

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import React from 'react'
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -17,7 +16,9 @@ export default function Registro_Vecino_Minimo() {
   });
 
   const navigate = useNavigate()
-  
+  const today = new Date();
+  const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); 
+
   useEffect(() => {
     register('f_Nacimiento', { 
       required: "La fecha de nacimiento es obligatoria"
@@ -44,7 +45,7 @@ export default function Registro_Vecino_Minimo() {
   return (
     <div className="container mt-4">
       <h2 className="maven-pro-title">Registrar Vecino</h2>
-      <h5>Ingrese los siguientes campos</h5>
+      <h5 className="pb-3">Ingrese los siguientes campos</h5>
       <form className="maven-pro-body" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-3">
           <label htmlFor="nombre" className="form-label">Nombre</label>
@@ -52,7 +53,7 @@ export default function Registro_Vecino_Minimo() {
             type="text"
             className="form-control"
             id="nombre"
-            placeholder="Escriba su nombre"
+            placeholder="Escribe el nombre"
             {...register('nombre', { required: "El nombre es obligatorio" })}
           />
           {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
@@ -63,7 +64,7 @@ export default function Registro_Vecino_Minimo() {
             type="text"
             className="form-control"
             id="apellido"
-            placeholder="Escriba su apellido "
+            placeholder="Escribe el apellido "
             {...register('apellido', { required: "El apellido es obligatorio" })}
           />
           {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
@@ -74,7 +75,7 @@ export default function Registro_Vecino_Minimo() {
             type="text"
             className="form-control"
             id="email"
-            placeholder="Escriba su email "
+            placeholder="Escribe el email "
             {...register('email', { 
               required: "El email es obligatorio",
               pattern: {
@@ -91,7 +92,7 @@ export default function Registro_Vecino_Minimo() {
             type="number"
             className="form-control"
             id="telefono"
-            placeholder="Escriba su telefono "
+            placeholder="Escribe el telefono "
             {...register('telefono', { 
               required: "El telefono es obligatorio",
               minLength: {
@@ -113,7 +114,7 @@ export default function Registro_Vecino_Minimo() {
             type="number"
             className="form-control"
             id="dni"
-            placeholder="Escriba su dni "
+            placeholder="Escribe el dni "
             {...register('dni', { 
               required: "El DNI es obligatorio", 
               minLength: {
@@ -134,20 +135,23 @@ export default function Registro_Vecino_Minimo() {
           {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
         </div>
         <div className="mb-3">
-          <label htmlFor="fecha" className="form-label">Fecha de nacimiento</label>
-          <Flatpickr
-            onChange={(date) => setValue('f_Nacimiento', date, { shouldValidate: true })}
-            options={{ 
-              altInput: true,
-              altFormat: "F j, Y",
-              dateFormat: "YYYY-mm-dd",
-              locale: Spanish
-            }}
-            className="form-control"
-            placeholder="Seleccione su fecha de nacimiento"
-          />
-          {errors.f_Nacimiento && <p style={{ color: 'red' }}>{errors.f_Nacimiento.message}</p>}
-        </div>
+                <label htmlFor="fecha" className="form-label">Fecha de nacimiento</label>
+                <Flatpickr
+                    options={{ 
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    dateFormat: "Y-m-d",
+                    locale: Spanish,
+                    maxDate: maxDate,
+                    }}
+                    id="fNacimiento"
+                    className="form-control"
+                    placeholder={"Seleccione fecha"}
+                    onChange={(date) => setValue('f_Nacimiento', date, { shouldValidate: true })}
+                    //{...register('f_Nacimiento', { required: 'La fecha de nacimiento es obligatoria' })}
+                />
+                {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
+              </div>
         <div className="d-flex justify-content-end p-2">
           <button type="button" className="btn btn-secondary me-2 confir2" onClick={() => navigate("/secretaria/turnos")}>Volver</button>
           <button type="submit" className="btn btn-success confir">Confirmar</button>

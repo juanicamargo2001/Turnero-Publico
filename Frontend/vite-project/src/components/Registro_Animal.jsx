@@ -29,10 +29,9 @@ const RegistroAnimal = () => {
   
     try {
       await mascotaService.grabar(nuevaMascota);
-      alert("Mascota registrada con éxito");
       Swal.fire({
               title: "¡Éxito!",
-              text: "La agenda fue registrada con éxito.",
+              text: "La mascota fue registrada con éxito.",
               icon: "success",
               confirmButtonColor: "#E15562",
               confirmButtonText: "OK",
@@ -111,7 +110,7 @@ const RegistroAnimal = () => {
         <div className="col-md-6">
           <label htmlFor="edad" className="form-label">Edad</label>
           <input
-            type="number"
+            type="text"
             className={`form-control ${errors.edad ? 'is-invalid' : ''}`} 
             id="edad"
             placeholder="Ingrese la edad aproximada"
@@ -121,6 +120,10 @@ const RegistroAnimal = () => {
                 value: 20,
                 message: 'La edad no puede ser mayor a 20 años',
               },
+              min: {
+                value: 0,
+                message: 'La edad no puede ser negativa'
+              }
             })}
           />
           {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 

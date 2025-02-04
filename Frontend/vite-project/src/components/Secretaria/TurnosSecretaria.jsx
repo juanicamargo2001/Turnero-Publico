@@ -104,15 +104,6 @@ const TurnosSecretaria = () => {
       }
     };
 
-    const fetchUnidades = async () => {
-      try {
-        const data = await medicamentosService.obtenerUnidadesMedida();
-        setUnidadMedidaOptions(data.result);
-      } catch (err) {
-        console.error("Error al obtener unidades de medida:", err);
-      }
-    };
-
     fetchVeterinarios();
     fetchMedicamentos();
     fetchUnidades();
@@ -199,8 +190,18 @@ const TurnosSecretaria = () => {
     });
   };
 
+  const fetchUnidades = async () => {
+    console.log("hola")
+    try {
+      const data = await medicamentosService.obtenerUnidadesMedida();
+      setUnidadMedidaOptions(data.result);
+    } catch (err) {
+      console.error("Error al obtener unidades de medida:", err);
+    }
+  }  
+
   return (
-    <div className="contenedor mt-4">
+    <div className="contenedor mt-4 page-container">
       <h2 className="maven-pro-title">Turnos del Día</h2>
       {/* Formulario de búsqueda de turnos */}
         <form
@@ -395,16 +396,16 @@ const TurnosSecretaria = () => {
                     <label>Unidad de Medida:</label>
                     <select
                       name="unidadMedida"
+                      onChange={handleMedicamentoInput} 
                       value={medicamentoData.unidadMedida}
-                      onChange={handleMedicamentoInput}
                       className="form-control"
                     >
                       <option value="">Seleccione unidad</option>
                       {unidadMedidaOptions.map((unidad) => (
-                      <option key={unidad.idUnidad} value={unidad.tipoUnidad}>
-                     {unidad.tipoUnidad}
-                    </option>
-                    ))}
+                        <option key={unidad.idUnidad} value={unidad.tipoUnidad}>
+                          {unidad.tipoUnidad}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="form-group-secretaria">
@@ -463,7 +464,7 @@ const TurnosSecretaria = () => {
 
     <div className="d-flex buttons-footer justify-content-center">
         <button type="button" onClick={() => navigate("/secretaria/turno-urgencia")} className="btn btn-success confir3 m-3">Registrar Turno Urgencia</button>
-        <button type="button" onClick={()=> navigate("/secretaria/turno-telfono")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
+        <button type="button" onClick={()=> navigate("/asignar/turno")} className="btn btn-success confir3 m-3" >Registrar Turno Telefono</button>
       </div>
     </div>
 

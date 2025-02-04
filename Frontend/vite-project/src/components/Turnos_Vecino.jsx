@@ -58,7 +58,7 @@ function TurnoVecino() {
           console.log(`Turno con ID ${parsedId} cancelado exitosamente.`);
           
           // Mostrar un mensaje de éxito
-          Swal.fire('Cancelado', `El turno con ID ${parsedId} ha sido cancelado.`, 'success');
+          Swal.fire('Cancelado', `El turno ha sido cancelado correctamente.`, 'success');
           
           // Eliminar el turno de la lista localmente
           setTurnos((prevTurnos) => prevTurnos.filter((turno) => turno.idHorario !== parsedId));
@@ -89,7 +89,7 @@ function TurnoVecino() {
   }
 
   return (
-    <div className="container p-2 maven-pro-body">
+    <div className="container p-2¿ maven-pro-body page-container">
       <div className="row justify-content-center">
         {cancelError && <div className="alert alert-danger">{cancelError}</div>}
 
@@ -97,7 +97,7 @@ function TurnoVecino() {
           <div key={index} className="col-md-12 p-4">
             <div className="shadow-sm border p-5 rounded">
               <div className="d-flex justify-content-between">
-                <div>
+                <div style={{paddingLeft: "15px"}}>
                   <h5>{`Turno para ${turno.tipoTurno}`}</h5>
                   <p>
                     <strong>Hora:</strong> {turno.hora || "No disponible"} <br />
