@@ -44,7 +44,7 @@ const RegistroAnimal = () => {
         }
       });
     } catch (error) {
-      setError("Error al registrar la mascota. Por favor, inténtelo de nuevo.");
+      setError("Error al registrar la mascota. Por favor, inténtelo de nuevo!");
       console.error("Error al registrar la mascota:", error.response ? error.response.data : error);
     }
   };
