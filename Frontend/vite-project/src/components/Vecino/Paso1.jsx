@@ -7,6 +7,8 @@ import uploadImage from '../../imgs/upload2.png';
 import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 import { vecinoService } from '../../services/vecino/vecino.service';
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+import { DotLoader } from 'react-spinners'; 
 
 const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const codeReader = new BrowserMultiFormatReader();
@@ -15,6 +17,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const [selectedFile, setSelectedFile] = useState(null);
     const [scanResult, setScanResult] = useState('');
     const [selectedFile2, setSelectedFile2] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const today = new Date();
     const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); // Resta 6570 días o 18 años
 
@@ -98,9 +101,14 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     };
 
     const parsearFechaDate = (f) => {
-      const s = f.getFullYear() + "-" + (f.getMonth()+1) + "-" + f.getDate();
-      return s;
-    }
+      console.log(f)
+      const año = f.getFullYear();
+      const mes = String(f.getMonth() + 1).padStart(2, "0");
+      const dia = String(f.getDate()).padStart(2, "0");
+      console.log(`${año}-${mes}-${dia}`)
+      return `${año}-${mes}-${dia}`;
+  };
+  
     
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -150,22 +158,46 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
     const handleDomicilioFoto = async ()=> {
       if (selectedFile2===null){
-        alert("Debe subir un archivo correcto");
+        Swal.fire({
+          text: "Debe subir un archivo con formato correcto",
+          icon: "info",
+          confirmButtonColor: "#E15562",
+          confirmButtonText: "OK",
+        }).then(() => {
+      });
       } else {
+        setIsLoading(true);
         try {
           const base64Image = await convertImageToBase64(selectedFile2);
           try {
             const response = await vecinoService.ProcesarImagen(base64Image);
+            setIsLoading(false);
             console.log(response);
-            alert("Imagen procesada con exito");
+            Swal.fire({
+              title: "¡Éxito!",
+              text: "Imagen procesada con exito",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            }).then(() => {
+          });
             updateFormData({domicilio: true});
             handleOtherOptionClick2();
           } catch (error) {
-            alert("Error al procesar imagen. Por favor, inténtelo de nuevo.");
+            setIsLoading(false);
+            Swal.fire({
+              title: "¡Error!",
+              text: "Error al procesar imagen. Por favor, inténtelo de nuevo.",
+              icon: "error",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            }).then(() => {
+          });
             console.error("Error al procesar imagen:", error.response ? error.response.data : error); 
           }
         } catch (error) {
           console.error("Error al convertir la imagen:", error);
+          setIsLoading(false);
         }
       }
     }
@@ -379,6 +411,11 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                         onChange={handleFileChange2}
                     />
                 </div>
+                {isLoading && (
+                  <div className="loading-overlay">
+                    <DotLoader color="#60C1EA" />
+                  </div>
+                )}
                 <div className="d-flex justify-content-end p-2">
                   <button type="button" className="btn btn-secondary me-2 confir2" onClick={handleOtherOptionClick2}>
                     Volver

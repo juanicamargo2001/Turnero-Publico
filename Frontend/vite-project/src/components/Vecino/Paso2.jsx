@@ -10,7 +10,7 @@ const Paso2Visual = ({updateFormData, nextStep, prevStep, formData}) => {
     };
 
     return(
-        <div>
+        <div className='page-container'>
             <h2 className="maven-pro-title">DATOS DE CONTACTO</h2>
             <form className="maven-pro-body" onSubmit={handleSubmit(onFormSubmit)}>
               <div className="mb-3">
