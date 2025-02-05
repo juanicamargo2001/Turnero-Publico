@@ -4,7 +4,7 @@ import { vecinoService } from '../../services/vecino/vecino.service';
 const Paso3Visual = ({updateFormData, prevStep, formData}) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const onFormSubmit = (data) => {
+    const onFormSubmit = async (data) => {
         try {
             formData.contraseña = data.contraseña;
             console.log("FORMDATA: ", formData);
@@ -15,7 +15,7 @@ const Paso3Visual = ({updateFormData, prevStep, formData}) => {
             formData.domicilio = "";
             formData.id_Usuario = 0;
             
-            vecinoService.Grabar(formData);
+            await vecinoService.Grabar(formData);
             alert("Vecino registrado correctamente");
             
         } catch (error) {
