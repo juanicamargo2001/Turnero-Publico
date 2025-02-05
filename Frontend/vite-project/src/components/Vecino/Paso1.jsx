@@ -34,8 +34,10 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
     const onFormSubmit = (data) => {
         if (!formData.domicilio) {
+          alert("Debe verificar su domicilio");
           return;
         } else if (formData.domicilio===""){
+          alert("Debe verificar su domicilio");
           formData.domicilio = false;
           return
         }
