@@ -10,16 +10,16 @@ export default function RecuperarContraseña() {
     const [emailEnviado, setEmailEnviado] = useState(null);
     const navigate = useNavigate()
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
         setEmailEnviado(data.email)
         
-        // try {
-        //     await loginService.recoverPassword(data.email)
-        //     setEmailEnviado(data.email)
-        // } catch (error) {
-        //     alert("Error al enviar el mail")
-        // }
+         try {
+             await loginService.recoverPassword(data)
+             setEmailEnviado(data.email)
+         } catch (error) {
+             alert("Error al enviar el mail")
+         }
     } 
 
     const handleOk = () => {

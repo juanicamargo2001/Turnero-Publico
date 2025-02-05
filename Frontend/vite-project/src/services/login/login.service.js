@@ -157,18 +157,11 @@ const changePassword = async (passwordRequest) => {
 };
 
 const recoverPassword = async (emailRequest) => {
-  let token = null;
-  try {
-    token = await obtenerTokenConRenovacion();
-  } catch (error) {
-    console.log("Error al obtener token");
-    throw error;
-  }
+
 
   try {
     const response = await axios.put(RECOVER_URL, emailRequest,{
       headers: {
-        'Authorization': `Bearer ${token}`,
         'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
       },
