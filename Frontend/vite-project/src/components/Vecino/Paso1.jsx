@@ -137,7 +137,13 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
     const handleScanData = (e) => {
         if (scanResult===''){
-            alert("Debe subir un archivo correcto");
+          Swal.fire({
+            text: "Debe subir un archivo con formato correcto",
+            icon: "info",
+            confirmButtonColor: "#E15562",
+            confirmButtonText: "OK",
+          }).then(() => {
+        });
         } else {
             const data = armarJson(scanResult);
             updateFormData(data);
