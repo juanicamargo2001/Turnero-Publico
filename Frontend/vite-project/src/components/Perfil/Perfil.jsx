@@ -1,9 +1,9 @@
-import React from 'react'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import loginService from '../../services/login/login.service'
 import EditarPerfil from './EditarPerfil'
 import CambiarContraseña from './CambiarContraseña'
 import EditarPeriflRol from './EditarPeriflRol'
+import Swal from 'sweetalert2';
 
 export default function Perfil() {
     const [nombreUsuario, setNombreUsuario] = useState(null)
@@ -26,10 +26,15 @@ export default function Perfil() {
             setNombreUsuario(dataUsuario.nombre)
             setApellidoUsuario(dataUsuario.apellido)
 
-            //console.log(userRole)
-        } catch (error) {
+        } catch {
             setNombreUsuario(null)
-            alert("Error al cargar los datos del usuario")
+            Swal.fire({
+              title: "¡Error!",
+              text: "Error al cargar los datos del usuario",
+              icon: "error",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            });
         }
     }
 

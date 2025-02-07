@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -63,7 +63,7 @@ const RegistroVeterinario = () => {
       const barriosObtenidos = data.features.map(b => b.attributes.nombre);
       setBarrios(barriosObtenidos);
     } catch (error) {
-      setError("Error al cargar los barrios. Por favor, inténtelo de nuevo.");
+        console.error("Error al cargar los barrios. Por favor, inténtelo de nuevo: ", error);
     }
   };
 
@@ -213,7 +213,7 @@ const RegistroVeterinario = () => {
             {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="matricula" className="form-label">Matricula</label>
+          <label htmlFor="matricula" className="form-label">Matrícula</label>
           <input
             type="number"
             className="form-control"

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import medicamentosService from '../../services/medicamento/medicamentos.service';
+import Swal from 'sweetalert2';
 
 const RegistroMedicamento = () => {
   const { 
@@ -34,7 +35,15 @@ const RegistroMedicamento = () => {
 
     try {
       await medicamentosService.crearMedicamento({ nombre, descripcion });
-      alert("Medicamento registrado con éxito");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "Medicamento registrado con éxito",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      }).then(() => {
+    });
+
       navigate("/medicamentos");
     } catch (error) {
       console.error("Error al registrar el medicamento:", error.response ? error.response.data : error);

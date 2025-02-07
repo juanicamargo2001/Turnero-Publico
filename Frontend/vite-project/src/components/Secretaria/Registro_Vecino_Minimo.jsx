@@ -5,6 +5,7 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from "flatpickr/dist/l10n/es.js";
 import { vecinoService } from "../../services/vecino/vecino.service";
+import Swal from 'sweetalert2';
 
 export default function Registro_Vecino_Minimo() {
 
@@ -34,7 +35,13 @@ export default function Registro_Vecino_Minimo() {
 
     try{
       await vecinoService.GrabarVecinoMinimo(data)
-      alert("Vecino registrado con exito")
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "Vecino registrado con exito",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      });
       navigate("/secretaria/turno-urgencia")
     }catch(error){
       console.error("Error al registrar el vecino:", error.response ? error.response.data : error);

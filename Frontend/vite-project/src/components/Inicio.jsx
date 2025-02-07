@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import './inicio.css';
 import gatoimg1 from '../imgs/gato3.png';
 import gatoimg2 from '../imgs/gato2.png';

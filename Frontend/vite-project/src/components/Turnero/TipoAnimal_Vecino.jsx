@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import gatoImg from '../../imgs/gato.png';
 import perroImg from '../../imgs/perro.png';
-import mascotaService from '../../services/animal/mascota.service'; // Update with correct path
+import mascotaService from '../../services/animal/mascota.service';
 import Swal from 'sweetalert2';
 
 const TipoAnimal_Vecino = () => {
@@ -17,7 +17,6 @@ const TipoAnimal_Vecino = () => {
   let title;
   let turneroPath;
 
-  // Personaliza el título y la ruta según el pathname
   switch (location.pathname) {
     case '/tipoAnimal/alberdi':
       title = 'Turnero CDC Alberdi';
@@ -58,7 +57,13 @@ const TipoAnimal_Vecino = () => {
 
   const handleConfirm = () => {
     if (!selectedMascota) {
-      alert('Por favor, selecciona una mascota.');
+      Swal.fire({
+        text: "Por favor, selecciona una mascota.",
+        icon: "info",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      }).then(() => {
+    });
       return;
     }
 

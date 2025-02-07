@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import medicamentosService from '../../services/medicamento/medicamentos.service';
+import Swal from 'sweetalert2';
 
 const RegistroUnidadMedida = () => {
   const { 
@@ -17,7 +17,14 @@ const RegistroUnidadMedida = () => {
 
     try {
       await medicamentosService.crearUnidadMedida(nombre);
-      alert("Unidad de medida registrada con éxito");
+      Swal.fire({
+        title: "¡Éxito!",
+        text: "Unidad de medida registrada con éxito",
+        icon: "success",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      }).then(() => {
+    });
       navigate("/unidades");
     } catch (error) {
       console.error("Error al registrar la unidad de medida:", error.response ? error.response.data : error);
@@ -25,7 +32,7 @@ const RegistroUnidadMedida = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-container">
       <h2 className="maven-pro-title">REGISTRO DE UNIDAD DE MEDIDA</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { centroService } from '../../services/centro/centro.service';
 import CentroCastracionCard from './CentroCard';
 import alberdiImg from '../../imgs/alberdi.jpg'; 
 import lafranceImg from '../../imgs/lafrance.jfif';
 import villaImg from '../../imgs/villaall.webp';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CentrosCastracionList = () => {
   const [centros, setCentros] = useState([]);
@@ -15,7 +15,8 @@ const CentrosCastracionList = () => {
       try {
         const response = await centroService.BuscarTodos();
         if (response.success && Array.isArray(response.result)) {
-          setCentros(response.result);
+          const centrosHabilitados = response.result.filter((centro) => centro.habilitado);
+          setCentros(centrosHabilitados);
         } else {
           setCentros([]);
         }

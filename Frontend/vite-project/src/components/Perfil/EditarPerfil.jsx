@@ -81,7 +81,12 @@ export default function EditarPerfil() {
       let nuevoDomicilio
 
       if(!data.barrio || !data.calle){
-        alert("Ingrese un barrio o una calle")
+        Swal.fire({
+          text: "Ingrese un barrio o una calle",
+          icon: "info",
+          confirmButtonColor: "#E15562",
+          confirmButtonText: "OK",
+        });
       }else{
         nuevoDomicilio = `${capitalizeWords(data.barrio)}, ${data.calle}, ${data.altura}`
       }

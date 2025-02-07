@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { centroService } from '../../services/centro/centro.service';
 import { provinciaService } from '../../services/provincia/provincia.service';
 import { useState } from 'react';
-import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { FormControl } from '@mui/material';
 import {useNavigate} from "react-router-dom"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 
 
@@ -30,7 +31,7 @@ const Registro_Centro = () => {
         const data = await provinciaService.getBarriosCba(pattern);
         const barriosObtenidos = data.features.map(b => b.attributes.nombre);
         setBarrios(barriosObtenidos);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los barrios. Por favor, inténtelo de nuevo.");
       }
     };
@@ -76,14 +77,21 @@ const Registro_Centro = () => {
         }
         
         console.log(nuevoCentro)
-        /*try {
+        try {
             await centroService.Grabar(nuevoCentro);
-            alert("Centro registrado con exito!")
+            Swal.fire({
+              title: "¡Éxito!",
+              text: "Centro registrado con exito!",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            }).then(() => {
+          });
             navigate("/modificar/centro")
         } catch (error) {
             setError("Error al registrar el centro. Por favor, inténtelo de nuevo.");
             console.error("Error al registrar el centro:", error.response ? error.response.data : error); 
-        }*/
+        }
     }
 
     // Cargar barrios al montar el componente

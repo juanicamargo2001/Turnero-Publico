@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "../index.css";
-import logo from '../imgs/logoBiocCordoba.png'; // Ajusta la ruta según la ubicación del archivo
+import logo from '../imgs/logoBiocCordoba.png';
 import UserRoleContext from "./Login/UserRoleContext";
 import Cookies from 'js-cookie';
 
@@ -14,12 +14,9 @@ function Menu() {
 
     Cookies.remove('token');
     Cookies.remove('refreshToken');
-
-    // Redirige al usuario al inicio o página de login
     navigate('/'); 
   };
 
-  // Opciones de menú según el rol
   const menuOptions = {
     default: [
       { label: "Iniciar Sesión", path: "/iniciarsesion" },

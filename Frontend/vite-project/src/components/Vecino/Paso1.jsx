@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
@@ -37,10 +37,22 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
 
     const onFormSubmit = (data) => {
         if (!formData.domicilio) {
-          alert("Debe verificar su domicilio");
+          Swal.fire({
+            text: "Debe verificar su domicilio",
+            icon: "info",
+            confirmButtonColor: "#E15562",
+            confirmButtonText: "OK",
+          }).then(() => {
+        });
           return;
         } else if (formData.domicilio===""){
-          alert("Debe verificar su domicilio");
+          Swal.fire({
+            text: "Debe verificar su domicilio",
+            icon: "info",
+            confirmButtonColor: "#E15562",
+            confirmButtonText: "OK",
+          }).then(() => {
+        });
           formData.domicilio = false;
           return
         }

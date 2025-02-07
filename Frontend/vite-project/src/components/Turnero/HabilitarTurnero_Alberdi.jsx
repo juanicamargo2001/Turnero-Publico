@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/themes/material_blue.css';
@@ -148,9 +148,13 @@ const HabilitarTurneroAlberi = () => {
                   <Form.Group>
                     <Form.Label>Cantidad*</Form.Label>
                     <Form.Control 
-                      type="number" 
+                      type="text" 
                       value={shift.cantidad} 
-                      onChange={(e) => handleTurnosChange(e, index)}
+                      onChange={(e) =>{
+                        const value = e.target.value;
+                        if (value === '' || /^[0-9]+$/.test(value)) {
+                          handleTurnosChange(e, index)
+                      }}}
                     />
                   </Form.Group>
                 </Col>
@@ -202,9 +206,13 @@ const HabilitarTurneroAlberi = () => {
                   <Form.Group>
                     <Form.Label>Cantidad*</Form.Label>
                     <Form.Control 
-                      type="number" 
+                      type="text" 
                       value={shift.cantidad} 
-                      onChange={(e) => handleTurnosChange(e, index + 4)}
+                      onChange={(e) =>{
+                        const value = e.target.value;
+                        if (value === '' || /^[0-9]+$/.test(value)) {
+                          handleTurnosChange(e, index + 4)
+                      }}}
                     />
                   </Form.Group>
                 </Col>

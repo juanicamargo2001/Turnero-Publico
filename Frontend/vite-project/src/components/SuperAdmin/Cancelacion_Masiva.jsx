@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Form } from "react-bootstrap";
+import { useState } from "react";
+import { Row, Col, Form } from "react-bootstrap";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/material_blue.css"; 
 import { Spanish } from "flatpickr/dist/l10n/es.js";
@@ -20,7 +20,13 @@ function CancelacionMasiva() {
     e.preventDefault();
   
     if (!selectedDate || !motivo || !selectedCenter) {
-      alert("Por favor complete todos los campos.");
+      Swal.fire({
+        text: "Por favor complete todos los campos.",
+        icon: "info",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      }).then(() => {
+    });
       return;
     }
   
@@ -45,9 +51,14 @@ function CancelacionMasiva() {
               confirmButtonText: "OK",
             });
       console.log("Respuesta del servidor:", response);
-    } catch (error) {
-      alert("Error al realizar la cancelación masiva.");
-      console.error("Error capturado:", error);
+    } catch {
+      Swal.fire({
+        title: "¡Error!",
+        text: "Error al realizar la cancelación masiva.",
+        icon: "error",
+        confirmButtonColor: "#E15562",
+        confirmButtonText: "OK",
+      });
     }
   };
   
@@ -58,7 +69,7 @@ function CancelacionMasiva() {
       <Form onSubmit={handleSubmit}>
         <Row className="mb-4 align-items-center">
           <Col sm={4}>
-            <label htmlFor="fecha" className="form-label">
+            <label htmlFor="fecha" className="form-label" style={{fontSize: "1rem"}}>
               Elige el día para cancelar los turnos:
             </label>
           </Col>
@@ -79,7 +90,7 @@ function CancelacionMasiva() {
         </Row>
 
         <div className="mb-4 row">
-          <label htmlFor="motivo" className="col-sm-4 col-form-label">
+          <label htmlFor="motivo" className="col-sm-4 col-form-label" style={{fontSize: "1rem"}}>
             Ingresa el motivo:
           </label>
           <div className="col-sm-8">

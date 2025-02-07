@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import { centroService } from '../../services/centro/centro.service';
 import Informacion_VxC from './Informacion_VxC.jsx';
 import UserRoleContext from '../Login/UserRoleContext';
+import Swal from 'sweetalert2';
 
 export default function Modificar_Centro() {
     const [error, setError] = useState(null);
@@ -64,7 +65,13 @@ export default function Modificar_Centro() {
 
     const handleModalSubmitSort = async (formData) => {
         if (!formData.nombre || !formData.barrio || !formData.calle || !formData.horaLaboralInicio || !formData.horaLaboralFin) {
-            alert("Hay campos sin completar.");
+            Swal.fire({
+                text: "Hay campos sin completar.",
+                icon: "info",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              }).then(() => {
+            });
             return; 
         }
     
@@ -98,8 +105,15 @@ export default function Modificar_Centro() {
         
         try {
             await centroService.Modificar(formData);
-            alert("Centro modificado correctamente");
-            fetchCentros();
+            Swal.fire({
+                title: "¡Éxito!",
+                text: "Centro modificado correctamente",
+                icon: "success",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              }).then(() => {
+            });
+            fecthCentros();
         } catch (error) {
             console.error("Error al modificar el centro:", error.response ? error.response.data : error);
         }

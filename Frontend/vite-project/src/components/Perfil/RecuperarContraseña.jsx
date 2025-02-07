@@ -1,9 +1,9 @@
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import loginService from '../../services/login/login.service'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import MensajeRecuperacion from './MensajeRecuperacion'
+import Swal from 'sweetalert2';
 
 export default function RecuperarContraseña() {
     const { register, handleSubmit, formState: { errors } } = useForm()
@@ -17,8 +17,14 @@ export default function RecuperarContraseña() {
          try {
              await loginService.recoverPassword(data)
              setEmailEnviado(data.email)
-         } catch (error) {
-             alert("Error al enviar el mail")
+         } catch {
+            Swal.fire({
+                          title: "¡Error!",
+                          text: "Error al enviar el mail",
+                          icon: "error",
+                          confirmButtonColor: "#E15562",
+                          confirmButtonText: "OK",
+                        });
          }
     } 
 

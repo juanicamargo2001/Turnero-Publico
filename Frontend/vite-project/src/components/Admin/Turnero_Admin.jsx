@@ -1,14 +1,13 @@
 import * as React from 'react';
-import 'dayjs/locale/es'; // Importa la localización en español
+import 'dayjs/locale/es';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar, PickersDay, DayCalendarSkeleton } from '@mui/x-date-pickers';
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
-import { horarios } from '../../services/agenda/horarios.service'; // Importa el servicio de horarios
-import { turneroService } from '../../services/turno/turnero.service'; // Importa el servicio de turnero
-// import { turnosService } from '../../services/turnos.service';
+import { horarios } from '../../services/agenda/horarios.service';
+import { turneroService } from '../../services/turno/turnero.service'; 
 import { mascotasService } from '../../services/turno/turnoTelefonico.service';
 import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -98,10 +97,8 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
       
 
     const handleTimeSelect = (hora, idHorario) => {
-        //console.log(hora)
-        //console.log(idHorario)
         setSelectedTurno(idHorario)
-        setSelectedTime(hora); // Almacenar la hora seleccionada
+        setSelectedTime(hora);
     };
     console.log("selectedTurno:", selectedTurno);
     // Componente de renderizado personalizado para los días

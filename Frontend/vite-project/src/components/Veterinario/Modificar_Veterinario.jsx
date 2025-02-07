@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import {veterinarioService} from '../../services/veterinario/veterinario.service';
 import UserRoleContext from '../Login/UserRoleContext';
-
+import Swal from 'sweetalert2';
 
 const Veterinarios = () => {
     const [error, setError] = useState(null);
@@ -15,6 +15,7 @@ const Veterinarios = () => {
     const { userRole } = useContext(UserRoleContext);
 
     const openModal = (item) => {
+        console.log(item)
         setSelectedItem(item);
         setIsModalOpen(true);
     };
@@ -61,18 +62,30 @@ const Veterinarios = () => {
         if (c===0){
             formData.idLegajo = leg;
             formData.fNacimiento = formData.fNacimiento.toISOString().split("T")[0] + "T00:00:00";
+            console.log(formData)
             try {
                 await veterinarioService.Modificar(formData);
-                alert("Veterinario modificado correctamente");
+                Swal.fire({
+                    title: "¡Éxito!",
+                    text: "Veterinario modificado correctamente",
+                    icon: "success",
+                    confirmButtonColor: "#E15562",
+                    confirmButtonText: "OK",
+                  }).then(() => {
+                });
                 fetchVeterinarios();
             } catch (error) {
                 console.error("Error al modificar el veterinario:", error.response ? error.response.data : error);
             }
         } else {
-            alert("Ningun atributo puede estar vacío");
-        }
-
-        
+            Swal.fire({
+                text: "Ningun atributo puede estar vacío",
+                icon: "info",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              }).then(() => {
+            });
+        }        
     };
 
     const manejarBusqueda = async (e) => {
@@ -82,10 +95,15 @@ const Veterinarios = () => {
             } else {
                 try {
                     const data = await veterinarioService.BuscarPorDni(busqueda);
-                    //console.log(data.result);
                     setData(data.result);
                 } catch (error) {
-                    alert("No se encontraron veterinarios con ese DNI")
+                    Swal.fire({
+                        text: "Error al buscar veterinarios",
+                        icon: "info",
+                        confirmButtonColor: "#E15562",
+                        confirmButtonText: "OK",
+                      }).then(() => {
+                    });
                     setError(error);
                     console.error("Error al buscar veterinarios:", error);
                 }

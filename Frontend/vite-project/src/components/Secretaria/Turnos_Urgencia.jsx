@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { vecinoService } from '../../services/vecino/vecino.service'
@@ -36,7 +35,13 @@ export default function Turnos_Urgencia() {
             const response = await vecinoService.obtenerVecinoXDNI(busqueda)
             setVecinos([response.result])
           } catch (error) {
-            alert("No se encontro a un vecino con ese DNI")
+            Swal.fire({
+              title: "¡Error!",
+              text: "No se encontro a un vecino con ese DNI",
+              icon: "error",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            });
             setError(error);
             console.error("Error al buscar vecinos:", error);
             setVecinos([])

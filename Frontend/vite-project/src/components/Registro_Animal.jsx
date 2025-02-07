@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import mascotaService from '../services/animal/mascota.service';
 import { sexosService } from '../services/animal/sexo.service';
 import { tamanoService } from '../services/animal/tamano.service';
@@ -11,7 +11,6 @@ const RegistroAnimal = () => {
   const [tamanos, setTamanos] = useState([]);
   const [tiposAnimal, setTiposAnimal] = useState([]);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const { register, handleSubmit, formState: { errors }, watch, reset } = useForm({
     mode: 'onChange',
@@ -54,7 +53,7 @@ const RegistroAnimal = () => {
       try {
         const data = await sexosService.Buscar();
         setSexos(data.result);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los sexos");
       }
     };
@@ -63,7 +62,7 @@ const RegistroAnimal = () => {
       try {
         const data = await tamanoService.Buscar();
         setTamanos(data.result);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los tamaños");
       }
     };
@@ -72,7 +71,7 @@ const RegistroAnimal = () => {
       try {
         const data = await tipoAnimalService.Buscar();
         setTiposAnimal(data.result);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los tipos de animales");
       }
     };

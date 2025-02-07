@@ -1,16 +1,17 @@
 import * as React from 'react';
-import 'dayjs/locale/es'; // Importa la localización en español
+import 'dayjs/locale/es';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar, PickersDay, DayCalendarSkeleton } from '@mui/x-date-pickers';
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
-import { horarios } from '../../services/agenda/horarios.service'; // Importa el servicio de horarios
-import { turneroService } from '../../services/turno/turnero.service'; // Importa el servicio de turnero
+import { horarios } from '../../services/agenda/horarios.service';
+import { turneroService } from '../../services/turno/turnero.service';
 import { turnosService } from '../../services/turno/turnos.service';
 import { useLocation } from 'react-router-dom';
-import "dayjs/locale/es"
+import Swal from 'sweetalert2';
+
 
 export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const [value, setValue] = React.useState(null); // Fecha seleccionada
@@ -74,21 +75,21 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         try {
             // Llama al servicio para reservar el turno, enviando el idHorario
             await turnosService.reservarTurno(selectedTurno, idMascota);
-            alert("¡Tu turno ha sido confirmado!");
+            Swal.fire({
+                text: "¡Tu turno ha sido confirmado!",
+                icon: "success",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              });
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");
             console.error("Error al confirmar el turno:", error);
         }
     };
     
-      
-      
-
     const handleTimeSelect = (hora, idHorario) => {
-        //console.log(hora)
-        //console.log(idHorario)
         setSelectedTurno(idHorario)
-        setSelectedTime(hora); // Almacenar la hora seleccionada
+        setSelectedTime(hora);
     };
 
     // Componente de renderizado personalizado para los días
