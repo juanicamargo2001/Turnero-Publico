@@ -38,7 +38,6 @@ function Menu() {
       // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
-      { label: "Cancelar turnos", path: "/cancelar/masivo" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
@@ -50,6 +49,7 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
+      { label: "Cancelar turnos", path: "/cancelar/masivo" },
       
     ],
     vecino: [
@@ -71,6 +71,7 @@ function Menu() {
         ],
       },
       { label: "Estadísticas", path: "/reportes" },
+      { label: "Cancelar turnos", path: "/cancelar/masivo" },
     ]
   };
 
