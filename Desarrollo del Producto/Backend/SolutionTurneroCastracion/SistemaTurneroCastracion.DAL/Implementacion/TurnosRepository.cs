@@ -125,7 +125,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                               join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
                               where C.Id_centro_castracion == IdCentroCastracion && TT.NombreTipo == tipoAnimal
                               && E.Nombre == EstadoTurno.Libre.ToString()
-                              && DateTime.UtcNow.Day <= T.Dia.Day 
+                              && DateTime.UtcNow.Month <= T.Dia.Month
                               && (T.Dia > ahora.Date || H.Hora >= ahora.TimeOfDay)
                               select T.Dia
                              ).Distinct().ToList();

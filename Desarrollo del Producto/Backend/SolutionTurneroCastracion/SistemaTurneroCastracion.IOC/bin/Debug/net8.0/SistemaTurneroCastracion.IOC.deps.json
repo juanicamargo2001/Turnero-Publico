@@ -678,7 +678,7 @@
         },
         "runtime": {
           "SistemaTurneroCastracion.BLL.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -692,7 +692,7 @@
         },
         "runtime": {
           "SistemaTurneroCastracion.DAL.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
@@ -703,7 +703,7 @@
         },
         "runtime": {
           "SistemaTurneroCastracion.Entity.dll": {
-            "assemblyVersion": "1.0.0",
+            "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }

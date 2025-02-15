@@ -337,7 +337,7 @@ namespace SistemaTurneroCastracion.BLL
                                                         <td style=""text-align: center; padding: 10px;"">
                                                             <p style=""font-size: 14px; background-color: #FFF4E0; padding: 15px; border-radius: 10px; display: inline-block; text-align: center; max-width: 450px; width: 100%; color: #C68642; font-weight: bold;"">
                                                                 En caso de no poder asistir al turno programado, es importante que cancele o reprograme por medio de la 
-                                                                <a href=""https://www.centroCastracion.com"" style=""color: #A0522D; ""><strong>página oficial</strong></a>
+                                                                <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/"" style=""color: #A0522D; ""><strong>página oficial</strong></a>
                                                             </p>
                                                         </td>
                                                     </tr>" : String.Empty;
@@ -443,7 +443,7 @@ namespace SistemaTurneroCastracion.BLL
             string botonConfirmar = incluirBotonConfirmar ? @"
                 <tr>
                     <td style=""text-align: center; margin-bottom: 7px;"">
-                        <a href=""http://centroCastracion.com"" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
+                        <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/iniciarsesion"" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
                             Confirmar
                         </a>
                     </td>
@@ -546,7 +546,7 @@ namespace SistemaTurneroCastracion.BLL
                                    <td style=""text-align: center; padding: 10px;"">
                                        <p style=""font-size: 14px; background-color: #FFF4E0; padding: 15px; border-radius: 10px; display: inline-block; text-align: center; max-width: 450px; width: 100%; color: #C68642; font-weight: bold;"">
                                            En caso de no poder asistir al turno programado, es importante que cancele o reprograme por medio de la 
-                                           <a href=""https://www.centroCastracion.com"" style=""color: #A0522D; ""><strong>página oficial</strong></a>
+                                          <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/"" style=""color: #A0522D; ""><strong>página oficial</strong></a>
                                        </p>
                                    </td>
                                </tr>
@@ -694,7 +694,7 @@ namespace SistemaTurneroCastracion.BLL
                                   <p >Le pedimos disculpas por los inconvenientes ocasionados. Puede reprogramar su turno llamando al <strong>0800-888-0404</strong> o accediendo a nuestra página web:</p>
                                   
                                   <div style=""text-align: center;"">
-                                    <a href=""centrocastraciones.com"" class=""button"" style=""color: #ffffff;"">Reprogramar Turno</a>
+                                    <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/iniciarsesion"" class=""button"" style=""color: #ffffff;"">Reprogramar Turno</a>
                                   </div>
                                 </div>
                             

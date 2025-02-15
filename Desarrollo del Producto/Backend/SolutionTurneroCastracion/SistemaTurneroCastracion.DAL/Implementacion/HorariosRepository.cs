@@ -428,17 +428,29 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         private async Task<bool> EsDiaActual(int idHorario, int? id)
         {
-            DateTime actual = DateTime.Now;
+            DateTime actual = DateTime.UtcNow;
+            DateTime haceDosDias = actual.AddDays(2).Date;
 
-            var turnoHabilitadoConfirmacion = await (from H in _dbContext.Horarios
-                                              join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
-                                              join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
-                                              where H.IdHorario == idHorario
-                                                    && T.Dia.Year == actual.Year
-                                                    && T.Dia.Day == actual.Day
-                                                    && H.Id_Usuario == id
-                                                    && E.Nombre == EstadoTurno.Reservado.ToString()
-                                              select H).ToListAsync();
+            int? idRol = await BuscarIdRol(RolesEnum.secretaria);
+
+
+            bool esSecretaria = await (from U in _dbContext.Usuarios
+                                       join R in _dbContext.Roles on U.RolId equals R.IdRol
+                                       where U.IdUsuario == id 
+                                       && R.IdRol == idRol
+                                       select U).AnyAsync();
+            
+
+            var turnoHabilitadoConfirmacion = await (
+                from H in _dbContext.Horarios
+                join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                where H.IdHorario == idHorario
+                      && T.Dia <= haceDosDias
+                      && (H.Id_Usuario == id || esSecretaria)
+                      && E.Nombre == EstadoTurno.Reservado.ToString()
+                select H
+            ).ToListAsync();
 
             if (turnoHabilitadoConfirmacion.Count > 0) {
                 return true;   
@@ -447,6 +459,18 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return false;
 
         }
+
+        private async Task<int?> BuscarIdRol(RolesEnum rol)
+        {
+
+            int? rolId = await (from R in _dbContext.Roles
+                               where R.Nombre == rol.ToString()
+                               select R.IdRol).FirstOrDefaultAsync();
+
+            return rolId;
+        }
+
+
 
         public async Task<List<TurnosFiltradoSecretariaDTO?>> ObtenerHorariosFiltrados(TurnosSecretariaDTO filtro, HttpContext context)
         {
