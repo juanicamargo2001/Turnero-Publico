@@ -23,10 +23,11 @@ function Menu() {
       { label: "Registrarse", path: "/registrar/vecino" }
     ],
     secretaria: [
+      { label: "Turnos del dia", path: "/secretaria/turnos" },
       { label: "Registrar Turno", path: "/asignar/turno" },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
-      { label: "Turnos del dia", path: "/secretaria/turnos" },
+      
       {
         label: "Medicamentos",
         subOptions: [
@@ -34,8 +35,6 @@ function Menu() {
           { label: "Unidades", path: "/unidades" },
         ],
       },
-
-      // { label: "Animal", path: "/registrar/animal" },
     ],
     administrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },
@@ -49,11 +48,11 @@ function Menu() {
           { label: "Villa Allende", path: "/habilitar/villallende" },
         ],
       },
-      { label: "Cancelar turnos", path: "/cancelar/masivo" },
+      { label: "Cancelacion masiva", path: "/cancelar/masivo" },
       
     ],
     vecino: [
-      { label: "Turnos", path: "/turno" },
+      { label: "Obtener turno", path: "/turno" },
       { label: "Mis Turnos", path: "/misTurnos" },
       { label: "Animal", path: "/registrar/animal" }
     ],
@@ -71,7 +70,7 @@ function Menu() {
         ],
       },
       { label: "Estadísticas", path: "/reportes" },
-      { label: "Cancelar turnos", path: "/cancelar/masivo" },
+      { label: "Cancelacion masiva", path: "/cancelar/masivo" },
     ]
   };
 

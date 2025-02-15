@@ -120,7 +120,7 @@ const TipoAnimal_Vecino = () => {
                 alt={mascota.tipoAnimal.toLowerCase()} 
               />
               <div className="card-body">
-                <h5 className="card-title">{mascota.nombre.toUpperCase()}</h5>
+                <h5 className="card-title">{mascota.nombre}</h5>
                 <button 
                   className="btn btn-info btn-sm mt-2" 
                   onClick={(e) => {
