@@ -18,7 +18,8 @@ const CentrosCastracionSecre = () => {
       try {
         const response = await centroService.BuscarTodos();
         if (response.success && Array.isArray(response.result)) {
-          setCentros(response.result);
+          const centrosHabilitados = response.result.filter((centro) => centro.habilitado);
+          setCentros(centrosHabilitados);
         } else {
           setCentros([]);
         }
