@@ -54,7 +54,7 @@ export default function Perfil() {
     if (!apellidoUsuario || !nombreUsuario || !userRole) return <div>Cargando...</div>
     
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 maven-pro-body">
       <h2 className="maven-pro-title">Mi perfil</h2>
       <h5 >{apellidoUsuario}, {nombreUsuario}</h5>
 
