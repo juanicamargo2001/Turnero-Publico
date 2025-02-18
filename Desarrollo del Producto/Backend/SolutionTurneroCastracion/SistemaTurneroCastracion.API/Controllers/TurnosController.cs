@@ -323,7 +323,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            if (!await _horariosRepository.TurnoEmergencia(request))
+            if (!await _horariosRepository.TurnoEmergencia(request, HttpContext))
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al registrar el turno de emergencia!", Result = "" });
             }

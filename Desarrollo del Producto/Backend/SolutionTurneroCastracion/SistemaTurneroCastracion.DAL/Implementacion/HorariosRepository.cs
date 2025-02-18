@@ -605,9 +605,10 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return turnosCancelados;
         }
 
-        public async Task<bool> TurnoEmergencia(TurnoUrgenteRequestDTO request) 
+        public async Task<bool> TurnoEmergencia(TurnoUrgenteRequestDTO request, HttpContext context) 
         {
-            
+            int? idSecretaria = UtilidadesUsuario.ObtenerIdUsuario(context);
+
             Mascota mascotaUrgente = await _mascotaRepository.CrearMascota(new MascotaDTO
             {
                 Edad = request.Edad,
@@ -619,7 +620,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (mascotaUrgente == null)
                 return false;
 
-            Horarios? horarioUrgente = await CrearTurnoEmergencia(request.IdUsuario);
+            Horarios? horarioUrgente = await CrearTurnoEmergencia(request.IdUsuario, idSecretaria);
 
             if (horarioUrgente == null)
                 return false;
@@ -630,7 +631,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
         
-        private async Task<Horarios?> CrearTurnoEmergencia(int? idUsuarioRequest)
+        private async Task<Horarios?> CrearTurnoEmergencia(int? idUsuarioRequest, int? idSecretaria)
         {
             DateTime actual = DateTime.UtcNow;
 
@@ -638,22 +639,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             if (IdTipoTurnoEmergencia.HasValue)
             {
-                int? turnoId = await BuscarTurnoIdDelDia(actual);
+                int? turnoId = await BuscarTurnoIdDelDia(actual, idSecretaria);
 
-                if (turnoId.HasValue)
+                Horarios horarioCreado = await Crear(new Horarios
                 {
-                    Horarios horarioCreado = await Crear(new Horarios
-                    {
-                        Hora = actual.AddHours(-3).TimeOfDay,
-                        TipoTurno = IdTipoTurnoEmergencia.Value,
-                        IdTurno = turnoId.Value,
-                        Id_Estado = BuscarEstado(EstadoTurno.Ingresado.ToString()),
-                        Id_Usuario = idUsuarioRequest,
-                    });
+                    Hora = actual.AddHours(-3).TimeOfDay,
+                    TipoTurno = IdTipoTurnoEmergencia.Value,
+                    IdTurno = turnoId,
+                    Id_Estado = BuscarEstado(EstadoTurno.Ingresado.ToString()),
+                    Id_Usuario = idUsuarioRequest,
+                });
 
-                    return horarioCreado;
-                }
-                return null;
+                return horarioCreado;
+
             }
             return null;
         }
@@ -672,16 +670,36 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        private async Task<int?> BuscarTurnoIdDelDia(DateTime fechaDelDia)
+        private async Task<int?> BuscarTurnoIdDelDia(DateTime fechaDelDia, int? idSecretaria)
         {
-            Turnos? turnoEncontrado = await _dbContext.Turnos.Where(t => t.Dia.Day == fechaDelDia.Day).FirstOrDefaultAsync();
+            Turnos? turnoEncontrado = await _dbContext.Turnos.Where(t => t.Dia.Date == fechaDelDia.Date).FirstOrDefaultAsync();
 
             if (turnoEncontrado != null) 
             {
                 return turnoEncontrado.IdTurno;
             }
 
-            return null;
+            try
+            {
+                var agendaId = await (from A in _dbContext.Agenda
+                                      join SA in _dbContext.SecretariaxCentros on A.IdCentroCastracion equals SA.IdCentroCastracion
+                                      where SA.IdUsuario == idSecretaria
+                                      orderby A.IdAgenda descending
+                                      select A.IdAgenda).FirstOrDefaultAsync();
+
+
+                Turnos nuevoTurno = new() { Dia = fechaDelDia, IdAgenda = agendaId };
+                await _dbContext.Turnos.AddAsync(nuevoTurno);
+                await _dbContext.SaveChangesAsync();
+
+
+                return nuevoTurno.IdTurno;
+            }
+            catch
+            {
+                return null;
+            }
+            
         }
 
         private async Task<bool> AsignarMascotaHorario(Horarios? horarioUrgente, Mascota? mascotaUrgente)
