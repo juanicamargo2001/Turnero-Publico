@@ -47,8 +47,9 @@ const CentrosCastracionList = () => {
     <>
       <div className="container mt-4">
         <div className="row justify-content-center">
-          {Array.isArray(centros) && centros.length > 0 ? (
-            centros.map((centro) => (
+        {Array.isArray(centros) && centros.length > 0 ? (
+          centros
+            .map((centro) => (
               <div className="col-md-4 col-sm-6" key={centro.id_centro_castracion}>
                 <CentroCastracionCard
                   nombre={centro.nombre}
@@ -57,14 +58,14 @@ const CentrosCastracionList = () => {
                   barrio={centro.barrio}
                   horaInicio={formatearHora(centro.horaLaboralInicio)}
                   horaFin={formatearHora(centro.horaLaboralFin)}
-                  imagen={imagenesCentros[centro.id_centro_castracion]} // Pasar la imagen correspondiente
-                  ruta={rutasCentros[centro.id_centro_castracion]} // Pasar la ruta correspondiente
+                  imagen={imagenesCentros[centro.id_centro_castracion]}
+                  ruta={rutasCentros[centro.id_centro_castracion]}
                 />
               </div>
             ))
-          ) : (
-            <p>No se encontraron centros de castración disponibles.</p>
-          )}
+        ) : (
+          <p>No se encontraron centros de castración disponibles.</p>
+        )}
         </div>
         <div className="d-flex justify-content-end p-2">
         <button type="button" className="btn btn-dark me-2 confir2" style={{marginTop: "10px"}} onClick={() => navigate("/")}>Volver</button>

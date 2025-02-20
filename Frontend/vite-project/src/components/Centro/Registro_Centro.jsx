@@ -41,12 +41,9 @@ const Registro_Centro = () => {
       setBarrioSeleccionado(valor);
 
       if (valor.length >= 3) {
-        const filtrados = barrios.filter(barrio =>
-          barrio.toLowerCase().includes(valor.toLowerCase())
-        );
-        setSugerencias(filtrados);
+        fetchBarrios(valor.toUpperCase())
+        setSugerencias(barrios);
       } else {
-        // Limpiar sugerencias si no hay texto o es menor a 3 caracteres
         setSugerencias([]);
       }
     };
@@ -96,7 +93,6 @@ const Registro_Centro = () => {
 
     // Cargar barrios al montar el componente
     useEffect(() => {
-      fetchBarrios("");
     }, []);
 
   return (
@@ -104,7 +100,7 @@ const Registro_Centro = () => {
         <h2 className='maven-pro-title'> INGRESAR DATOS CENTRO DE CASTRACIÓN</h2>
         <form className='maven-pro-body' onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre</label>
+          <label htmlFor="nombre" className="form-label" style={{fontSize: "1rem"}}>Nombre</label>
           <input
             type="text"
             className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
@@ -112,10 +108,10 @@ const Registro_Centro = () => {
             placeholder="Escriba el nombre del centro"
             {...register('nombre', {required: "El nombre es requerido"})}
           />
-          {errors.nombre && <div className="invalid-feedback">{errors.nombre.message}</div>} 
+          {errors.nombre && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.nombre.message}</div>} 
         </div>
         <div className='mb-3'>
-            <label htmlFor="barrio" className="form-label">Barrio</label>
+            <label htmlFor="barrio" className="form-label" style={{fontSize: "1rem"}}>Barrio</label>
             <input
               type="text"
               className={`form-control ${errors.barrio ? "is-invalid" : ""}`}
@@ -125,7 +121,7 @@ const Registro_Centro = () => {
               onChange={handleBarrioInput} 
             />
             {errors.barrio && <div className="invalid-feedback">{errors.barrio.message}</div>}
-            <div className="autocomplete-list">
+            <div className="autocomplete-list w-50">
               {sugerencias.map((barrio, index) => (
                 <div
                   key={index}
@@ -138,7 +134,7 @@ const Registro_Centro = () => {
             </div>
         </div> 
         <div className="mb-3">
-            <label htmlFor="calle" className='form-label'>Calle</label>
+            <label htmlFor="calle" className='form-label' style={{fontSize: "1rem"}}>Calle</label>
             <input
              type="text"
              className={`form-control ${errors.calle ? "is-invalid" : ""}`}
@@ -146,11 +142,11 @@ const Registro_Centro = () => {
              placeholder="Ingrese la calle"
              {...register("calle", {required : "La calle es requerida"})}
             />
-            {errors.calle && <div className="invalid-feedback">{errors.calle.message}</div>}
+            {errors.calle && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.calle.message}</div>}
         </div>
         <FormControl className="mb-3" fullWidth sx={{ mb: 2 }}>
         <div className="mb-3">
-            <label htmlFor="altura" className="form-label">Altura</label>
+            <label htmlFor="altura" className="form-label" style={{fontSize: "1rem"}}>Altura</label>
             <input
               type="number"
               className={`form-control ${errors.altura ? "is-invalid" : ""}`}
@@ -160,13 +156,13 @@ const Registro_Centro = () => {
                 validate: value => value > -1 || "La altura debe ser 0 o superior"
               })}
             />
-            {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
+            {errors.altura && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.altura.message}</div>}
         </div>
         </FormControl>
         <div className="mb-3">
         <label htmlFor="horariosLaborales" className='form-label'>Horarios Laborales</label>
         </div>
-        <div>
+        <div className='d-flex flex-column flex-md-row align-items-center gap-2 gap-md-3'>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <TimePicker
             label="Horario Inicio"
@@ -179,7 +175,7 @@ const Registro_Centro = () => {
               seconds: renderTimeViewClock,
             }}
           />
-          <span style={{ margin: '0 10px' }}>//</span>
+          <span className='mx-2'>//</span>
           <TimePicker
             label="Horario Fin"
             maxTime={dayjs().set('hour', 21).startOf("hour")}

@@ -93,36 +93,42 @@ function TurnoVecino() {
       <div className="row justify-content-center">
         {cancelError && <div className="alert alert-danger">{cancelError}</div>}
 
-        {turnos.map((turno, index) => (
-          <div key={index} className="col-md-12 p-4">
-            <div className="shadow-sm border p-5 rounded">
-              <div className="d-flex justify-content-between">
-                <div style={{paddingLeft: "15px"}}>
-                  <h5>{`Turno para ${turno.tipoTurno}`}</h5>
-                  <p>
-                    <strong>Hora:</strong> {turno.hora || "No disponible"} <br />
-                    <strong>Día del Turno:</strong> {new Date(turno.diaTurno).toLocaleDateString() || "No disponible"} <br />
-                    <strong>Estado:</strong> {turno.estado || "No especificado"} <br />
-                  </p>
-                </div>
-                <div className="d-flex flex-column align-items-start">
-                  <button
-                    className="btn btn-primary mb-2"
-                    onClick={() => handleShowDetalles(turno.descripPostOperatorio)}
-                  >
-                    Detalles
-                  </button>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleCancelarTurno(turno.idHorario)}
-                  >
-                    Cancelar
-                  </button>
+        {turnos.length > 0 ? (
+          turnos.map((turno, index) => (
+            <div key={index} className="col-md-12 p-4">
+              <div className="shadow-sm border p-5 rounded">
+                <div className="d-flex justify-content-between">
+                  <div style={{paddingLeft: "15px"}}>
+                    <h5>{`Turno para ${turno.tipoTurno}`}</h5>
+                    <p>
+                      <strong>Hora:</strong> {turno.hora || "No disponible"} <br />
+                      <strong>Día del Turno:</strong> {new Date(turno.diaTurno).toLocaleDateString() || "No disponible"} <br />
+                      <strong>Estado:</strong> {turno.estado || "No especificado"} <br />
+                    </p>
+                  </div>
+                  <div className="d-flex flex-column align-items-start">
+                    <button
+                      className="btn btn-primary mb-2"
+                      onClick={() => handleShowDetalles(turno.descripPostOperatorio)}
+                    >
+                      Detalles
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleCancelarTurno(turno.idHorario)}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+          ))
+        ): (
+          <div className="text-center mt-5">
+        <h5>No se encontraron turnos asignados.</h5>
           </div>
-        ))}
+       )}  
 
         <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>

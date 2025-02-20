@@ -5,9 +5,15 @@ import 'flatpickr/dist/themes/material_blue.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; 
 import { agendaService } from '../../services/agenda/habilitar.service';
 import Swal from 'sweetalert2';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import dayjs from 'dayjs';
 
 const HabilitarTurneroVilla = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [horaInicio] = useState(dayjs().set('hour', 10).set('minute', 0).set('second', 0));
   const [enabledTime, setEnabledTime] = useState('10:00:00'); 
   const [turnosPorDia, setTurnosPorDia] = useState({
     shifts: [
@@ -101,7 +107,7 @@ const HabilitarTurneroVilla = () => {
         <div className="mb-3 row">
           <label htmlFor="enableTime" className="col-sm-4 col-form-label">Ingresa el horario para habilitar:</label>
           <div className="col-sm-4">
-            <input 
+            {/* <input 
               type="time" 
               className="form-control" 
               id="enableTime" 
@@ -110,7 +116,22 @@ const HabilitarTurneroVilla = () => {
                 const timeValue = e.target.value;
                 setEnabledTime(`${timeValue}:00`); 
               }} 
-            />
+            /> */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <TimePicker
+                        label="Horario Inicio"
+                        defaultValue={horaInicio}
+                        onChange={(e) => {
+                          const timeValue = e.target.value;
+                          setEnabledTime(`${timeValue}:00`); 
+                        }}
+                        viewRenderers={{
+                          hours: renderTimeViewClock,
+                          minutes: renderTimeViewClock,
+                          seconds: renderTimeViewClock,
+                        }}
+                      />
+            </LocalizationProvider>
           </div>
         </div>
 

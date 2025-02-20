@@ -1,34 +1,35 @@
-import React, { useState, useContext } from 'react';
-import './InicioSesion.css';
-import loginService from '../../services/login/login.service';
-import bienestarImage from '../../imgs/bienestar.png';
-import UserRoleContext from './UserRoleContext';
-import { useNavigate } from 'react-router-dom';
-import { DotLoader } from 'react-spinners'; 
+import { useState, useContext } from "react";
+import "./InicioSesion.css";
+import loginService from "../../services/login/login.service";
+import bienestarImage from "../../imgs/bienestar.png";
+import UserRoleContext from "./UserRoleContext";
+import { useNavigate } from "react-router-dom";
+import { DotLoader } from "react-spinners";
 
 const LoginComponent = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { userRole, setUserRole } = useContext(UserRoleContext);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setError('');
+    setError("");
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setError('');
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError('Por favor, ingrese su email y contraseña.');
+      setError("Por favor, ingrese su email y contraseña.");
       return;
     }
 
@@ -46,19 +47,19 @@ const LoginComponent = () => {
           navigate("/turno");
         } catch (error) {
           console.log(error);
-          setIsLoading(false); 
-          setError('Error al obtener rol o nombre');
+          setIsLoading(false);
+          setError("Error al obtener rol o nombre");
         }
       } else {
         setIsLoading(false);
-        alert('Error al verificar permisos');
-        setError('Error al verificar permisos');
+        alert("Error al verificar permisos");
+        setError("Error al verificar permisos");
         return;
       }
     } catch (error) {
       setIsLoading(false);
-      setError('Error de autenticación');
-      console.error('Error:', error);
+      setError("Error de autenticación");
+      console.error("Error:", error);
       return;
     }
   };
@@ -75,8 +76,13 @@ const LoginComponent = () => {
         <div className="login-container">
           <div className="login-image">
             <div className="welcome-text">
-              <h2 className='maven-pro-title2'>¡Bienvenido al Turnero de Castración de Mascotas!</h2>
-              <p>Acceda a su cuenta para gestionar turnos de castración en los centros municipales de Biocórdoba. </p>
+              <h2 className="maven-pro-title2">
+                ¡Bienvenido al Turnero de Castración de Mascotas!
+              </h2>
+              <p>
+                Acceda a su cuenta para gestionar turnos de castración en los
+                centros municipales de Biocórdoba.{" "}
+              </p>
             </div>
           </div>
 
@@ -100,25 +106,48 @@ const LoginComponent = () => {
 
               <div className="form-group">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="custom-input"
                   placeholder="Contraseña"
                   value={password}
                   onChange={handlePasswordChange}
                   required
                 />
+                <span
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    marginTop: "-35px",
+                    marginLeft: "-10%",
+                    position: "relative",
+                    zIndex: 2,
+                  }}
+                >
+                  {showPassword ? (
+                    <i className="fa-solid fa-eye"></i>
+                  ) : (
+                    <i className="fa-solid fa-eye-slash"></i>
+                  )}
+                </span>
               </div>
 
-            <div className="register-link2">
-              ¿Has olvidado tu contraseña? <a href="/recuperarContraseña">Recuperar contraseña</a>
-            </div>
+              <div className="register-link2">
+                ¿Has olvidado tu contraseña?{" "}
+                <a href="/recuperarContraseña">Recuperar contraseña</a>
+              </div>
 
-              <button type="submit" className="btn btn-primary w-100">Ingresar</button>
+              <button type="submit" className="btn btn-primary w-100">
+                Ingresar
+              </button>
 
-              {error && <p style={{paddingTop: "5px"}} className="error-message">{error}</p>}
+              {error && (
+                <p style={{ paddingTop: "5px" }} className="error-message">
+                  {error}
+                </p>
+              )}
 
               <div className="register-link">
-                ¿Aún no estás registrado? <a href="/registrar/vecino">Crea una cuenta</a>
+                ¿Aún no estás registrado?{" "}
+                <a href="/registrar/vecino">Crea una cuenta</a>
               </div>
             </form>
           </div>

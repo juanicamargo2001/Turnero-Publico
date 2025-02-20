@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Tab, Tabs, Row, Col, Card } from "react-bootstrap";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Text } from "recharts";
 import { PieChart, Pie, Cell, Tooltip as PieTooltip } from "recharts";
@@ -21,7 +21,7 @@ const Reportes = () => {
 
         const resultCancelaciones = await reportesService.obtenerInformeCancelaciones();
         setDataCancelaciones(resultCancelaciones.result);
-      } catch (error) {
+      } catch {
         setError("Error al cargar los datos del gráfico.");
       }
     };

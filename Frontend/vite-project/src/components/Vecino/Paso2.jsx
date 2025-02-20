@@ -4,6 +4,7 @@ const Paso2Visual = ({updateFormData, nextStep, prevStep, formData}) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onFormSubmit = (data) => {
+      console.log(data)
         updateFormData(data);
 
         nextStep();
@@ -35,14 +36,17 @@ const Paso2Visual = ({updateFormData, nextStep, prevStep, formData}) => {
               <div className="mb-3">
                 <label htmlFor="telefono" className="form-label">Teléfono</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   id="telefono"
                   placeholder="Escriba su teléfono"
                   defaultValue={formData.telefono}
                   {...register('telefono', {
-                    required: 'El teléfono es obligatorio',
-                    setValueAs: value => parseInt(value, 10),
+                    required: 'El teléfono es obligatorio',     
+                    pattern: {
+                      value: /^(?!0+$)(\+\d{1,3}[- ]?)?(?!0+$)\d{10,15}$/,
+                      message: 'El formato del telefono no es inválido'
+                    },                   
                   })}
                 />
                 {errors.telefono && <p style={{ color: 'red' }}>{errors.telefono.message}</p>}

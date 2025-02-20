@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { vecinoService } from '../../services/vecino/vecino.service'
@@ -7,7 +6,7 @@ import './Perfil.css'
 import Swal from 'sweetalert2';
 
 export default function EditarPerfil() {
-    const { register, handleSubmit, formState: { errors }, setValue} = useForm({ mode: 'onChange' })
+    const { register, handleSubmit, watch, formState: { errors }, setValue} = useForm({ mode: 'onChange' })
     const [perfil, setPerfil] = useState(null)
     const [barrios, setBarrios] = useState([]); 
     const [sugerencias, setSugerencias] = useState([]); 
@@ -31,7 +30,7 @@ export default function EditarPerfil() {
 
             setPerfil(perfilCargado)
 
-        } catch (error) {
+        } catch {
             console.log("Error al cargar el perfil")
         }
     }
@@ -41,8 +40,8 @@ export default function EditarPerfil() {
           const data = await provinciaService.getBarriosCba(pattern);
           const barriosObtenidos = data.features.map(b => b.attributes.nombre);
           setBarrios(barriosObtenidos);
-        } catch (error) {
-          setError("Error al cargar los barrios. Por favor, inténtelo de nuevo.");
+        } catch {
+          console.error("Error al cargar los barrios. Por favor, inténtelo de nuevo.")
         }
       };
     
@@ -52,12 +51,9 @@ export default function EditarPerfil() {
         setValue('barrio', valor)
     
         if (valor.length >= 3) {
-          const filtrados = barrios.filter(barrio =>
-            barrio.toLowerCase().includes(valor.toLowerCase())
-          );
-          setSugerencias(filtrados);
+          fetchBarrios(valor.toUpperCase())
+          setSugerencias(barrios);
         } else {
-          // Limpiar sugerencias si no hay texto o es menor a 3 caracteres
           setSugerencias([]);
         }
       };
@@ -81,12 +77,12 @@ export default function EditarPerfil() {
       let nuevoDomicilio
 
       if(!data.barrio || !data.calle){
-        Swal.fire({
-          text: "Ingrese un barrio o una calle",
-          icon: "info",
-          confirmButtonColor: "#E15562",
-          confirmButtonText: "OK",
-        });
+        // Swal.fire({
+        //   text: "Ingrese un barrio o una calle",
+        //   icon: "info",
+        //   confirmButtonColor: "#E15562",
+        //   confirmButtonText: "OK",
+        // });
       }else{
         nuevoDomicilio = `${capitalizeWords(data.barrio)}, ${data.calle}, ${data.altura}`
       }
@@ -113,23 +109,20 @@ export default function EditarPerfil() {
     }
 
     useEffect(() => {
-
-        fetchBarrios("")
         fetchPerfil()
-
     },[])
 
     if (perfil === null) return <div>Cargando...</div>;
     
   return (
-    <div className="container mt-4">
-        <h3 className='titulo-form'>Editar perfil</h3>
+    <div className="container mt-4 page-container">
+        <h3 className='titulo-form' >Editar perfil</h3>
         <form onSubmit={handleSubmit(onSubmit)} className='formulario-editar'>
         <div className='seccion'>
           <h5>Personal</h5>
             <div className='campo-nombre-apellido'>
               <div className='campo'>
-              <label htmlFor="nombre" className="form-label">Nombre</label>
+              <label htmlFor="nombre" className="form-label" style={{fontSize: "0.96rem"}}>Nombre</label>
                 <input
                   type="text"
                   className="form-control"
@@ -141,7 +134,7 @@ export default function EditarPerfil() {
               </div>
 
               <div className="campo">
-                <label htmlFor="apellido" className="form-label">Apellido</label>
+                <label htmlFor="apellido" className="form-label" style={{fontSize: "0.96rem"}}>Apellido</label>
                 <input
                   type="text"
                   className="form-control"
@@ -154,7 +147,7 @@ export default function EditarPerfil() {
           </div>
 
           <div className="campo">
-            <label htmlFor="f_nacimiento" className="form-label">Fecha de nacimiento</label>
+            <label htmlFor="f_nacimiento" className="form-label" style={{fontSize: "0.96rem"}}>Fecha de nacimiento</label>
             <input
               type="text"
               className="form-control"
@@ -174,7 +167,7 @@ export default function EditarPerfil() {
           </div>
 
           <div className='campo'>
-              <label htmlFor="barrio" className="form-label">Barrio</label>
+              <label htmlFor="barrio" className="form-label" style={{fontSize: "0.96rem"}}>Barrio</label>
               <input
                 type="text"
                 className={`form-control ${errors.barrio ? "is-invalid" : ""}`}
@@ -183,7 +176,7 @@ export default function EditarPerfil() {
                 onChange={handleBarrioInput} 
               />
               {errors.barrio && <div className="invalid-feedback">{errors.barrio.message}</div>}
-              <div className="autocomplete-list">
+              <div className="autocomplete-list w-50">
                 {sugerencias.map((barrio, index) => (
                   <div
                     key={index}
@@ -196,23 +189,28 @@ export default function EditarPerfil() {
               </div>
           </div> 
           <div className="campo">
-              <label htmlFor="calle" className='form-label'>Calle</label>
+              <label htmlFor="calle" className='form-label' style={{fontSize: "0.96rem"}}>Calle</label>
               <input
               type="text"
               className={`form-control ${errors.calle ? "is-invalid" : ""}`}
               id="calle"
-              {...register("calle")}
+              {...register("calle", {
+                validate: value =>
+                  !barrioSeleccionado || value.trim() !== "" || "Debe ingresar una calle si ha seleccionado un barrio"
+              })}
               />
               {errors.calle && <div className="invalid-feedback">{errors.calle.message}</div>}
           </div>
           <div className="campo">
-              <label htmlFor="altura" className="form-label">Altura</label>
+              <label htmlFor="altura" className="form-label" style={{fontSize: "0.96rem"}}>Altura</label>
               <input
-                type="number"
+                type="text"
                 className={`form-control ${errors.altura ? "is-invalid" : ""}`}
                 id="altura"
-                {...register("altura", {valueAsNumber: "La altura debe ser un numero", 
-                  validate: value => value > -1 || "La altura debe ser 0 o superior"
+                {...register("altura", {
+                  valueAsNumber: true,
+                  validate: value =>
+                    !watch("calle") || (value > -1 && value !== "") || "Debe ingresar una altura valida"
                 })}
               />
               {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
@@ -222,7 +220,7 @@ export default function EditarPerfil() {
         <div className='seccion'>
           <h5>Contacto</h5>
           <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="email" className="form-label" style={{fontSize: "0.96rem"}}>Email</label>
             <input
               type="text"
               className="form-control"
@@ -238,21 +236,16 @@ export default function EditarPerfil() {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="telefono" className="form-label">Teléfono</label>
+            <label htmlFor="telefono" className="form-label" style={{fontSize: "0.96rem"}}>Teléfono</label>
             <input
-              type="number"
+              type="text"
               className="form-control"
               id="telefono"
               {...register('telefono', { 
-                minLength: {
-                  value: 10,
-                  message: "El teléfono debe tener al menos 10 dígitos"
-                },
                 pattern: {
-                    value: /^[0-9]*$/,
+                    value: /^(?!0+$)(\+\d{1,3}[- ]?)?(?!0+$)\d{10,15}$/,
                     message: "El teléfono solo puede contener números"
                 }, 
-                validate: value => value > 0 || "El telefono debe ser mayor que 0"
               })}
             />
             {errors.telefono && <p style={{ color: 'red' }}>{errors.telefono.message}</p>}
