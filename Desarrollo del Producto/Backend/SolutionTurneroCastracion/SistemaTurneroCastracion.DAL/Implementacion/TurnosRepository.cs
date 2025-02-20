@@ -86,7 +86,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             DateTime ahora = DateTime.UtcNow.AddHours(-3);
 
-            if (ahora.Day <= dia.Day || ahora.Month <= dia.Month)
+            if (ahora.Date <= dia.Date)
             {
                 var turnos = await (from C in _dbContext.Centros
                               join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion

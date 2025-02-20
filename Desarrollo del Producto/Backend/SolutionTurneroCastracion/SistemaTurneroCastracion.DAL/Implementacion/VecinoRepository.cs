@@ -100,7 +100,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         {
             var dniRepetido = await this.Consultar(v => v.Dni == request.DNI);
 
-            if (!dniRepetido.Any())
+            Usuario? emailRepetido = await _dbContext.Usuarios.Where(u => u.Email == request.Email).FirstOrDefaultAsync();
+
+            if (!dniRepetido.Any() && emailRepetido is null)
             {
 
                 int? creadoUsuario = await _usuarioRepository.crearUsuario(request.Nombre, request.Apellido, request.Contraseña,
