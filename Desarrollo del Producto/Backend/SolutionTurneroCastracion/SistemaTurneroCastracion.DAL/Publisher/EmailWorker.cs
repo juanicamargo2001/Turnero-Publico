@@ -54,7 +54,9 @@ namespace SistemaTurneroCastracion.DAL.Publisher
 
                 var correosPendientes = await dbContext.CorreosProgramados
                     .Where(c => c.Estado == EstadoCorreo.Pendiente.ToString()
-                                && c.FechaEnvio.Date == ahora.AddDays(2).Date)
+                                && c.FechaEnvio.Date == ahora.AddDays(2).Date
+                                && c.FechaEnvio.Month == ahora.AddDays(2).Month
+                                && c.FechaEnvio.Year == ahora.Year)
                     .ToListAsync();
 
                 var correosAvisoPrevio = await (from C in dbContext.CorreosProgramados
@@ -83,7 +85,27 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                 {
                     try
                     {
-                        string mensaje = EnvioCorreosHTML.CrearHTMLConfirmacionYRecordatorio(correo, incluirBotonConfirmar: true);
+                        string tokenUrl = UtilidadesUsuario.GeneradorTokenTurno();
+
+                        try
+                        {
+                            int? idUsuario = (await dbContext.Horarios.Where(h => h.IdHorario == correo.IdHorario).FirstOrDefaultAsync())?.Id_Usuario;
+
+                            dbContext.TurnosTokens.Add(new TurnosTokens()
+                            {
+                                IdHorario = correo.IdHorario,
+                                IdUsuario = idUsuario,
+                                Token = tokenUrl,
+                                FechaExpiracion = ahora.AddDays(2)
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+
+                        string mensaje = EnvioCorreosHTML.CrearHTMLConfirmacionYRecordatorio(correo, incluirBotonConfirmar: true, tokenUrl);  
+
                         await emailPublisher.ConexionConRMQ(mensaje, "email_send_delayed");
 
                         correo.Estado = EstadoCorreo.Enviado.ToString();
@@ -104,7 +126,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                     {
                         try
                         {
-                            string mensaje = EnvioCorreosHTML.CrearHTMLConfirmacionYRecordatorio(correo, incluirBotonConfirmar: false);
+                            string mensaje = EnvioCorreosHTML.CrearHTMLConfirmacionYRecordatorio(correo, incluirBotonConfirmar: false, tokenUrl: null);
                             await emailPublisher.ConexionConRMQ(mensaje, "email_send_delayed");
 
                             correo.Estado = EstadoCorreo.Recordado.ToString();

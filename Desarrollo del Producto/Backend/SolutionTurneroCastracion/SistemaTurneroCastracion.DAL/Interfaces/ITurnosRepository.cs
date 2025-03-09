@@ -21,5 +21,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 
         Task<bool> EliminarTurnos(int idAgenda);
 
+        Task<TurnoTokenResponse?> ObtenerInformacionTurnoPorToken(string token);
+
     }
 }

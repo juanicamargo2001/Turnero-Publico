@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore.Query;
 using SistemaTurneroCastracion.DAL.Implementacion;
 using SistemaTurneroCastracion.DAL.Interfaces;
@@ -178,21 +179,12 @@ namespace SistemaTurneroCastracion.API.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost("confirmarTurno")]
-        public async Task<IActionResult> ConfirmarTurno([FromBody] int idTurno)
+        public async Task<IActionResult> ConfirmarTurno([FromBody] string token)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);
 
-            if (!isValid)
-            {
-                if (errorMessage == "Unauthorized")
-                {
-                    return Unauthorized();
-                }
-                return BadRequest(errorMessage);
-            }
-
-            bool confirmado = await _horariosRepository.ConfirmarTurno(idTurno, HttpContext);
+            bool confirmado = await _horariosRepository.ConfirmarTurno(token);
 
             if (!confirmado)
             {
@@ -377,6 +369,20 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
         }
 
+
+        [AllowAnonymous]
+        [HttpPost("ObtenerTurnoPorToken")]
+        public async Task<IActionResult> ObtenerTurnoToken([FromBody] string token)
+        {
+            TurnoTokenResponse? turnoToken = await _turnosRepository.ObtenerInformacionTurnoPorToken(token);
+
+            if (turnoToken is null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al obtener la información del turno!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnoToken });
+        }
 
     }
 }

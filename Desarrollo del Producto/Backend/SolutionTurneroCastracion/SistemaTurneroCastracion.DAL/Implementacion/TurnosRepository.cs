@@ -89,24 +89,24 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (ahora.Date <= dia.Date)
             {
                 var turnos = await (from C in _dbContext.Centros
-                              join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
-                              join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
-                              join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
-                              join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
-                              join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
-                              where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
-                              && TT.NombreTipo == tipoAnimal && (T.Dia > ahora.Date || H.Hora >= ahora.TimeOfDay)
+                                    join A in _dbContext.Agenda on C.Id_centro_castracion equals A.IdCentroCastracion
+                                    join T in _dbContext.Turnos on A.IdAgenda equals T.IdAgenda
+                                    join H in _dbContext.Horarios on T.IdTurno equals H.IdTurno
+                                    join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
+                                    join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                    where C.Id_centro_castracion == IdCentroCastracion && T.Dia == dia && E.Nombre == EstadoTurno.Libre.ToString()
+                                    && TT.NombreTipo == tipoAnimal && (T.Dia > ahora.Date || H.Hora >= ahora.TimeOfDay)
                                     group new { H, TT } by new { T.Dia } into g
-                              select new TurnoDTO
-                              {
-                                  Dia = g.Key.Dia,
-                                  Hora = g.Select(h => new HoraTurnoResponseDTO
-                                  {
-                                      IdHorario = h.H.IdHorario,
-                                      Hora = h.H.Hora,
-                                      TipoTurno = h.TT.NombreTipo
-                                  }).ToList()
-                              }).ToListAsync();
+                                    select new TurnoDTO
+                                    {
+                                        Dia = g.Key.Dia,
+                                        Hora = g.Select(h => new HoraTurnoResponseDTO
+                                        {
+                                            IdHorario = h.H.IdHorario,
+                                            Hora = h.H.Hora,
+                                            TipoTurno = h.TT.NombreTipo
+                                        }).ToList()
+                                    }).ToListAsync();
 
                 return turnos;
             }
@@ -147,7 +147,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                   {
                                       IdHorario = H.IdHorario,
                                       Hora = H.Hora,
-                                      TipoTurno = TT.NombreTipo,    
+                                      TipoTurno = TT.NombreTipo,
                                       DiaTurno = T.Dia,
                                       Estado = E.Nombre
                                   }
@@ -161,9 +161,9 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             List<Turnos> turnosBorrar = await (from T in _dbContext.Turnos
                                                join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
                                                where T.IdAgenda == idAgenda
-                                               select T).ToListAsync(); 
+                                               select T).ToListAsync();
 
-            if(turnosBorrar.Count > 0){
+            if (turnosBorrar.Count > 0) {
 
                 try
                 {
@@ -179,21 +179,47 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
                     }
 
-                    
+
                 }
                 catch (Exception ex) {
 
                     Console.WriteLine(ex.Message);
                     return false;
-                    
+
                 }
 
             }
             return false;
-
-
         }
 
+        public async Task<TurnoTokenResponse?> ObtenerInformacionTurnoPorToken(string token)
+        {
+            TurnosTokens? turno = await (_dbContext.TurnosTokens.Where(tk => tk.Token == token && !tk.Usado).FirstOrDefaultAsync());
+
+            if (turno != null)
+            {
+                TurnoTokenResponse? turnoToken = (from U in _dbContext.Usuarios
+                                join H in _dbContext.Horarios on U.IdUsuario equals H.Id_Usuario
+                                join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                where H.IdHorario == turno.IdHorario && U.IdUsuario == turno.IdUsuario
+                                select new TurnoTokenResponse
+                                {
+                                    Nombre = U.Nombre,
+                                    CentroCastracion = C.Nombre,
+                                    Fecha = T.Dia.ToString(),
+                                    Hora = H.Hora.ToString() ?? String.Empty,
+                                    IdHorario = turno.IdHorario,
+                                    IdUsuario = turno.IdUsuario
+
+                                }).FirstOrDefault();
+
+                return turnoToken;
+            }
+            return null;
+            
+        }
 
     }    
 }

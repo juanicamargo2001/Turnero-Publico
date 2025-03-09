@@ -113,6 +113,14 @@ namespace SistemaTurneroCastracion.BLL
                 return new string(characterBuffer);
             }
         }
+        public static string GeneradorTokenTurno()
+        {
+            string tokenUrl = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32))
+                .TrimEnd('=')
+                .Replace('+', '-')
+                .Replace('/', '_');
 
+            return tokenUrl;
+        }
     }
 }

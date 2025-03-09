@@ -422,7 +422,7 @@ namespace SistemaTurneroCastracion.BLL
             return Body;
         }
 
-        public static string CrearHTMLConfirmacionYRecordatorio(CorreosProgramados correo, bool incluirBotonConfirmar)
+        public static string CrearHTMLConfirmacionYRecordatorio(CorreosProgramados correo, bool incluirBotonConfirmar, string? tokenUrl)
         {
             string tiempoFormateado = $"{correo.Hora.Hours}:{correo.Hora.Minutes:D2} Hrs";
 
@@ -443,7 +443,7 @@ namespace SistemaTurneroCastracion.BLL
             string botonConfirmar = incluirBotonConfirmar ? @"
                 <tr>
                     <td style=""text-align: center; margin-bottom: 7px;"">
-                        <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/iniciarsesion"" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
+                        <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/confirmacion?c=" + tokenUrl + @""" style=""background-color: #2c7dda; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; text-decoration: none; display: inline-block;"">
                             Confirmar
                         </a>
                     </td>

@@ -62,6 +62,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<Calificacion> Calificacions { get; set; }
 
+    public virtual DbSet<TurnosTokens> TurnosTokens { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -668,6 +670,36 @@ public partial class CentroCastracionContext : DbContext
             .WithMany(u => u.Calificaciones)
             .HasForeignKey(c => c.IdCentroCastracion)
             .HasConstraintName("FK_calificaciones_centro");
+
+        });
+
+        modelBuilder.Entity<TurnosTokens>(entity => 
+        {
+            entity.ToTable("turnos_tokens");
+
+            entity.HasKey(e => e.IdTurnoToken).HasName("PK_turnos_tokens");
+
+            entity.Property(e => e.IdTurnoToken).HasColumnName("id_turno_token");
+
+            entity.Property(e => e.IdHorario).HasColumnName("id_horario");
+
+            entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
+
+            entity.Property(e => e.Token).HasColumnName("token");
+
+            entity.Property(e => e.FechaExpiracion).HasColumnName("fecha_expiracion").HasColumnType("date");
+
+            entity.Property(e => e.Usado).HasComputedColumnSql("(case when [fecha_expiracion]<getutcdate() then CONVERT([bit],(1)) else CONVERT([bit],(0)) end)", false);
+
+            entity.HasOne(h => h.Horario)
+            .WithMany(tk => tk.HorarioTurnoToken)
+            .HasForeignKey(e => e.IdHorario)
+            .HasConstraintName("FK_turnos_horario");
+
+            entity.HasOne(u => u.Usuario)
+            .WithMany(tk => tk.UsuarioTurnoToken)
+            .HasForeignKey(e => e.IdUsuario)
+            .HasConstraintName("FK_turnos_usuario");
 
         });
 

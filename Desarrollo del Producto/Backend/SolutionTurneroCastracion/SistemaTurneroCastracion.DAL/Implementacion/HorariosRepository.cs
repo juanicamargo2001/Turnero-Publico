@@ -409,20 +409,28 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return emailDTO;
         }
 
-        public async Task<bool> ConfirmarTurno(int idHorario, HttpContext context)
+        public async Task<bool> ConfirmarTurno(string token)
         {
-            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+            TurnosTokens? turnosTokens = await _dbContext.TurnosTokens.Where(tk => tk.Token == token && !tk.Usado).FirstOrDefaultAsync();
 
-            bool esDiaActual = await this.EsDiaActual(idHorario, idUsuario);
-
-            if (esDiaActual)
+            if (turnosTokens != null)
             {
-                if (!await this.CambiarEstado(EstadoTurno.Confirmado, idHorario))
-                    return false;
-                
-                return true;
-            }
+                bool esDiaActual = await this.EsDiaActual(turnosTokens.IdHorario, turnosTokens.IdUsuario);
 
+                if (esDiaActual)
+                {
+                    if (!await this.CambiarEstado(EstadoTurno.Confirmado, turnosTokens.IdHorario))
+                        return false;
+
+                    turnosTokens.FechaExpiracion = turnosTokens.FechaExpiracion.AddDays(-2);
+
+                    _dbContext.Update(turnosTokens);
+
+                    await _dbContext.SaveChangesAsync();
+
+                    return true;
+                }
+            }
             return false;
         }
 

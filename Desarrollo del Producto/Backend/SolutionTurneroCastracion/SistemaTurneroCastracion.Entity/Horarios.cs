@@ -53,5 +53,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual ICollection<MedicacionxHorario?> MedicacionxHorarios { get; set; } = [];
 
+        [JsonIgnore]
+        public virtual ICollection<TurnosTokens> HorarioTurnoToken { get; set; } = [];
+
     }
 }
