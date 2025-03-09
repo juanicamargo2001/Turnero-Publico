@@ -72,7 +72,7 @@ async function reservarTurnoUrgencia(nuevoTurnoUrgencia) {
 async function consultarTurnoToken(token) {
   try {
     const resp = await axios.post(
-      "https://localhost:7245/api/Turnos/ObtenerTurnoPorToken",
+      `${API_URL}/ObtenerTurnoPorToken`,
       token,
       {
         headers: {
@@ -93,8 +93,7 @@ async function consultarTurnoToken(token) {
 
 async function confirmarTurno(token) {
   try {
-    // ${API_URL}/confirmarTurno
-    const resp = await axios.post(`https://localhost:7245/api/Turnos/confirmarTurno`, token,  {
+    const resp = await axios.post(`${API_URL}/confirmarTurno`, token,  {
       headers: {
         "Content-Type": "application/json",
       },
