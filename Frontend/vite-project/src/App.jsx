@@ -44,6 +44,7 @@ import CancelacionMasiva from "./components/SuperAdmin/Cancelacion_Masiva.jsx";
 import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.jsx";
 import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
 import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
+import ConfirmarComponent from "./components/Vecino/Confirmar.jsx";
 
 
 function App() {
@@ -311,6 +312,9 @@ function App() {
                 <CrearPersonal/>
                 </RutaProtegida>
                 } />
+
+
+              <Route path="/confirmacion" element={<ConfirmarComponent/>} />
 
             </Routes>
           </div>

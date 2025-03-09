@@ -244,7 +244,7 @@ export default function EditarPerfil() {
               {...register('telefono', { 
                 pattern: {
                     value: /^(?!0+$)(\+\d{1,3}[- ]?)?(?!0+$)\d{10,15}$/,
-                    message: "El teléfono solo puede contener números"
+                    message: "El teléfono solo puede contener números y ademas debe tener 10 dígitos como mínimo"
                 }, 
               })}
             />

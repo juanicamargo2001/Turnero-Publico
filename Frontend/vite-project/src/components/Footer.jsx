@@ -4,7 +4,7 @@ import "./footer.css";
 
 const Footer = () => {
   return (
-    <footer className="bg-light pb-0">
+    <footer className="bg-light pb-0" style={{borderRadius: "40px"}}>
       <div className="container">
         <div className="row justify-content-center text-center">
           <div className="col-md-4 p-4">

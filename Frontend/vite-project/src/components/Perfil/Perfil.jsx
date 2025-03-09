@@ -4,14 +4,17 @@ import EditarPerfil from './EditarPerfil'
 import CambiarContraseña from './CambiarContraseña'
 import EditarPeriflRol from './EditarPeriflRol'
 import Swal from 'sweetalert2';
+import { DotLoader } from 'react-spinners'; 
 
 export default function Perfil() {
     const [nombreUsuario, setNombreUsuario] = useState(null)
     const [apellidoUsuario, setApellidoUsuario] = useState(null)
     const [userRole, setUserRole] = useState(null)
     const [seccionActiva, setSeccionActiva] = useState(null)
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchNombreUsuario = async () => {
+      setIsLoading(true)
         try {
             const dataUsuario = await loginService.userName();
             const rolUsuario = await loginService.userRol();
@@ -25,8 +28,9 @@ export default function Perfil() {
             setUserRole(rolUsuario)
             setNombreUsuario(dataUsuario.nombre)
             setApellidoUsuario(dataUsuario.apellido)
-
+            setIsLoading(false)  
         } catch {
+            setIsLoading(false)
             setNombreUsuario(null)
             Swal.fire({
               title: "¡Error!",
@@ -51,10 +55,15 @@ export default function Perfil() {
       fetchNombreUsuario()
     }, [])
 
-    if (!apellidoUsuario || !nombreUsuario || !userRole) return <div>Cargando...</div>
+    // if (!apellidoUsuario || !nombreUsuario || !userRole) return (               >
+    // ))
     
   return (
     <div className="container mt-4 maven-pro-body">
+       {isLoading && (
+      <div className="loading-overlay">
+        <DotLoader color="#60C1EA" />
+      </div>)}
       <h2 className="maven-pro-title">Mi perfil</h2>
       <h5 >{apellidoUsuario}, {nombreUsuario}</h5>
 
