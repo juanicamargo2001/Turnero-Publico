@@ -24,7 +24,13 @@ function Menu() {
     ],
     secretaria: [
       { label: "Turnos del dia", path: "/secretaria/turnos" },
-      { label: "Registrar Turno", path: "/asignar/turno" },
+      {
+        label: "Registrar Turno",
+        subOptions: [
+          { label: "Telefónico", path: "/asignar/turno" },
+          { label: "Emergencia", path: "/secretaria/turno-urgencia" },
+        ],
+      },
       { label: "Veterinarios", path: "/modificar/veterinario" },
       { label: "Centros", path: "/modificar/centro" },
       
