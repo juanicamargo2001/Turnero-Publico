@@ -44,7 +44,7 @@ const mascotaService = {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
       // ${API_URL}/misMascotas
-      const response = await axios.get(`https://localhost:7245/api/Mascota/misMascotas`, {
+      const response = await axios.get(`${API_URL}/misMascotas`, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ const mascotaService = {
     try {
       const token = await loginService.obtenerTokenConRenovacion();
       // ${API_URL}/editarAnimal
-      const response = await axios.put(`https://localhost:7245/api/Mascota/editarAnimal`, mascota, {
+      const response = await axios.put(`${API_URL}/editarAnimal`, mascota, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/json',

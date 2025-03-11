@@ -199,41 +199,6 @@ const Veterinarios = () => {
           </span>
         </div>
       </div>
-      {/* <table className='responsive-table'>
-                <thead>
-                    <tr>
-                    <th>Legajo</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Email</th>
-                    <th>Habilitado</th>
-                    <th>Telefono</th>
-                    <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((row, index) => (
-                    <tr key={index}>
-                        <td>{row.idLegajo}</td>
-                        <td>{row.nombre}</td>
-                        <td>{row.apellido}</td>
-                        <td>{row.dni}</td>
-                        <td>{row.email}</td>
-                        <td>
-                            {row.habilitado ? 
-                                <span style={{ color: 'green' }}>✓</span> : 
-                                <span style={{ color: 'red' }}>✗</span>
-                            }
-                        </td>
-                        <td>{row.telefono}</td>
-                        <td className="iconos">
-                        <a href='#' onClick={() => handleView(row)}><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table> */}
       <StyledTableContainer component={Paper}>
         <StyledTable>
           <StyledTableHead>

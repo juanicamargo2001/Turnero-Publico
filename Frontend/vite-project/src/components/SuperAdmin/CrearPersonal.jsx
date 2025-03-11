@@ -45,15 +45,8 @@ const CrearPersonal = () => {
                     personalData.email,
                     personalData.idCentroCastracion
                 );
-            } else if (role === 'Administrador') {
+            } else if (role === 'Administrador' || role === 'SuperAdministrador') {
                 await loginService.crearAdmin(
-                    personalData.nombre,
-                    personalData.apellido,
-                    personalData.contraseña,
-                    personalData.email
-                );
-            } else if (role === 'SuperAdministrador') {
-                await loginService.crearSuperAdmin(
                     personalData.nombre,
                     personalData.apellido,
                     personalData.contraseña,
@@ -110,29 +103,29 @@ const CrearPersonal = () => {
                     <label htmlFor="nombre" className="form-label">Nombre</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
                         id="nombre"
                         {...register('nombre', { required: 'El nombre es obligatorio' })}
                     />
-                    {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
+                    {errors.nombre && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.nombre.message}</div>}
                 </div>
 
                 <div className="mb-3">
                     <label htmlFor="apellido" className="form-label">Apellido</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className={`form-control ${errors.apellido ? 'is-invalid' : ''}`}
                         id="apellido"
                         {...register('apellido', { required: 'El apellido es obligatorio' })}
                     />
-                    {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
+                    {errors.apellido && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.apellido.message}</div>}
                 </div>
 
                 <div className="mb-3">
                 <label htmlFor="contraseña" className="form-label">Contraseña</label>
                 <input
                     type="password"
-                    className="form-control"
+                    className={`form-control ${errors.contraseña ? 'is-invalid' : ''}`}
                     id="contraseña"
                     {...register('contraseña', {
                         required: 'La contraseña es obligatoria',
@@ -146,18 +139,24 @@ const CrearPersonal = () => {
                         },
                     })}
                 />
-                {errors.contraseña && <p style={{ color: 'red' }}>{errors.contraseña.message}</p>}
+                {errors.contraseña && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.contraseña.message}</div>}
             </div>
 
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email</label>
                     <input
                         type="email"
-                        className="form-control"
+                        className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                         id="email"
-                        {...register('email', { required: 'El email es obligatorio' })}
+                        {...register('email', { 
+                            required: "El email es obligatorio",
+                            pattern: {
+                              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                              message: "El formato del email es inválido"
+                            }
+                          })}
                     />
-                    {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+                    {errors.email && <div className="invalid-feedback" style={{fontSize: "0.96rem"}}>{errors.email.message}</div>}
                 </div>
 
                 {renderSecretarioField()}

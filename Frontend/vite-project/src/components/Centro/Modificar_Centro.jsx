@@ -111,8 +111,7 @@ export default function Modificar_Centro() {
         }
 
         formData.id_centro_castracion = idCentro;
-        
-        //console.log(formData)
+
         
         try {
             await centroService.Modificar(formData);
@@ -184,49 +183,6 @@ export default function Modificar_Centro() {
                     </a>
                 </div>
             )}
-            {/* <table className='responsive-table'>
-                <thead>
-                    <tr>
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Barrio</th>
-                    <th>Calle</th>
-                    <th>Altura</th>
-                    <th>Habilitado</th>
-                    <th>Horario Laboral</th>
-                    <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((row, index) => (
-                    <tr key={index}>
-                        <td>{row.id_centro_castracion}</td>
-                        <td>{row.nombre}</td>
-                        <td>{row.barrio}</td>
-                        <td>{row.calle}</td>
-                        <td>
-                            {row.altura ? (
-                            <span>{row.altura}</span>
-                        ) : (
-                            <span>Sin altura</span>
-                            )}
-                        </td>
-                        <td>
-                            {row.habilitado ? 
-                                <span style={{ color: 'green' }}>✓</span> : 
-                                <span style={{ color: 'red' }}>✗</span>
-                            }
-                        </td>
-                        <td>{row.horaLaboralInicio ? row.horaLaboralInicio.split(':')[0] : 'N/A'} HS- 
-                        {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS</td>
-                        <td className="iconos">
-                        <a href='#' onClick={() => handleView(row)} className='btn btn-separator'><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
-                        <a onClick={() => handleInfo(row)}><i className="fa fa-info-circle" title="Informacion" aria-hidden="true"></i></a>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table> */}
             <StyledTableContainer component={Paper}>
                 <StyledTable>
                     <StyledTableHead>
@@ -251,7 +207,7 @@ export default function Modificar_Centro() {
                         <StyledTableBodyCell>
                             {row.altura ? row.altura : "Sin altura"}
                         </StyledTableBodyCell>
-                        <StyledTableBodyCell>
+                        <StyledTableBodyCell className='text-center'>
                             {row.habilitado ? (
                             <span style={{ color: "green", fontWeight: "bold" }}>✓</span>
                             ) : (

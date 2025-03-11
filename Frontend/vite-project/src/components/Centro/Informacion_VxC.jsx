@@ -76,7 +76,7 @@ export default function Informacion_VxC({ veterinarios, nombreCentro }) {
                   <StyledTableBodyCell>{vet.apellido}</StyledTableBodyCell>
                   <StyledTableBodyCell>{vet.dni}</StyledTableBodyCell>
                   <StyledTableBodyCell>{vet.email}</StyledTableBodyCell>
-                  <StyledTableBodyCell>
+                  <StyledTableBodyCell className="text-center">
                     {vet.habilitado ? (
                       <span style={{ color: "green", fontWeight: "bold" }}>
                         ✓

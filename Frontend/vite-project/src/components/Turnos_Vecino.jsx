@@ -86,6 +86,11 @@ function TurnoVecino() {
     setShowModal(true);
   };
 
+  const parsearHorario = (horario) => {
+    let horarioCortado = horario.split(":")
+    return `${horarioCortado[0] + ":" +  horarioCortado[1]}`
+  }
+
   // Función para cerrar el modal
   const handleCloseModal = () => setShowModal(false);
 
@@ -111,7 +116,7 @@ function TurnoVecino() {
                   <div style={{ paddingLeft: "15px" }}>
                     <h5>{`Turno para ${turno.tipoTurno}`}</h5>
                     <p>
-                      <strong>Hora:</strong> {turno.hora || "No disponible"}{" "}
+                      <strong>Hora:</strong> {parsearHorario(turno.hora) || "No disponible"}{" "}
                       <br />
                       <strong>Día del Turno:</strong>{" "}
                       {new Date(turno.diaTurno).toLocaleDateString() ||
@@ -131,7 +136,7 @@ function TurnoVecino() {
                       Detalles
                     </button>
                     <button
-                      className="btn btn-danger"
+                      className={`btn btn-danger ${turno.tipoTurno === "EMERGENCIA" || turno.estado === "Cancelado" ? "d-none" : ""}`}
                       onClick={() => handleCancelarTurno(turno.idHorario)}
                     >
                       Cancelar

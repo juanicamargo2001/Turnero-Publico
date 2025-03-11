@@ -97,7 +97,7 @@ const Registro_Centro = () => {
 
   return (
     <div className='container mt-4'>
-        <h2 className='maven-pro-title'> INGRESAR DATOS CENTRO DE CASTRACIÓN</h2>
+        <h2 className='maven-pro-title text-center mb-4'> INGRESAR DATOS CENTRO DE CASTRACIÓN</h2>
         <form className='maven-pro-body' onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="nombre" className="form-label" style={{fontSize: "1rem"}}>Nombre</label>

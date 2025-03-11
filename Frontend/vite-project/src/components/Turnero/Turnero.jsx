@@ -30,8 +30,12 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
         // Llamada a la API para obtener las fechas del turno por ID
         const fetchDates = async () => {
             try {
-                const fechas = await turneroService.Buscar(turnoId, tipoAnimal); // Obtener las fechas
-                const fechasResaltadas = fechas.map(fecha => dayjs(fecha)); // Convertir las fechas a objetos `dayjs`
+                const fechaHoy = new Date().toISOString().split('T')[0];
+
+                const fechas = await turneroService.Buscar(turnoId, tipoAnimal);
+                const fechasFiltradas = fechas.filter(fecha => fecha >= fechaHoy);
+                const fechasResaltadas = fechasFiltradas.map(fecha => dayjs(fecha));
+                
                 setHighlightedDates(fechasResaltadas); // Almacenar las fechas completas
                 setIsLoading(false); // Una vez que se obtienen las fechas, detener la carga
             } catch (error) {
