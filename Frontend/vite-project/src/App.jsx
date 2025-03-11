@@ -45,6 +45,7 @@ import RegistroMedicamento from "./components/Medicamentos/RegistroMedicamento.j
 import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida.jsx";
 import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
 import ConfirmarComponent from "./components/Vecino/Confirmar.jsx";
+import MisMascotas from "./components/Vecino/MascotasVecino.jsx";
 
 
 function App() {
@@ -315,6 +316,13 @@ function App() {
 
 
               <Route path="/confirmacion" element={<ConfirmarComponent/>} />
+              
+              <Route path="/misMascotas" 
+                element={
+                  <RutaProtegida rolesPermitidos={["vecino"]}>
+                  <MisMascotas/>
+                </RutaProtegida>
+                } />
 
             </Routes>
           </div>

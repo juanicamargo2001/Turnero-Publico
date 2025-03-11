@@ -3,6 +3,8 @@ import {veterinarioService} from "../../services/veterinario/veterinario.service
 import {centroService} from "../../services/centro/centro.service"
 import { veterinarioCentroService } from '../../services/veterinario/veterinarioXcentro';
 import Swal from 'sweetalert2';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 const RegistroVeterinarioXCentro = () => {
     const [data, setData] = useState([]);
@@ -28,6 +30,44 @@ const RegistroVeterinarioXCentro = () => {
             console.error(error)
         }
     };
+
+    const StyledTableContainer = styled(TableContainer)({
+        margin: "0 auto",
+        borderRadius: 8,
+        boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+        padding: 0,
+      });
+      
+      const StyledTable = styled(Table)({
+        minWidth: 700,
+        borderCollapse: "separate",
+        borderSpacing: 0,
+      });
+      
+      const StyledTableHead = styled(TableHead)(({ theme }) => ({
+        backgroundColor: theme.palette.info.main,
+      }));
+      
+      const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        color: theme.palette.common.white,
+        fontWeight: "bold",
+        fontSize: "16px",
+        padding: "12px 16px",
+      }));
+      
+      const StyledTableBodyCell = styled(TableCell)({
+        fontSize: "0.96rem",
+        padding: "10px 16px",
+      });
+      
+      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        "&:nth-of-type(odd)": {
+          backgroundColor: theme.palette.action.hover,
+        },
+        "&:last-child td, &:last-child th": {
+          border: 0,
+        },
+      }));
 
     useEffect(() => {
         fetchVeterinarios();
@@ -69,8 +109,8 @@ const RegistroVeterinarioXCentro = () => {
 
     return (
         <div className="container mt-4">
-            <h2 className="maven-pro-title">ASIGNAR CENTRO DE CASTRACIÓN A VETERINARIO</h2>
-            <table className='responsive-table'>
+            <h2 className="maven-pro-title text-center mb-4">ASIGNAR CENTRO DE CASTRACIÓN A VETERINARIO</h2>
+            {/* <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Legajo</th>
@@ -108,7 +148,56 @@ const RegistroVeterinarioXCentro = () => {
                     </tr>
                     ))}
                 </tbody>
-            </table>
+            </table> */}
+            <StyledTableContainer component={Paper}>
+      <StyledTable>
+        <StyledTableHead>
+          <TableRow>
+            <StyledTableCell>Legajo</StyledTableCell>
+            <StyledTableCell>Nombre</StyledTableCell>
+            <StyledTableCell>Apellido</StyledTableCell>
+            <StyledTableCell>DNI</StyledTableCell>
+            <StyledTableCell>Habilitado</StyledTableCell>
+            <StyledTableCell>Asignar Centro de Castración</StyledTableCell>
+          </TableRow>
+        </StyledTableHead>
+        <TableBody>
+          {data.map((row, index) => (
+            <StyledTableRow key={index}>
+              <StyledTableBodyCell>{row.idLegajo}</StyledTableBodyCell>
+              <StyledTableBodyCell>{row.nombre}</StyledTableBodyCell>
+              <StyledTableBodyCell>{row.apellido}</StyledTableBodyCell>
+              <StyledTableBodyCell>{row.dni}</StyledTableBodyCell>
+              <StyledTableBodyCell className='text-center'>
+                {row.habilitado ? (
+                  <span style={{ color: "green", fontWeight: "bold" }}>✓</span>
+                ) : (
+                  <span style={{ color: "red", fontWeight: "bold" }}>✗</span>
+                )}
+              </StyledTableBodyCell>
+              <StyledTableBodyCell className='seleCentroDiv d-flex justify-content-center align-items-center gap-3'>
+              <select id={row.idLegajo} className="form-select w-50 me-3">
+                                <option value="">-- Selecciona una opción --</option>
+                                {options.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.nombre}
+                                </option>
+                                ))}
+                            </select>
+                <Button
+                  variant="contained"
+                  color="info"
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => handleSubmit(row.idLegajo)}
+                >
+                  Guardar
+                </Button>
+              </StyledTableBodyCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </StyledTable>
+    </StyledTableContainer>
         </div>
     );
 };

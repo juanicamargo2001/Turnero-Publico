@@ -39,6 +39,45 @@ const mascotaService = {
       throw error; // Propaga el error para manejarlo en el componente
     }
   },
+
+  async obtenerTodasMisMascotas() {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      // ${API_URL}/misMascotas
+      const response = await axios.get(`https://localhost:7245/api/Mascota/misMascotas`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch {
+      return null
+    }
+  },
+
+  async editarMascota(mascota) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      // ${API_URL}/editarAnimal
+      const response = await axios.put(`https://localhost:7245/api/Mascota/editarAnimal`, mascota, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.status == 200){
+        return response.data
+      }else{
+        return null
+      }
+    } catch {
+      return null
+    }
+  },
+
 };
 
 export default mascotaService;

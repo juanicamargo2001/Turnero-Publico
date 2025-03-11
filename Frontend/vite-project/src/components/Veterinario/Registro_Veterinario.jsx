@@ -53,7 +53,7 @@ const RegistroVeterinario = () => {
       }
     );
 
-    fetchBarrios("")
+    // fetchBarrios("")
 
   }, [register]);
 
@@ -72,10 +72,8 @@ const RegistroVeterinario = () => {
     setBarrioSeleccionado(valor);
 
     if (valor.length >= 3) {
-      const filtrados = barrios.filter(barrio =>
-        barrio.toLowerCase().includes(valor.toLowerCase())
-      );
-      setSugerencias(filtrados);
+      fetchBarrios(valor.toUpperCase())
+      setSugerencias(barrios);
     } else {
       setSugerencias([]);
     }
@@ -102,7 +100,6 @@ const RegistroVeterinario = () => {
     };
 
     nuevoVeterinario.fNacimiento = nuevoVeterinario.fNacimiento[0].toISOString().split("T")[0] + "T00:00:00";
-    console.log(nuevoVeterinario)
 
     try {
       await veterinarioService.Grabar(nuevoVeterinario);
@@ -124,35 +121,35 @@ const RegistroVeterinario = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="maven-pro-title">REGISTRO DE VETERINARIO</h2>
+      <h2 className="maven-pro-title text-center mb-4">REGISTRO DE VETERINARIO</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="maven-pro-body">
         <div className="mb-3">
-          <label htmlFor="nombre" className="form-label">Nombre</label>
+          <label htmlFor="nombre" className="form-label" style={{fontSize: "0.96rem"}}>Nombre</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${errors.nombre ? "is-invalid" : ""}`}
             id="nombre"
             placeholder="Escriba su nombre"
             {...register('nombre', { required: "El nombre es obligatorio" })}
           />
-          {errors.nombre && <p style={{ color: 'red' }}>{errors.nombre.message}</p>}
+          {errors.nombre && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.nombre.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="apellido" className="form-label">Apellido</label>
+          <label htmlFor="apellido" className="form-label" style={{fontSize: "0.96rem"}}>Apellido</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${errors.apellido ? "is-invalid" : ""}`}
             id="apellido"
             placeholder="Escriba su apellido "
             {...register('apellido', { required: "El apellido es obligatorio" })}
           />
-          {errors.apellido && <p style={{ color: 'red' }}>{errors.apellido.message}</p>}
+          {errors.apellido && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.apellido.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="email" className="form-label" style={{fontSize: "0.96rem"}}>Email </label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${errors.email ? "is-invalid" : ""}`}
             id="email"
             placeholder="Escriba su email "
             {...register('email', { 
@@ -163,10 +160,10 @@ const RegistroVeterinario = () => {
               }
             })}
           />
-          {errors.email && <p style={{ color: 'red' }}>{errors.email.message}</p>}
+          {errors.email && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.email.message}</div>}
         </div>
         <div className='mb-3'>
-            <label htmlFor="barrio" className="form-label">Barrio</label>
+            <label htmlFor="barrio" className="form-label" style={{fontSize: "0.96rem"}}>Barrio</label>
             <input
               type="text"
               className={`form-control ${errors.barrio ? "is-invalid" : ""}`}
@@ -189,7 +186,7 @@ const RegistroVeterinario = () => {
             </div>
         </div> 
         <div className="mb-3">
-            <label htmlFor="calle" className='form-label'>Calle</label>
+            <label htmlFor="calle" className='form-label' style={{fontSize: "0.96rem"}}>Calle</label>
             <input
              type="text"
              className={`form-control ${errors.calle ? "is-invalid" : ""}`}
@@ -197,10 +194,10 @@ const RegistroVeterinario = () => {
              placeholder="Ingrese la calle"
              {...register("calle", {required : "La calle es requerida"})}
             />
-            {errors.calle && <div className="invalid-feedback">{errors.calle.message}</div>}
+            {errors.calle && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.calle.message}</div>}
         </div>
         <div className="mb-3">
-            <label htmlFor="altura" className="form-label">Altura</label>
+            <label htmlFor="altura" className="form-label" style={{fontSize: "0.96rem"}}>Altura</label>
             <input
               type="number"
               className={`form-control ${errors.altura ? "is-invalid" : ""}`}
@@ -210,13 +207,13 @@ const RegistroVeterinario = () => {
                 validate: value => value > -1 || "La altura debe ser 0 o superior"
               })}
             />
-            {errors.altura && <div className="invalid-feedback">{errors.altura.message}</div>}
+            {errors.altura && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.altura.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="matricula" className="form-label">Matrícula</label>
+          <label htmlFor="matricula" className="form-label" style={{fontSize: "0.96rem"}}>Matrícula</label>
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${errors.matricula ? "is-invalid" : ""}`}
             id="matricula"
             placeholder="Escriba su matricula "
             {...register('matricula', { 
@@ -225,13 +222,13 @@ const RegistroVeterinario = () => {
               validate: value => value > 0 || "La matricula debe ser mayor que 0"
             })}
           />
-          {errors.matricula && <p style={{ color: 'red' }}>{errors.matricula.message}</p>}
+          {errors.matricula && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.matricula.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="telefono" className="form-label">Teléfono</label>
+          <label htmlFor="telefono" className="form-label" style={{fontSize: "0.96rem"}}>Teléfono</label>
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${errors.telefono ? "is-invalid" : ""}`}
             id="telefono"
             placeholder="Escriba su telefono "
             {...register('telefono', { 
@@ -241,19 +238,19 @@ const RegistroVeterinario = () => {
                 message: "El teléfono debe tener al menos 10 dígitos"
               },
               pattern: {
-                  value: /^[0-9]*$/,
-                  message: "El teléfono solo puede contener números"
+                  value: /^(?!0+$)(\+\d{1,3}[- ]?)?(?!0+$)\d{10,15}$/,
+                  message: "El teléfono solo puede contener números y ademas debe tener 10 dígitos como mínimo"
               }, 
               validate: value => value > 0 || "El telefono debe ser mayor que 0"
             })}
           />
-          {errors.telefono && <p style={{ color: 'red' }}>{errors.telefono.message}</p>}
+          {errors.telefono && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.telefono.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="dni" className="form-label">DNI</label>
+          <label htmlFor="dni" className="form-label" style={{fontSize: "0.96rem"}}>DNI</label>
           <input
             type="number"
-            className="form-control"
+            className={`form-control ${errors.dni ? "is-invalid" : ""}`}
             id="dni"
             placeholder="Escriba su dni "
             {...register('dni', { 
@@ -273,10 +270,10 @@ const RegistroVeterinario = () => {
               validate: value => value > 0 || "El DNI debe ser mayor que 0"
             })}
           />
-          {errors.dni && <p style={{ color: 'red' }}>{errors.dni.message}</p>}
+          {errors.dni && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.dni.message}</div>}
         </div>
         <div className="mb-3">
-          <label htmlFor="fecha" className="form-label">Fecha de nacimiento</label>
+          <label htmlFor="fecha" className="form-label" style={{fontSize: "0.96rem"}}>Fecha de nacimiento</label>
           <Flatpickr
             onChange={(date) => setValue('fNacimiento', date, { shouldValidate: true })}
             options={{ 
@@ -286,10 +283,10 @@ const RegistroVeterinario = () => {
               locale: Spanish,
               maxDate: maxDate
             }}
-            className="form-control"
+            className={`form-control ${errors.fNacimiento ? "is-invalid" : ""}`}
             placeholder="Seleccione su fecha de nacimiento"
           />
-          {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
+          {errors.fNacimiento && <div className="invalid-feedback" style={{ color: 'red', fontSize: "1rem" }}>{errors.fNacimiento.message}</div>}
         </div>
         <div className="d-flex justify-content-end">
           <a href='/modificar/veterinario'>

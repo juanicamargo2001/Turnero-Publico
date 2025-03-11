@@ -134,6 +134,7 @@ const TipoAnimal_Vecino = () => {
                     ? "selected"
                     : ""
                 }`}
+                style={{boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)"}}
                 onClick={() => handleMascotaSelect(mascota)}
               >
                 <img

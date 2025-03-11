@@ -4,6 +4,17 @@ import { centroService } from '../../services/centro/centro.service';
 import Informacion_VxC from './Informacion_VxC.jsx';
 import UserRoleContext from '../Login/UserRoleContext';
 import Swal from 'sweetalert2';
+import { styled } from "@mui/material/styles";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@mui/material";
 
 export default function Modificar_Centro() {
     const [error, setError] = useState(null);
@@ -119,13 +130,52 @@ export default function Modificar_Centro() {
         }
     };
 
+    const StyledTableContainer = styled(TableContainer)({
+        margin: "0 auto",
+        borderRadius: 8,
+        boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+        padding: 0,
+      });
+      
+      const StyledTable = styled(Table)({
+        minWidth: 700,
+        borderCollapse: "separate",
+        borderSpacing: 0,
+      });
+      
+      const StyledTableHead = styled(TableHead)(({ theme }) => ({
+        backgroundColor: theme.palette.info.main,
+      }));
+      
+      const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        color: theme.palette.common.white,
+        fontWeight: "bold",
+        fontSize: "16px",
+        padding: "7px 16px",
+      }));
+      
+      const StyledTableBodyCell = styled(TableCell)({
+        fontSize: "0.96rem",
+        padding: "10px 16px",
+      });
+      
+      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        "&:nth-of-type(odd)": {
+          backgroundColor: theme.palette.action.hover,
+        },
+        "&:last-child td, &:last-child th": {
+          border: 0,
+        },
+      }));
+
+
     useEffect(() => {
         fecthCentros();
     }, []);
 
   return (
     <div className="container mt-4 page-container">
-            <h2 className="maven-pro-title">CENTROS DE CASTRACIÓN</h2>
+            <h2 className="maven-pro-title text-center mb-4">CENTROS DE CASTRACIÓN</h2>
            {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
            {userRole.rol !== 'secretaria' && (
                 <div className="d-flex justify-content-between mb-3">
@@ -134,7 +184,7 @@ export default function Modificar_Centro() {
                     </a>
                 </div>
             )}
-            <table className='responsive-table'>
+            {/* <table className='responsive-table'>
                 <thead>
                     <tr>
                     <th>Id</th>
@@ -176,7 +226,51 @@ export default function Modificar_Centro() {
                     </tr>
                     ))}
                 </tbody>
-            </table>
+            </table> */}
+            <StyledTableContainer component={Paper}>
+                <StyledTable>
+                    <StyledTableHead>
+                    <TableRow>
+                        <StyledTableCell>Id</StyledTableCell>
+                        <StyledTableCell>Nombre</StyledTableCell>
+                        <StyledTableCell>Barrio</StyledTableCell>
+                        <StyledTableCell>Calle</StyledTableCell>
+                        <StyledTableCell>Altura</StyledTableCell>
+                        <StyledTableCell>Habilitado</StyledTableCell>
+                        <StyledTableCell>Horario Laboral</StyledTableCell>
+                        <StyledTableCell>Acciones</StyledTableCell>
+                    </TableRow>
+                    </StyledTableHead>
+                    <TableBody>
+                    {data.map((row, index) => (
+                        <StyledTableRow key={index}>
+                        <StyledTableBodyCell>{row.id_centro_castracion}</StyledTableBodyCell>
+                        <StyledTableBodyCell>{row.nombre}</StyledTableBodyCell>
+                        <StyledTableBodyCell>{row.barrio}</StyledTableBodyCell>
+                        <StyledTableBodyCell>{row.calle}</StyledTableBodyCell>
+                        <StyledTableBodyCell>
+                            {row.altura ? row.altura : "Sin altura"}
+                        </StyledTableBodyCell>
+                        <StyledTableBodyCell>
+                            {row.habilitado ? (
+                            <span style={{ color: "green", fontWeight: "bold" }}>✓</span>
+                            ) : (
+                            <span style={{ color: "red", fontWeight: "bold" }}>✗</span>
+                            )}
+                        </StyledTableBodyCell>
+                        <StyledTableBodyCell>
+                        {row.horaLaboralInicio ? row.horaLaboralInicio.split(':')[0] : 'N/A'} HS- 
+                        {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS
+                        </StyledTableBodyCell>
+                        <StyledTableBodyCell>
+                            <a href='#' onClick={() => handleView(row)} className='btn btn-separator'><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
+                            <a onClick={() => handleInfo(row)}><i className="fa fa-info-circle" style={{fontSize: "1rem"}} title="Informacion" aria-hidden="true"></i></a>
+                        </StyledTableBodyCell>
+                        </StyledTableRow>
+                    ))}
+                    </TableBody>
+                </StyledTable>
+            </StyledTableContainer>
 
             <Modal
                 show={isModalOpen}
@@ -186,7 +280,7 @@ export default function Modificar_Centro() {
             />
 
             {showVeterinarios && 
-            <div>
+            <div className='w-100'>
                 <Informacion_VxC 
                 veterinarios={veterinarios} 
                 nombreCentro={nombreCentro}
