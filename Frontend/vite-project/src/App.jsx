@@ -46,7 +46,7 @@ import RegistroUnidadMedida from "./components/Medicamentos/RegistroUnidadMedida
 import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
 import ConfirmarComponent from "./components/Vecino/Confirmar.jsx";
 import MisMascotas from "./components/Vecino/MascotasVecino.jsx";
-
+import EliminarAgenda from "./components/Turnero/Eliminar_Agenda.jsx";
 
 function App() {
   return (
@@ -323,6 +323,13 @@ function App() {
                   <MisMascotas/>
                 </RutaProtegida>
                 } />
+
+              <Route path="/modificar/agenda" 
+                element={
+                <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
+                  <EliminarAgenda/>
+                </RutaProtegida>
+              } />
 
             </Routes>
           </div>
