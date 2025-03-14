@@ -15,5 +15,8 @@ namespace SistemaTurneroCastracion.Entity
         [JsonIgnore]
         public virtual ICollection<Horarios> Horarios { get; set; } = new List<Horarios>();
 
+        [JsonIgnore]
+        public virtual ICollection<FranjaHoraria> FranjaHorarias { get; set; } = [];
+
     }
 }

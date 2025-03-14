@@ -422,7 +422,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                     if (!await this.CambiarEstado(EstadoTurno.Confirmado, turnosTokens.IdHorario))
                         return false;
 
-                    turnosTokens.FechaExpiracion = turnosTokens.FechaExpiracion.AddDays(-2);
+                    turnosTokens.FechaExpiracion = turnosTokens.FechaExpiracion.AddDays(-2); //forzar a que se venza la formula computarizada
+                                                                                             //para no poder usar de vuelta el mismo token único.
 
                     _dbContext.Update(turnosTokens);
 

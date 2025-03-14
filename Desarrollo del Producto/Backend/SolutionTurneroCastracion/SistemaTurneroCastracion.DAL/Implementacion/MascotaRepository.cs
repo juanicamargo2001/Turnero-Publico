@@ -80,6 +80,34 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
         }
 
+        public async Task<List<MascotaDTO>> MisMascotas(HttpContext context)
+        {
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            using (var ctx = _dbContext)
+            {
+                var mascotas = await (from M in ctx.Mascotas
+                                      join V in _dbContext.Vecinos on M.IdVecino equals V.Id_vecino
+                                      join U in _dbContext.Usuarios on V.Id_usuario equals U.IdUsuario
+                                      join s in ctx.Sexos on M.IdSexo equals s.IdSexos
+                                      join t in ctx.Tamaños on M.IdTamaño equals t.IdTamaño
+                                      join ta in ctx.TiposAnimals on M.IdTipoAnimal equals ta.IdTipo
+                                      where U.IdUsuario == idUsuario
+                                      select new MascotaDTO
+                                      {
+                                          idMascota = M.IdMascota,
+                                          Edad = M.Edad,
+                                          Descripcion = M.Descripcion,
+                                          Nombre = M.Nombre,
+                                          Sexo = s.SexoTipo,
+                                          Tamaño = t.TamañoTipo,
+                                          TipoAnimal = ta.TipoAnimal,
+                                      }).ToListAsync();
+
+                return mascotas;
+            }
+        }
+
 
         public async Task<bool> editarMascotaPorId(MascotaDTO mascotaEditar)
         {

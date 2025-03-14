@@ -98,7 +98,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         public async Task<IActionResult> crearCentroCastracion([FromBody] CentroCastracion centroCastracion)
         {
 
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador", RolesEnum.administrador.ToString()]);
 
             if (!isValid)
             {
@@ -131,7 +131,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPut]
         public async Task<IActionResult> editarCentroCastracion([FromBody] CentroCastracion centroCastracionEditar)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador", RolesEnum.administrador.ToString()]);
 
             if (!isValid)
             {
@@ -163,7 +163,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpDelete("deshabilitar/{id}")]
         public async Task<IActionResult> deshabilitarCentro(int id)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador", RolesEnum.administrador.ToString()]);
 
             if (!isValid)
             {
@@ -198,7 +198,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         public async Task<IActionResult> habilitarVeterinario(int id)
         {
 
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador", RolesEnum.administrador.ToString()]);
 
             if (!isValid)
             {
@@ -227,5 +227,118 @@ namespace SistemaTurneroCastracion.API.Controllers
             return NoContent();
 
         }
+
+        [Authorize]
+        [HttpGet("franjasHorarias/{id}")]
+        public async Task<IActionResult> ObtenerFranjasHorarias(int id)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<FranjaHoraria> franjasHorarias = await _centroCastracionRepository.ObtenerFranjaHorariaXCentro(id);
+
+            if (franjasHorarias.Count == 0)
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron franjas horarias para este centro de castración", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = franjasHorarias });
+
+        }
+
+
+        [Authorize]
+        [HttpPost("franjasHorarias")]
+        public async Task<IActionResult> CrearFranjaHoraria([FromBody] List<FranjaHoraria> franja)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool franjaCreada= _centroCastracionRepository.CrearFranjaHoraria(franja);
+
+            if (!franjaCreada)
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se pudo crear la franja horaria", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
+
+        }
+
+        [Authorize]
+        [HttpDelete("franjasHorarias")]
+        public async Task<IActionResult> EliminarFranjaHoraria([FromBody] int idFranja)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool franjaEliminada = await _centroCastracionRepository.EliminarFranjaHoraria(idFranja);
+
+            if (!franjaEliminada)
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se pudo eliminar la franja horaria", Result = "" });
+            }
+
+            return NoContent();
+
+        }
+
+
+        [Authorize]
+        [HttpPut("franjasHorarias")]
+        public async Task<IActionResult> EditarFranjaHoraria([FromBody] FranjaHoraria franja)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["administrador", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            bool franjaEditada = await _centroCastracionRepository.EditarFranjaHoraria(franja);
+
+            if (!franjaEditada)
+            {
+                return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se pudo editar la franja horaria", Result = "" });
+            }
+
+            return NoContent();
+
+        }
+
+
+
     }
 }

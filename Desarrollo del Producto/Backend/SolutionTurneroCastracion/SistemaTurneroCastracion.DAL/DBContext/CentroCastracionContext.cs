@@ -64,6 +64,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<TurnosTokens> TurnosTokens { get; set; }
 
+    public virtual DbSet<FranjaHoraria> FranjaHorarias { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -700,6 +702,38 @@ public partial class CentroCastracionContext : DbContext
             .WithMany(tk => tk.UsuarioTurnoToken)
             .HasForeignKey(e => e.IdUsuario)
             .HasConstraintName("FK_turnos_usuario");
+
+        });
+
+        modelBuilder.Entity<FranjaHoraria>(entity =>
+        {
+            entity.ToTable("franja_horaria_centro");
+
+            entity.HasKey(e => e.IdFranjaHoraria).HasName("PK_franja_horaria_centro");
+
+            entity.Property(e => e.IdFranjaHoraria).HasColumnName("id_franja_horaria_centro");
+
+            entity.Property(e => e.HorarioInicio).HasColumnName("horario_inicio");
+
+            entity.Property(e => e.HorarioFin).HasColumnName("horario_fin");
+
+            entity.Property(e => e.IdCentroCastracion).HasColumnName("id_centro_castracion");
+            
+            entity.Property(e => e.IdTipoTurno).HasColumnName("id_tipo_turno");
+
+            entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+
+            entity.Property(e => e.EsTurnoTarde).HasColumnName("es_turno_tarde");
+
+            entity.HasOne(fh => fh.Centro)
+           .WithMany(c => c.FranjaHorarias)
+           .HasForeignKey(e => e.IdCentroCastracion)
+           .HasConstraintName("FK_franja_horaria_centro_castracion");
+
+            entity.HasOne(fh => fh.TipoTurno)
+           .WithMany(tt => tt.FranjaHorarias)
+           .HasForeignKey(e => e.IdTipoTurno)
+           .HasConstraintName("FK_franja_horaria_centro_tipo_turno");
 
         });
 

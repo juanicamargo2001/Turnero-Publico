@@ -69,7 +69,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (!borrado)
             { 
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al elimianr las agendas", Result = "" });
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al eliminar las agendas", Result = "" });
             }
 
 

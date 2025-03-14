@@ -60,5 +60,81 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 return centroCastracion;
             }
         }
+
+        public async Task<List<FranjaHoraria>> ObtenerFranjaHorariaXCentro(int idCentro)
+        {
+            List<FranjaHoraria> franjasHorariasFiltradas = await (from FH in _dbContext.FranjaHorarias
+                                                                  join C in _dbContext.Centros on FH.IdCentroCastracion equals C.Id_centro_castracion
+                                                                  where FH.IdCentroCastracion == idCentro
+                                                                  orderby FH.HorarioInicio ascending
+                                                                  select FH).ToListAsync();
+            
+            if (franjasHorariasFiltradas.Count > 0)
+            {
+                return franjasHorariasFiltradas;
+            }
+
+            return [];
+
+        }
+
+
+        public bool CrearFranjaHoraria(List<FranjaHoraria> franja)
+        {
+            try
+            {
+                if (franja.Count > 0)
+                {
+                    _dbContext.AddRange(franja);
+                    _dbContext.SaveChanges();
+
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        public async Task<bool> EliminarFranjaHoraria(int idFranja)
+        {
+            try
+            {
+                FranjaHoraria? franjaPorId = _dbContext.FranjaHorarias.Where(FH => FH.IdFranjaHoraria == idFranja).FirstOrDefault();
+
+                if (franjaPorId != null)
+                {
+                    _dbContext.Remove(franjaPorId);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+                }
+                            
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<bool> EditarFranjaHoraria(FranjaHoraria franja)
+        {
+            try
+            {
+                _dbContext.Update(franja);
+                await _dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

@@ -154,7 +154,33 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [Authorize]
-        [HttpPut]
+        [HttpGet("misMascotas")]
+        public async Task<IActionResult> MisMascotas()
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(HttpContext);
+
+            if (mascotasVecino.Count == 0)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron mascotas!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotasVecino });
+
+        }
+
+        [Authorize]
+        [HttpPut("editarAnimal")]
         public async Task<IActionResult> EditarMascota(MascotaDTO mascotaDto)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "superAdministrador"]);

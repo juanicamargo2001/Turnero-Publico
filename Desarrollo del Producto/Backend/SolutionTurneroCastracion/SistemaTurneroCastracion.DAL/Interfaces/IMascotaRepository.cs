@@ -17,6 +17,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<Mascota> CrearMascota(MascotaDTO mascota, HttpContext context);
         Task<Mascota> CrearMascota(MascotaDTO mascota, int? idUsuario);
         Task<bool> CambiarEstadoCastrado(int? idMascota);
+        Task<List<MascotaDTO>> MisMascotas(HttpContext context);
 
     }
 }

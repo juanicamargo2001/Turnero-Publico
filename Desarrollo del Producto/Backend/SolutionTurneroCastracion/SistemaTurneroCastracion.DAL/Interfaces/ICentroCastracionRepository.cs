@@ -12,6 +12,9 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface ICentroCastracionRepository : IGenericRepository<CentroCastracion>
     {
         Task<CentroCastracionDTO> obtenerCentroVeterinarios(int idCentro);
-
+        Task<List<FranjaHoraria>> ObtenerFranjaHorariaXCentro(int idCentro);
+        bool CrearFranjaHoraria(List<FranjaHoraria> franja);
+        Task<bool> EliminarFranjaHoraria(int idFranja);
+        Task<bool> EditarFranjaHoraria(FranjaHoraria franja);
     }
 }
