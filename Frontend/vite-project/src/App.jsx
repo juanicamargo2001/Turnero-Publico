@@ -47,6 +47,8 @@ import CrearPersonal from "./components/SuperAdmin/CrearPersonal.jsx";
 import ConfirmarComponent from "./components/Vecino/Confirmar.jsx";
 import MisMascotas from "./components/Vecino/MascotasVecino.jsx";
 import EliminarAgenda from "./components/Turnero/Eliminar_Agenda.jsx";
+import HabilitarTurnero from "./components/Turnero/HabilitarTurnero.jsx";
+
 
 function App() {
   return (
@@ -102,7 +104,7 @@ function App() {
               <Route path="/registrar/vecino" element={<Registro_Vecino/>}></Route>
               
 
-              <Route path="/habilitar/alberdi" 
+              {/* <Route path="/habilitar/alberdi" 
               element={
                 <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <HabilitarTurneroAlberi/>
@@ -123,7 +125,7 @@ function App() {
                   <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
                   <HabilitarTurneroVilla/>
                 </RutaProtegida>
-                } />
+                } /> */}
 
 
               <Route path="/modificar/centro" 
@@ -324,13 +326,19 @@ function App() {
                 </RutaProtegida>
                 } />
 
-              <Route path="/modificar/agenda" 
+              <Route path="/eliminar/agenda" 
                 element={
                 <RutaProtegida rolesPermitidos={["superAdministrador", "administrador"]}>
                   <EliminarAgenda/>
                 </RutaProtegida>
               } />
 
+            <Route path="/habilitar" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador", "administrador", "secretaria"]}>
+                  <HabilitarTurnero/>
+                </RutaProtegida>
+                } />
             </Routes>
           </div>
           <Footer/>

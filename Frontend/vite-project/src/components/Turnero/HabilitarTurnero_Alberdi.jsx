@@ -70,19 +70,19 @@ const HabilitarTurneroAlberi = () => {
     };
 
     console.log("Datos que se envían:", JSON.stringify(nuevaAgenda, null, 2)); 
-    try {
-      const response = await agendaService.Grabar(nuevaAgenda);
-      Swal.fire({
-        title: "¡Éxito!",
-        text: "La agenda fue registrada con éxito.",
-        icon: "success",
-        confirmButtonColor: "#E15562",
-        confirmButtonText: "OK",
-      });
-      console.log('Agenda registrada con éxito:', response);
-    } catch (error) {
-      console.error('Error al registrar la agenda:', error);
-    }
+    // try {
+    //   const response = await agendaService.Grabar(nuevaAgenda);
+    //   Swal.fire({
+    //     title: "¡Éxito!",
+    //     text: "La agenda fue registrada con éxito.",
+    //     icon: "success",
+    //     confirmButtonColor: "#E15562",
+    //     confirmButtonText: "OK",
+    //   });
+    //   console.log('Agenda registrada con éxito:', response);
+    // } catch (error) {
+    //   console.error('Error al registrar la agenda:', error);
+    // }
   };
 
   return (
