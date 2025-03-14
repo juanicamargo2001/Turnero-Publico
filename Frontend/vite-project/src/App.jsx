@@ -11,13 +11,13 @@ import Modificar_Centro from "./components/Centro/Modificar_Centro"
 import Turnero from "./components/Turnero/Turnero";
 import Registro_Vecino from "./components/Vecino/Registro_Vecino";
 
-import HabilitarTurneroAlberi from "./components/Turnero/HabilitarTurnero_Alberdi";
+// import HabilitarTurneroAlberi from "./components/Turnero/HabilitarTurnero_Alberdi";
 
 import RegistroVeterinarioXCentro from "./components/Veterinario/Asignar_Centro";
 import CentrosCastracionList from "./components/Turnero/Centro_Vecino";
 import TipoAnimal_Vecino from "./components/Turnero/TipoAnimal_Vecino";
-import HabilitarTurneroLafrance from "./components/Turnero/HabilitarTurneri_Lafrance.jsx";
-import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.jsx";
+// import HabilitarTurneroLafrance from "./components/Turnero/HabilitarTurneri_Lafrance.jsx";
+// import HabilitarTurneroVilla from "./components/Turnero/HabilitarTurneri_Villa.jsx";
 
 import InicioSesion from "./components/Login/InicioSesion.jsx"
 import TurnoVecino from "./components/Turnos_Vecino.jsx";

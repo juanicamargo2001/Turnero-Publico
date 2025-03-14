@@ -36,6 +36,7 @@ const EliminarAgenda = () => {
       cancelButtonColor: "#60C1EA",
       confirmButtonText: "Sí, eliminar",
     }).then(async (result) => {
+      setIsLoading(true);
       if (result.isConfirmed) {
 
         let eliminado = await agendaService.EliminarAgenda(idAgenda);
@@ -47,7 +48,8 @@ const EliminarAgenda = () => {
             icon: "success",
             confirmButtonColor: "#E15562",
             confirmButtonText: "OK",
-          }).then(window.location.reload());
+          }).then(() => window.location.reload());
+          setIsLoading(false);
         } else {
           Swal.fire({
             title: "Error!",
@@ -56,6 +58,7 @@ const EliminarAgenda = () => {
             confirmButtonColor: "#E15562",
             confirmButtonText: "OK",
           });
+          setIsLoading(false);
         }
       }
     });

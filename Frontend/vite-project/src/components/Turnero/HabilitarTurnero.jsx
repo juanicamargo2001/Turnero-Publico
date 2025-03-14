@@ -11,6 +11,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import dayjs from "dayjs";
 import { centroService } from "../../services/centro/centro.service";
+import { DotLoader } from "react-spinners";
 
 const HabilitarTurnero = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -24,6 +25,7 @@ const HabilitarTurnero = () => {
   const [erroresCantidad, setErroresCantidad] = useState({});
   const [data, setData] = useState([]);
   const [dataTarde, setDataTarde] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
     setData([
@@ -181,11 +183,11 @@ const HabilitarTurnero = () => {
   const ObtenerFranjasPorCentro = async (idCentro) => {
     setData([]);
     setDataTarde([]);
+    setCentroSeleccionado(idCentro);
     let response = await centroService.ObtenerFranjasHorarias(idCentro);
 
     if (response != null) {
       setTurnosPorDia(response.result);
-      setCentroSeleccionado(idCentro);
     } else {
       setTurnosPorDia([]);
     }
@@ -198,6 +200,7 @@ const HabilitarTurnero = () => {
   };
 
   const handleSubmit = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
     const nuevaAgenda = {
       fechaInicio: selectedDate.toISOString().split("T")[0],
@@ -214,21 +217,41 @@ const HabilitarTurnero = () => {
     };
     try {
       const response = await agendaService.Grabar(nuevaAgenda);
-      console.log("Agenda registrada con éxito:", response);
+
+      if (response.success) {
+        Swal.fire({
+          title: "¡Éxito!",
+          text: "La agenda fue registrada con éxito.",
+          icon: "success",
+          confirmButtonColor: "#E15562",
+          confirmButtonText: "OK",
+        });
+        setIsLoading(false);
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Sucedió un error inesperado!",
+          icon: "error",
+          confirmButtonColor: "#E15562",
+          confirmButtonText: "OK",
+        });
+        setIsLoading(false);
+      }
+    } catch {
       Swal.fire({
-        title: "¡Éxito!",
-        text: "La agenda fue registrada con éxito.",
-        icon: "success",
+        title: "Error!",
+        text: "Sucedió un error inesperado!",
+        icon: "error",
         confirmButtonColor: "#E15562",
         confirmButtonText: "OK",
       });
-    } catch (error) {
-      console.error("Error al registrar la agenda:", error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true)
       try {
         const response = await centroService.BuscarTodos();
         if (response.success && Array.isArray(response.result)) {
@@ -236,12 +259,15 @@ const HabilitarTurnero = () => {
             (centro) => centro.habilitado
           );
           setCentros(centrosHabilitados);
+          setIsLoading(false)
         } else {
           setCentros([]);
+          setIsLoading(false)
         }
       } catch (error) {
         console.error("Error al cargar los centros", error);
         setCentros([]);
+        setIsLoading(false)
       }
     }
 
@@ -250,6 +276,10 @@ const HabilitarTurnero = () => {
 
   return (
     <div className="container maven-pro-body">
+      {isLoading && (
+      <div className="loading-overlay">
+        <DotLoader color="#60C1EA" />
+      </div>)}
       <h3 className="maven-pro-title p-4 text-center mt-2 mb-4">
         Habilitar Turnero
       </h3>

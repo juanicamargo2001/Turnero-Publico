@@ -48,12 +48,11 @@ function Menu() {
       { label: "Asignar Centro", path: "/registrar/veterinarioXcentro" },
       {
         label: "Habilitar turnero",
-        // subOptions: [
-        //   { label: "Alberdi", path: "/habilitar/alberdi" },
-        //   { label: "La France", path: "/habilitar/lafrance" },
-        //   { label: "Villa Allende", path: "/habilitar/villallende" },
-        // ],
-        path: "/habilitar"
+        subOptions: [
+          { label: "Agregar Agenda", path: "/habilitar" },   
+          { label: "Eliminar Agenda", path: "/eliminar/agenda" },
+        
+        ],
       },
       { label: "Cancelacion masiva", path: "/cancelar/masivo" },
       
@@ -70,12 +69,11 @@ function Menu() {
       {label: "Crear Personal", path: "/crear-Personal"},
       {
         label: "Habilitar turnero",
-        // subOptions: [
-        //   { label: "Alberdi", path: "/habilitar/alberdi" },
-        //   { label: "La France", path: "/habilitar/lafrance" },
-        //   { label: "Villa Allende", path: "/habilitar/villallende" },
-        // ],
-        path: "/habilitar"
+        subOptions: [
+          { label: "Agregar Agenda", path: "/habilitar" },   
+          { label: "Eliminar Agenda", path: "/eliminar/agenda" },
+        
+        ],
       },
       { label: "Estadísticas", path: "/reportes" },
       { label: "Cancelacion masiva", path: "/cancelar/masivo" },
