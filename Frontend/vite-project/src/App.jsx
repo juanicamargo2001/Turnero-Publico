@@ -48,6 +48,7 @@ import ConfirmarComponent from "./components/Vecino/Confirmar.jsx";
 import MisMascotas from "./components/Vecino/MascotasVecino.jsx";
 import EliminarAgenda from "./components/Turnero/Eliminar_Agenda.jsx";
 import HabilitarTurnero from "./components/Turnero/HabilitarTurnero.jsx";
+import Calificacion from "./components/Calificacion.jsx";
 
 
 function App() {
@@ -192,6 +193,7 @@ function App() {
                 
 
               <Route path="/iniciarsesion" element={<InicioSesion/>} />
+              <Route path="/calificacion" element={<Calificacion/>} />
 
               <Route path="/recuperarContraseña" element={<RecuperarContraseña/>} />
 
