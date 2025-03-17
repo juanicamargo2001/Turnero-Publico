@@ -1,26 +1,33 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { calificacionService } from "../services/vecino/calificacion.service";
 
-const Calificacion = ({ onSubmit }) => {
+
+const Calificacion = () => {
   const [puntuacion, setPuntuacion] = useState(0);
   const [descripcion, setDescripcion] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("c");
+    
     e.preventDefault();
     const dataToSend = {
-      descripcion,
-      puntuacion
+      numeroCalificacion: puntuacion,
+      descripcion: descripcion,
+      token: token
     };
-    console.log("Datos enviados:", dataToSend);
-    if (onSubmit) {
-      onSubmit(dataToSend);
+    
+    let response = await calificacionService.Grabar(dataToSend);
+
+    if (response){
+      setIsSubmitted(true);
     }
-    setIsSubmitted(true);
   };
 
   return (
-    <div className="container mt-4 maven-pro-body" style={{ maxWidth: "600px" }}>
+    <div className="container mt-4 maven-pro-body page-container" style={{ maxWidth: "600px" }}>
       {!isSubmitted ? (
         <div>
           <h3 className="maven-pro-title mt-2 mb-2 text-center">¿Cómo fue la experiencia de tu mascota con nosotros?</h3>

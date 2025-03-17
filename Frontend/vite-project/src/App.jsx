@@ -49,6 +49,8 @@ import MisMascotas from "./components/Vecino/MascotasVecino.jsx";
 import EliminarAgenda from "./components/Turnero/Eliminar_Agenda.jsx";
 import HabilitarTurnero from "./components/Turnero/HabilitarTurnero.jsx";
 import Calificacion from "./components/Calificacion.jsx";
+import MostrarCalificaciones from "./components/SuperAdmin/Mostrar_Calificaciones.jsx";
+
 
 
 function App() {
@@ -341,6 +343,15 @@ function App() {
                   <HabilitarTurnero/>
                 </RutaProtegida>
                 } />
+
+            <Route path="/mostrar/calificaciones" 
+                element={
+                  <RutaProtegida rolesPermitidos={["superAdministrador"]}>
+                  <MostrarCalificaciones/>
+                </RutaProtegida>
+                } />
+            
+
             </Routes>
           </div>
           <Footer/>
