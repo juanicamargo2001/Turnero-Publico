@@ -14,7 +14,7 @@ namespace SistemaTurneroCastracion.BLL
     public class EnvioCorreosHTML
     {
 
-        public static string CrearHTMLPostOperatorio(List<MedicamentoxHorarioDTO>? medicamentos, EmailPostOpResponseDTO response)
+        public static string CrearHTMLPostOperatorio(List<MedicamentoxHorarioDTO>? medicamentos, EmailPostOpResponseDTO response, string token)
         {
             string? noMedicamentosHTML = null;
             StringBuilder? medicamentosHtml = null;
@@ -119,7 +119,7 @@ namespace SistemaTurneroCastracion.BLL
                                     ℹ️ Consulte siempre con el veterinario para ajustar las dosis según el peso y estado de salud del animal.
                                   </p>
                                   <p style=""padding: 10px; text-align: center; margin: 10px 0;"">
-                                    <a href=""centrocastracion.com/encuesta"" 
+                                     <a target=""_blank"" rel=""noopener noreferrer"" href=""https://turnero-castraciones-production.up.railway.app/calificacion?c=" + token + @"""
                                       style=""text-decoration: none; color: #FFFFFF; background-color: #007BFF; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-family: Arial, sans-serif; display: inline-block; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"">
                                       ⭐ Contanos sobre tu experiencia completando nuestra encuesta ⭐
                                     </a>

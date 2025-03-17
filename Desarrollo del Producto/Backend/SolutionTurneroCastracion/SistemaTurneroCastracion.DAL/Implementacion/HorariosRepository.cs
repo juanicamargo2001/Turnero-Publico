@@ -29,16 +29,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         private readonly ICorreosProgramados _correosProgramados;
         private readonly IMascotaRepository _mascotaRepository;
         private readonly IMedicamentoxhorarioRepository _medicamentoxhorarioRepository;
+        private readonly ICalificacionRepository _calificacionRepository;
 
         public HorariosRepository(CentroCastracionContext dbContext, ICorreosProgramados correosProgramados, 
                                   EmailPublisher emailPublisher, IMascotaRepository mascotaRepository, 
-                                  IMedicamentoxhorarioRepository medicamentoxhorarioRepository) : base(dbContext)
+                                  IMedicamentoxhorarioRepository medicamentoxhorarioRepository,
+                                  ICalificacionRepository calificacionRepository) : base(dbContext)
         {
             _dbContext = dbContext;
             _emailPublisher = emailPublisher;
             _correosProgramados = correosProgramados;
             _mascotaRepository = mascotaRepository;
             _medicamentoxhorarioRepository = medicamentoxhorarioRepository;
+            _calificacionRepository = calificacionRepository;
         }
 
 
@@ -813,15 +816,25 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (usuarioEncontrado == null)
                 return false;
 
+            int idCentroCastracion = await (from T in _dbContext.Turnos
+                                            join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
+                                            join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                                            where T.IdTurno == horarioEncontrado.IdTurno
+                                            select C.Id_centro_castracion).FirstOrDefaultAsync();
+
+            string token = await _calificacionRepository.CrearCalificacion(new CalificacionRequest() {
+                                                                IdCentroCastracion = idCentroCastracion,
+                                                                IdUsuario = usuarioEncontrado.IdUsuario });
+
+
             string? sexoAnimal = await ObtenerSexoPorHorario(idTurno);
 
             string mensaje = EnvioCorreosHTML.CrearHTMLPostOperatorio(medicamentos, 
                 new EmailPostOpResponseDTO(){ 
                 Email = usuarioEncontrado.Email, 
                 Nombre = usuarioEncontrado.Nombre,
-                Sexo = sexoAnimal
-                
-            });
+                Sexo = sexoAnimal   
+            },token);
 
             if (!await _emailPublisher.ConexionConRMQ(mensaje, "email_send"))
                 return false;
@@ -829,6 +842,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             return true;
             
         }
+
 
         private async Task<string> ObtenerSexoPorHorario(int? idHorario)
         {

@@ -12,6 +12,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface ICalificacionRepository : IGenericRepository<Calificacion>
     {
         Task<List<ResponseCalificacion?>> ObtenerCalificacionesXCentro(int idCentro);
-        Task<bool> CrearCalificacion(RequestCalificacion request, HttpContext context);
+        Task<string> CrearCalificacion(CalificacionRequest request);
+        Task<bool> ModificarCalificacion(RequestCalificacion calificacion);
     }
 }

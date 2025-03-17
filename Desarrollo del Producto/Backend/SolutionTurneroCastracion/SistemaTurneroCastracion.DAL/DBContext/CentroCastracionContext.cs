@@ -600,7 +600,7 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.IdMedicamento).HasColumnName("id_medicamento");
 
-            entity.Property(e => e.Dosis).HasColumnName("dosis");
+            entity.Property(e => e.Dosis).HasColumnName("dosis").HasColumnType("float");
 
             entity.Property(e => e.IdUnidadMedida).HasColumnName("id_unidad");
 
@@ -661,6 +661,8 @@ public partial class CentroCastracionContext : DbContext
 
             entity.Property(e => e.IdUsuario)
             .HasColumnName("id_usuario");
+
+            entity.Property(e => e.Token).HasColumnName("token");
 
             entity.HasOne(c => c.Usuario)
             .WithMany(u => u.Calificaciones)

@@ -1,4 +1,8 @@
-﻿using SistemaTurneroCastracion.DAL.DBContext;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using SistemaTurneroCastracion.BLL;
+using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
@@ -62,6 +66,30 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             }
         
         }
+        public async Task<List<MedicacionPostOperatorioResponse>> ObtenerPostOperatorio(HttpContext context, int idHorario)
+        {
+            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            List<MedicacionPostOperatorioResponse> medicacionPost = await (from MH in _dbContext.MedicacionxHorarios
+                                                                     join Me in _dbContext.Medicacion on MH.IdMedicamento equals Me.IdMedicacion
+                                                                     join U in _dbContext.UnidadMedidas on MH.IdUnidadMedida equals U.IdUnidad
+                                                                     join H in _dbContext.Horarios on MH.IdHorario equals H.IdHorario
+                                                                     join M in _dbContext.Mascotas on H.Id_mascota equals M.IdMascota
+                                                                     join S in _dbContext.Sexos on M.IdSexo equals S.IdSexos
+                                                                     where MH.IdHorario == idHorario && H.Id_Usuario == idUsuario
+                                                               select new MedicacionPostOperatorioResponse
+                                                               {
+                                                                   Medicamento = Me.Nombre,
+                                                                   Dosis = (float)Convert.ToDouble(MH.Dosis),
+                                                                   UnidadMedida = U.TipoUnidad,
+                                                                   Descripcion = MH.Descripcion,
+                                                                   Sexo = S.SexoTipo
+                                                               }).ToListAsync();
+
+            return medicacionPost;
+
+        }
+
 
     }
 }

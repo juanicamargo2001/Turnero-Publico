@@ -20,6 +20,8 @@ namespace SistemaTurneroCastracion.Entity
 
         public int IdUsuario { get; set; }
 
+        public string Token {  get; set; }
+
         [JsonIgnore]
         public virtual Usuario Usuario { get; set; }
 

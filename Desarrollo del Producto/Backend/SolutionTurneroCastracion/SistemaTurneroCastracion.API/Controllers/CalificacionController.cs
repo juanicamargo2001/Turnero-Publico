@@ -20,25 +20,11 @@ namespace SistemaTurneroCastracion.API.Controllers
             _validaciones = validaciones;
         }
 
-        [Authorize]
+
         [HttpPost("crearCalificacion")]
         public async Task<IActionResult> CrearCalificacion([FromBody] RequestCalificacion request)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.vecino.ToString(), 
-                                                                                                       RolesEnum.secretaria.ToString(), 
-                                                                                                       RolesEnum.superAdministrador.ToString()]);
-
-            if (!isValid)
-            {
-                if (errorMessage == "Unauthorized")
-                {
-                    return Unauthorized();
-                }
-                return BadRequest(errorMessage);
-            }
-
-
-            bool calificacionRegistrada = await _calificacionRepository.CrearCalificacion(request, HttpContext);
+            bool calificacionRegistrada = await _calificacionRepository.ModificarCalificacion(request);
 
             if (!calificacionRegistrada)
             {
@@ -52,8 +38,7 @@ namespace SistemaTurneroCastracion.API.Controllers
         [HttpPost("calificacionXCentro")]
         public async Task<IActionResult> CalificacionXCentro([FromBody] int CentroCastracion)
         {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.secretaria.ToString(),
-                                                                                                       RolesEnum.superAdministrador.ToString()]);
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.superAdministrador.ToString()]);
 
             if (!isValid)
             {

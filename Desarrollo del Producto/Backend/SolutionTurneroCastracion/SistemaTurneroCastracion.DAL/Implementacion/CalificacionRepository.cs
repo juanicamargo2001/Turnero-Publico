@@ -22,23 +22,38 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CrearCalificacion(RequestCalificacion request, HttpContext context)
+        public async Task<string> CrearCalificacion(CalificacionRequest request)
         {
-            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+
+            string token = UtilidadesUsuario.GeneradorTokenTurno();
 
             Calificacion? calificacionCreada = await Crear(new Calificacion
             {
-                NumeroCalifacion = request.NumeroCalifacion,
-                Descripcion = request.Descripcion,
+                IdUsuario = request.IdUsuario,
                 IdCentroCastracion = request.IdCentroCastracion,
-                IdUsuario = idUsuario!.Value
+                Token = token
             });
 
             if (calificacionCreada == null)
+                return String.Empty;
+
+            return calificacionCreada.Token;
+
+        }
+
+        public async Task<bool> ModificarCalificacion(RequestCalificacion calificacion)
+        {
+            Calificacion? calificacionEncontrada = _dbContext.Calificacions.Where(c => c.Token == calificacion.Token).FirstOrDefault();
+
+            if(calificacionEncontrada == null) return false;
+
+            calificacionEncontrada.Descripcion = calificacion.Descripcion;
+            calificacionEncontrada.NumeroCalifacion = calificacion.NumeroCalificacion;
+
+            if (!await this.Editar(calificacionEncontrada))
                 return false;
 
             return true;
-
         }
 
         public async Task<List<ResponseCalificacion?>> ObtenerCalificacionesXCentro(int idCentro)

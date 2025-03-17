@@ -14,11 +14,13 @@ namespace SistemaTurneroCastracion.API.Controllers
     {
         private readonly IMedicamentoRepository _medicamentoRepository;
         private readonly Validaciones _validaciones;
+        private readonly IMedicamentoxhorarioRepository _medicamentoxhorarioRepository;
 
-        public MedicamentoController(IMedicamentoRepository medicamentoRepository, Validaciones validaciones)
+        public MedicamentoController(IMedicamentoRepository medicamentoRepository, Validaciones validaciones, IMedicamentoxhorarioRepository medicamentoxhorarioRepository)
         {
             _medicamentoRepository = medicamentoRepository;
             _validaciones = validaciones;
+            _medicamentoxhorarioRepository = medicamentoxhorarioRepository;
         }
 
 
@@ -70,6 +72,29 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = medicamentos });
         }
+
+        [Authorize]
+        [HttpPost("obtenerpostoperatorio")]
+        public async Task<IActionResult> ObtenerPostOperatorio([FromBody] int idHorario)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, [RolesEnum.vecino.ToString()]);
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<MedicacionPostOperatorioResponse> medicamentosPost = await _medicamentoxhorarioRepository.ObtenerPostOperatorio(HttpContext, idHorario );
+
+            if (medicamentosPost.Count == 0) return NotFound();
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = medicamentosPost });
+
+        }
+
 
     }
 }

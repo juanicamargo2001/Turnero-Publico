@@ -1,4 +1,5 @@
-﻿using SistemaTurneroCastracion.Entity;
+﻿using Microsoft.AspNetCore.Http;
+using SistemaTurneroCastracion.Entity;
 using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     public interface IMedicamentoxhorarioRepository : IGenericRepository<MedicacionxHorario>
     {
         Task<bool> CrearMedicacionXHorario(List<MedicamentoxHorarioDTO>? medicamentoxHorarios, int idHorario);
+        Task<List<MedicacionPostOperatorioResponse>> ObtenerPostOperatorio(HttpContext context, int idHorario);
     }
 }
