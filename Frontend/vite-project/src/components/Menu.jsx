@@ -60,7 +60,9 @@ function Menu() {
     vecino: [
       { label: "Obtener turno", path: "/turno" },
       { label: "Mis Turnos", path: "/misTurnos" },
-      { label: "Animal", path: "/registrar/animal" }
+      { label: "Animal", path: "/registrar/animal" },
+      { label: "Mis Mascotas", path: "/misMascotas" }
+
     ],
     superAdministrador: [
       { label: "Veterinarios", path: "/modificar/veterinario" },

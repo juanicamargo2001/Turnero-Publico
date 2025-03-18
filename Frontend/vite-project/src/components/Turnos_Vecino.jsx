@@ -22,11 +22,11 @@ function TurnoVecino() {
         setIsLoading(false);
       } catch {
         setError("Error al cargar los turnos");
-      }
+      }      
     };
 
     fetchTurnos();
-  }, []);
+}, []);
 
   const handleCancelarTurno = async (idHorario) => {
     const parsedId = parseInt(idHorario);
@@ -80,9 +80,23 @@ function TurnoVecino() {
     });
   };
 
+  const handlePostOperatorio = async (idHorario) => {
+    
+    try {
+      const postOperatorio = await misTurnosService.obtenerPostOperatorio(idHorario);
+      setPostOperatorio(postOperatorio);
+      
+    }
+    catch {
+      console.error("Error en los datos del postoperatorio");
+      setPostOperatorio([]);
+    }
+  };
   // Función para abrir el modal con la descripción del postoperatorio
   const handleShowDetalles = (descripcion) => {
-    setPostOperatorio(descripcion);
+    if (descripcion.estado === "Realizado") {
+      handlePostOperatorio(descripcion.idHorario);
+    } 
     setShowModal(true);
   };
 
@@ -92,7 +106,7 @@ function TurnoVecino() {
   }
 
   // Función para cerrar el modal
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {setShowModal(false), setPostOperatorio([])};
 
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
@@ -129,9 +143,12 @@ function TurnoVecino() {
                   <div className="d-flex flex-column align-items-start">
                     <button
                       className="btn btn-primary mb-2"
-                      onClick={() =>
-                        handleShowDetalles(turno.descripPostOperatorio)
-                      }
+                      onClick={() =>{
+                        
+                        
+                        handleShowDetalles(turno)
+                        
+                      }}
                     >
                       Detalles
                     </button>
@@ -157,8 +174,24 @@ function TurnoVecino() {
             <Modal.Title>Descripción Postoperatorio</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>{postOperatorio || "No disponible"}</p>
-          </Modal.Body>
+        {postOperatorio.length > 0 ? (
+          postOperatorio.map((item, index) => (
+            <div key={index}>
+              <p><strong>Recomendación:</strong> Utilizar un {
+                  item.sexo === 'MACHO' ? 'Collar Isabelino' : 
+                  item.sexo === 'HEMBRA' ? 'Collar Isabelino o Faja' : 
+                  ''
+              }</p>
+              <p>🧪 <strong>Nombre:</strong> {item.medicamento}</p>
+              <p>💉 <strong>Dosis:</strong> {item.dosis} {item.unidadMedida}</p>
+              <p>📝 <strong>Descripción:</strong> {item.descripcion || "Sin descripción"}</p>
+              <hr />
+            </div>
+          ))
+        ) : (
+          <p>No hay datos disponibles.</p>
+        )}
+      </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseModal}>
               Cerrar
