@@ -32,6 +32,7 @@ const EliminarAgenda = () => {
       text: "No podrá ser revertida la acción",
       icon: "warning",
       showCancelButton: true,
+      cancelButtonText: "Cancelar",
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#60C1EA",
       confirmButtonText: "Sí, eliminar",
@@ -60,7 +61,9 @@ const EliminarAgenda = () => {
           });
           setIsLoading(false);
         }
+        
       }
+      setIsLoading(false);
     });
   };
 

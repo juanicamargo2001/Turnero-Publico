@@ -26,7 +26,7 @@ const Veterinarios = () => {
   const { userRole } = useContext(UserRoleContext);
 
   const openModal = (item) => {
-    console.log(item);
+    
     setSelectedItem(item);
     setIsModalOpen(true);
   };
@@ -116,7 +116,7 @@ const Veterinarios = () => {
       formData.idLegajo = leg;
       formData.fNacimiento =
         formData.fNacimiento.toISOString().split("T")[0] + "T00:00:00";
-      console.log(formData);
+      //console.log(formData);
       try {
         await veterinarioService.Modificar(formData);
         Swal.fire({
@@ -210,7 +210,9 @@ const Veterinarios = () => {
               <StyledTableCell>Email</StyledTableCell>
               <StyledTableCell>Habilitado</StyledTableCell>
               <StyledTableCell>Teléfono</StyledTableCell>
+              {userRole.rol !== "secretaria" && (
               <StyledTableCell>Acciones</StyledTableCell>
+            )}
             </TableRow>
           </StyledTableHead>
           <TableBody>
@@ -231,6 +233,7 @@ const Veterinarios = () => {
                   )}
                 </StyledTableBodyCell>
                 <StyledTableBodyCell>{row.telefono}</StyledTableBodyCell>
+                {userRole.rol !== "secretaria" && (
                 <StyledTableBodyCell>
                   <IconButton color="primary" onClick={() => handleView(row)}>
                     <a href="#" onClick={() => handleView(row)}>
@@ -243,6 +246,7 @@ const Veterinarios = () => {
                     </a>
                   </IconButton>
                 </StyledTableBodyCell>
+              )}
               </StyledTableRow>
             ))}
           </TableBody>

@@ -219,7 +219,9 @@ export default function Modificar_Centro() {
                         {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS
                         </StyledTableBodyCell>
                         <StyledTableBodyCell>
+                        {userRole.rol !== "secretaria" && (
                             <a href='#' onClick={() => handleView(row)} className='btn btn-separator'><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
+                        )}
                             <a onClick={() => handleInfo(row)}><i className="fa fa-info-circle" style={{fontSize: "1rem"}} title="Informacion" aria-hidden="true"></i></a>
                         </StyledTableBodyCell>
                         </StyledTableRow>

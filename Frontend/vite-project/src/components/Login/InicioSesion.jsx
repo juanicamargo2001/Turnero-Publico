@@ -44,7 +44,7 @@ const LoginComponent = () => {
           const resNom = await loginService.userName();
           setUserRole({ rol: rol, nombre: resNom.nombre });
           setIsLoading(false);
-          navigate("/turno");
+          navigate("/");
         } catch (error) {
           console.log(error);
           setIsLoading(false);
