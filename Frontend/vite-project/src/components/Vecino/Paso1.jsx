@@ -18,6 +18,8 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
     const [scanResult, setScanResult] = useState('');
     const [selectedFile2, setSelectedFile2] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [formularioRelleno, setFormularioRelleno] = useState([]);
+    const navigate = useNavigate();
     const today = new Date();
     const maxDate = new Date(today.getTime() - (6575 * 24 * 60 * 60 * 1000)); // Resta 6570 días o 18 años
 
@@ -32,7 +34,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
         for (const key in formData) {
             setValue(key, formData[key]);
         }
-        console.log(formData);
+        setFormularioRelleno(formData)
     }, [formData, setValue]);
 
     const onFormSubmit = (data) => {
@@ -119,7 +121,6 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
       const año = f.getFullYear();
       const mes = String(f.getMonth() + 1).padStart(2, "0");
       const dia = String(f.getDate()).padStart(2, "0");
-      console.log(`${año}-${mes}-${dia}`)
       return `${año}-${mes}-${dia}`;
   };
   
@@ -183,16 +184,12 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
           icon: "info",
           confirmButtonColor: "#E15562",
           confirmButtonText: "OK",
-        }).then(() => {
-      });
+        })
       } else {
         setIsLoading(true);
-        try {
-          const base64Image = await convertImageToBase64(selectedFile2);
-          try {
-            const response = await vecinoService.ProcesarImagen(base64Image);
+        const response = await vecinoService.uploadImage(selectedFile2, formularioRelleno.dni);
+        if (response){
             setIsLoading(false);
-            console.log(response);
             Swal.fire({
               title: "¡Éxito!",
               text: "Imagen procesada con exito",
@@ -203,35 +200,22 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
           });
             updateFormData({domicilio: true});
             handleOtherOptionClick2();
-          } catch (error) {
+          } 
+        else{
             setIsLoading(false);
             Swal.fire({
               title: "¡Error!",
-              text: "Error al procesar imagen. Por favor, inténtelo de nuevo.",
+              text: "El vecino no es de Córdoba, si lo es, intente de nuevo!",
               icon: "error",
               confirmButtonColor: "#E15562",
               confirmButtonText: "OK",
-            }).then(() => {
-          });
-            console.error("Error al procesar imagen:", error.response ? error.response.data : error); 
+            })
           }
-        } catch (error) {
-          console.error("Error al convertir la imagen:", error);
-          setIsLoading(false);
         }
       }
-    }
-
-    function convertImageToBase64(file) {
-      return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-      });
-    }
-    const navigate = useNavigate();
-
+      
+  
+    
     return(
         <div>
             <h2 className="maven-pro-title">INGRESAR DATOS PERSONALES</h2>
@@ -263,6 +247,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                         type="file"
                         id="fileInput"
                         accept="image/*"
+                        capture="environment"
                         onChange={handleFileChange}
                     />
                 </div>
@@ -428,6 +413,7 @@ const Paso1Visual = ({ formData, updateFormData, nextStep})=> {
                         type="file"
                         id="fileInput"
                         accept="image/*"
+                        capture="environment"
                         onChange={handleFileChange2}
                     />
                 </div>

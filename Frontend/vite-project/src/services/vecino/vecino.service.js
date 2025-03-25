@@ -18,6 +18,28 @@ async function Grabar(nuevoVecino) {
     }
 }
 
+const uploadImage = async (file, dni) => {
+  const formData = new FormData();
+  const renamedFile = new File([file], `${dni}.jpg`, { type: file.type });
+  formData.append("image", renamedFile); 
+
+  try {
+    const response = await axios.post(`${API_URL}/procesarImagen`, formData, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true', 
+      },
+    });
+
+      if (response.data.success){
+        return true;
+      }
+  } catch (error) {
+      console.error("Error al subir la imagen", error);
+      return false;
+  }
+};
+
+
 async function ProcesarImagen(imagen) {
     const data = 'data:' + imagen;
     try {
@@ -137,5 +159,5 @@ async function Modificar(nuevoCentro) {
 }*/
 
 export const vecinoService={
-    Grabar, ProcesarImagen, obtenerVecinoXDNI, GrabarVecinoMinimo, ObtenerPerfil, EditarVecino
+    Grabar, ProcesarImagen, obtenerVecinoXDNI, GrabarVecinoMinimo, ObtenerPerfil, EditarVecino, uploadImage
 }
