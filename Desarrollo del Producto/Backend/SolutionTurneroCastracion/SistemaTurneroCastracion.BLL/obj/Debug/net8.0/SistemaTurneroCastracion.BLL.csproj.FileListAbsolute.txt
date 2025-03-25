@@ -14,7 +14,3 @@ C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto
 C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\bin\Debug\net8.0\SistemaTurneroCastracion.Entity.pdb
 C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\obj\Debug\net8.0\SistemaTurneroCastracion.BLL.csproj.AssemblyReference.cache
 C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\obj\Debug\net8.0\SistemaT.1B3BA1A9.Up2Date
-C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\bin\Debug\net8.0\x86\leptonica-1.82.0.dll
-C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\bin\Debug\net8.0\x86\tesseract50.dll
-C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\bin\Debug\net8.0\x64\leptonica-1.82.0.dll
-C:\Users\agust\OneDrive\Escritorio\Turnero_de_Castracion\Desarrollo del Producto\Backend\SolutionTurneroCastracion\SistemaTurneroCastracion.BLL\bin\Debug\net8.0\x64\tesseract50.dll

@@ -43,17 +43,17 @@ namespace SistemaTurneroCastracion.API.Controllers
         }
 
         [HttpPost("procesarImagen")]
-        public async Task<IActionResult> ProcesarImagen([FromBody] string imagenDorso)
+        public async Task<IActionResult> ProcesarImagen([FromForm] IFormFile image)
         {
-            if (!string.IsNullOrEmpty(imagenDorso))
+            if (image != null || image.Length != 0)
             {
-                bool textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(imagenDorso);
+                bool textoExtraido = await _vecinoRepository.AnalizarDNIConReglas(image);
 
                 if (!textoExtraido) {
                     return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "El vecino no es de Córdoba, si lo es, intente de nuevo!", Result = "" });
                 }
 
-                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = textoExtraido });
+                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
 
             }
             return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al procesar la imagen!", Result = "" });

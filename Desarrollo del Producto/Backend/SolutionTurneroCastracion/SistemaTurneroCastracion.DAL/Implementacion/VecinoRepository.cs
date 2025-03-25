@@ -1,25 +1,27 @@
-﻿using SistemaTurneroCastracion.DAL.DBContext;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using SistemaTurneroCastracion.BLL;
+using SistemaTurneroCastracion.DAL.DBContext;
 using SistemaTurneroCastracion.DAL.Interfaces;
 using SistemaTurneroCastracion.Entity;
+using SistemaTurneroCastracion.Entity.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
-using System.Text.RegularExpressions;
-using Azure.Core;
-using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Configuration;
-using SistemaTurneroCastracion.Entity.Dtos;
-using System.Runtime.CompilerServices;
-using Microsoft.Identity.Client;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using SistemaTurneroCastracion.BLL;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
@@ -38,29 +40,28 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<bool> AnalizarDNIConReglas(string imageBytes)
+        public async Task<bool> AnalizarDNIConReglas(IFormFile image)
         {
-            string? direccion;
-            string apiKey = _configuration["OCRService:ApiKey"];
-            string base64Image = imageBytes;
-            string ocrUrl = "https://api.ocr.space/parse/image";
 
-            using (HttpClient client = new HttpClient())
+            int dni = Int32.Parse(image.FileName.Split(".")[0]);
+            var client = new HttpClient();
+            string ocrUrl = "http://192.168.1.149:5000/procesar-imagen";
+
+            using (var content = new MultipartFormDataContent())
             {
-                var requestContent = new MultipartFormDataContent();
-                requestContent.Add(new StringContent(apiKey), "apikey");
-                requestContent.Add(new StringContent(base64Image), "base64Image");
-                requestContent.Add(new StringContent("spa"), "language");
+                var streamContent = new StreamContent(image.OpenReadStream());
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
-                HttpResponseMessage response = await client.PostAsync(ocrUrl, requestContent);
-                string responseString = await response.Content.ReadAsStringAsync();
+                // Agregar el archivo al contenido de la solicitud
+                content.Add(streamContent, "file", image.FileName);
 
-                var jsonResponse = JObject.Parse(responseString);
+                // Enviar la solicitud POST a la API de Python
+                var response = await client.PostAsync(ocrUrl, content);
 
-                string parsedText = jsonResponse["ParsedResults"]?[0]?["ParsedText"]?.ToString();
+                // Obtener la imagen procesada (en formato binario)
+                var processedImageString = await response.Content.ReadAsStringAsync();
 
-
-                bool esCordoba = esDeCordoba(parsedText);
+                bool esCordoba = esDeCordoba(processedImageString, Int32.Parse(image.FileName.Split(".")[0]));
 
                 if (esCordoba)
                 {
@@ -70,29 +71,26 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 {
                     return false;
                 }
-
             }
-
-
         }
 
-        public bool esDeCordoba(string textoParseado)
+        public bool esDeCordoba(string input, int dni)
         {
-            if (!string.IsNullOrEmpty(textoParseado))
+            string pattern = @"IDARG(\d+)<";
+
+            Match match = Regex.Match(input, pattern);
+            if (match.Success && input.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0
+                && input.IndexOf("capital", StringComparison.OrdinalIgnoreCase) >= 0
+                && match.Groups[1].Value == dni.ToString()
+                && input.IndexOf("ARG", StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                if (textoParseado.IndexOf("cordoba", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
             else
             {
                 return false;
             }
+
         }
 
 
