@@ -95,6 +95,7 @@ function BuscarTurnosPorDni() {
           </thead>
           <tbody>
             {resultado.map((turno, index) => (
+              
               <tr
                 key={index}
                 className="border-b hover:bg-gray-100 transition duration-300"
@@ -102,7 +103,7 @@ function BuscarTurnosPorDni() {
                 <td className="p-3">{turno.centroCastracion}</td>
                 <td className="p-3">{turno.tipoServicio}</td>
                 <td className="p-3">{new Date(turno.dia).toLocaleDateString()}</td>
-                <td className="p-3">{turno.hora}</td>
+                <td className="p-3">{turno.hora.split(":")[0]}:{turno.hora.split(":")[1]}</td>
                 <td
                   className="p-3 font-semibold"
                 >

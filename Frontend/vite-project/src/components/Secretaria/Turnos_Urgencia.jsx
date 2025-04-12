@@ -161,7 +161,7 @@ export default function Turnos_Urgencia() {
                     <tr key={index}>
                         <td>{row.nombre}</td>
                         <td>{row.apellido}</td>
-                        <td>{row.f_nacimiento}</td>
+                        <td className='text-center'>{row.f_nacimiento.split("T")[0]}</td>
                         <td>{row.dni}</td>
                         <td>{row.email}</td>
                         <td>{row.telefono}</td>
