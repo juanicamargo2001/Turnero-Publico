@@ -31,7 +31,7 @@ const TurnosSecretaria = () => {
   const navigate = useNavigate();
 
   const estadosPermitidos = {
-    Reservado: ["Confirmado", "Cancelado"],
+    Reservado: ["Cancelado"],
     Confirmado: ["Ingresado", "Cancelado"],
     Ingresado: ["Realizado"],
 
@@ -155,8 +155,8 @@ const TurnosSecretaria = () => {
         
       } else if (nuevoEstado === "Cancelado") {
         await misTurnosService.cancelarTurno(selectedTurno.idHorario);
-      } else if (nuevoEstado === "Confirmado") {
-        await turnosService.confirmarTurno(selectedTurno.idHorario);
+      //} else if (nuevoEstado === "Confirmado") {
+      //  await turnosService.confirmarTurno(selectedTurno.idHorario);
       } else if (nuevoEstado === "Ingresado") {
         await turnosService.confirmarIngreso(selectedTurno.idHorario);
       }
