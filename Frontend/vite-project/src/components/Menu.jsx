@@ -77,7 +77,7 @@ function Menu() {
         
         ],
       },
-      { label: "Estadísticas", path: "/reportes" },
+      { label: "Reportes", path: "/reportes" },
       { label: "Cancelacion masiva", path: "/cancelar/masivo" },
       { label: "Calificaciones", path: "/mostrar/calificaciones"}
     ]

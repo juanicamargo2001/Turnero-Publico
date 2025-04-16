@@ -78,6 +78,22 @@ const mascotaService = {
     }
   },
 
+  async obtenerRazas(tipoAnimal, tipoRaza) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const response = await axios.post(`${API_URL}/razas`, {tipoAnimal, animalBuscar: tipoRaza} , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch {
+      return null
+    }
+  },
+
 };
 
 export default mascotaService;

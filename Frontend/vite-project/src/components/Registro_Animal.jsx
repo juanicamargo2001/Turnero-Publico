@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef  } from 'react';
 import mascotaService from '../services/animal/mascota.service';
 import { sexosService } from '../services/animal/sexo.service';
 import { tamanoService } from '../services/animal/tamano.service';
@@ -11,10 +11,42 @@ const RegistroAnimal = () => {
   const [tamanos, setTamanos] = useState([]);
   const [tiposAnimal, setTiposAnimal] = useState([]);
   const [error, setError] = useState(null);
+  const [razas, setRazas] = useState([]);
+  const [query, setQuery] = useState('');
+  const [mostrarOpciones, setMostrarOpciones] = useState(false);
+  const refContenedor = useRef(null);
 
-  const { register, handleSubmit, formState: { errors }, watch, reset } = useForm({
+  const { register, handleSubmit, formState: { errors }, watch, reset, setValue } = useForm({
     mode: 'onChange',
   });
+
+  const HandleRaza = async(e) => {
+
+    setQuery(e.target.value)
+
+    console.log(query)
+
+    if (query.length > 2){
+
+      let razas = await mascotaService.obtenerRazas(watch('tipoAnimal'), query)
+
+      if (razas != null){
+        setMostrarOpciones(true);
+        setRazas(razas.result)
+      }
+    }
+    else{
+      setRazas([])
+      setMostrarOpciones(false);
+    }
+
+  }
+
+  const handleSelect = (raza) => {
+    console.log(raza)
+    setValue('raza', raza.nombreRaza);
+    setMostrarOpciones(false);
+  };
 
   const onSubmit = async (data) => {
     const nuevaMascota = {
@@ -24,6 +56,7 @@ const RegistroAnimal = () => {
       sexo: data.sexo,
       tipoAnimal: data.tipoAnimal,
       tamaño: data.tamano,
+      raza: data.raza
     };
   
     try {
@@ -80,6 +113,16 @@ const RegistroAnimal = () => {
     fetchTamanos();
     fetchTiposAnimal();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (refContenedor.current && !refContenedor.current.contains(event.target)) {
+        setMostrarOpciones(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
   
   return (
     <div className="container mt-4">
@@ -94,6 +137,23 @@ const RegistroAnimal = () => {
             placeholder="Escriba el nombre del animal (opcional)"
             {...register('nombre')}
           />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="tipoAnimal" className="form-label">Tipo de Animal</label>
+          <select
+            className={`form-select ${errors.tipoAnimal ? 'is-invalid' : ''}`} 
+            id="tipoAnimal"
+            defaultValue=""
+            {...register('tipoAnimal', { required: 'El tipo de animal es requerido' })} 
+          >
+            <option value="" disabled>Seleccionar Tipo de animal</option>
+            {tiposAnimal.map((tipo) => (
+              <option key={tipo.idTipo} value={tipo.tipoAnimal}>
+                {tipo.tipoAnimal}
+              </option>
+            ))}
+          </select>
+          {errors.tipoAnimal && <div className="invalid-feedback">{errors.tipoAnimal.message}</div>}
         </div>
         <div className="mb-3">
           <label htmlFor="descripcion" className="form-label">Descripción</label>
@@ -127,22 +187,30 @@ const RegistroAnimal = () => {
           />
           {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 
         </div>
-        <div className="col-md-6">
-          <label htmlFor="tipoAnimal" className="form-label">Tipo de Animal</label>
-          <select
-            className={`form-select ${errors.tipoAnimal ? 'is-invalid' : ''}`} 
-            id="tipoAnimal"
-            defaultValue="" 
-            {...register('tipoAnimal', { required: 'El tipo de animal es requerido' })} 
-          >
-            <option value="" disabled>Seleccionar Tipo de animal</option>
-            {tiposAnimal.map((tipo) => (
-              <option key={tipo.idTipo} value={tipo.tipoAnimal}>
-                {tipo.tipoAnimal}
-              </option>
-            ))}
-          </select>
-          {errors.tipoAnimal && <div className="invalid-feedback">{errors.tipoAnimal.message}</div>}
+        <div className="col-md-6" ref={refContenedor}>
+           <label htmlFor="raza" className="form-label">Raza</label>
+           <input
+            type="text"
+            className="form-control"
+            id="raza"
+            placeholder="Escriba la raza del animal"
+            {...register('raza')}
+            onChange={HandleRaza}
+          />
+          {mostrarOpciones && razas.length > 0 && (
+        <ul className="list-group position-absolute w-100 zindex-dropdown" style={{ maxHeight: '150px', overflowY: 'auto', maxWidth: '490px' }}>
+          {razas.map((raza, index) => (
+            <li
+              key={index}
+              className="list-group-item list-group-item-action"
+              onClick={() => handleSelect(raza)}
+              style={{ cursor: 'pointer' }}
+            >
+              {raza.nombreRaza}
+            </li>
+          ))}
+        </ul>
+      )}
         </div>
       </div>
 

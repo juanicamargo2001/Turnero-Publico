@@ -4,6 +4,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { PieChart, Pie, Cell, Tooltip as PieTooltip } from "recharts";
 import { reportesService } from "../../services/reporte/reportes.service";
 import { DotLoader } from "react-spinners";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const COLORS = ["#14B3B7", "#878BB6"]; 
 
@@ -11,29 +13,31 @@ const Reportes = () => {
   const [dataTipoAnimal, setDataTipoAnimal] = useState(null);
   const [dataCancelaciones, setDataCancelaciones] = useState(null);
   const [error, setError] = useState(null);
-  const [key, setKey] = useState("tipo-animal"); 
+  const [key, setKey] = useState("tipo-animal");
+
+  const [fechaDesde, setFechaDesde] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
+  const [fechaHasta, setFechaHasta] = useState(new Date());
+
+  const fetchData = async () => {
+    try {
+      const resultTipoAnimal = await reportesService.obtenerInformeTipoAnimal(fechaDesde, fechaHasta);
+      setDataTipoAnimal(resultTipoAnimal.result);
+
+      const resultCancelaciones = await reportesService.obtenerInformeCancelaciones(fechaDesde, fechaHasta);
+      setDataCancelaciones(resultCancelaciones.result);
+    } catch {
+      setError("Error al cargar los datos del gráfico.");
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resultTipoAnimal = await reportesService.obtenerInformeTipoAnimal();
-        setDataTipoAnimal(resultTipoAnimal.result);
-
-        const resultCancelaciones = await reportesService.obtenerInformeCancelaciones();
-        setDataCancelaciones(resultCancelaciones.result);
-      } catch {
-        setError("Error al cargar los datos del gráfico.");
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fechaDesde, fechaHasta]);
 
-  if (error) {
-    return <div className="alert alert-danger">{error}</div>;
-  }
+  // if (error) {
+  //   return <div className="alert alert-danger">{error}</div>;
+  // }
 
-  // Cargando los gráficos
   if (!dataTipoAnimal || !dataCancelaciones) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
@@ -43,8 +47,8 @@ const Reportes = () => {
   }
 
   const pieDataTipoAnimal = [
-    { name: "Gatos", value: dataTipoAnimal.porcentajeGato },
-    { name: "Perros", value: dataTipoAnimal.porcentajePerro },
+    { name: "Gatos", value: dataTipoAnimal.gatos , porcentaje: dataTipoAnimal.porcentajeGato },
+    { name: "Perros",value: dataTipoAnimal.perros, porcentaje: dataTipoAnimal.porcentajePerro },
   ];
 
   const barDataTipoAnimal = [
@@ -53,8 +57,8 @@ const Reportes = () => {
   ];
 
   const pieDataCancelaciones = [
-    { name: "Cancelados", value: dataCancelaciones.porcentajeCancelados },
-    { name: "Confirmados", value: dataCancelaciones.porcentajeConfirmados },
+    { name: "Cancelados", value: dataCancelaciones.cancelados , porcentaje: dataCancelaciones.porcentajeCancelados },
+    { name: "Confirmados", value: dataCancelaciones.confirmados, porcentaje: dataCancelaciones.porcentajeConfirmados },
   ];
 
   const barDataCancelaciones = [
@@ -69,110 +73,146 @@ const Reportes = () => {
     if (!item) return null;
 
     return (
-      <Text
-        fill="#000"
-        textAnchor="start"
-        fontSize={15}
-      >
+      <Text fill="#000" textAnchor="start" fontSize={15}>
         {item.name}
       </Text>
     );
   };
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { name, value } = payload[0];
+      return (
+        <div className="custom-tooltip bg-white p-2 border rounded shadow-sm">
+          <strong>{name}</strong>: {value}
+        </div>
+      );
+    }
+  
+    return null;
+  }
+
+  const renderDatePickers = () => (
+    <div className="d-flex gap-3 mb-3 align-items-center">
+      <div>
+        <label>Desde:</label>
+        <DatePicker
+          selected={fechaDesde}
+          onChange={(date) => setFechaDesde(date)}
+          className="form-control"
+          dateFormat="dd/MM/yyyy"
+          maxDate={new Date()}
+        />
+      </div>
+      <div>
+        <label>Hasta:</label>
+        <DatePicker
+          selected={fechaHasta}
+          onChange={(date) => setFechaHasta(date)}
+          className="form-control"
+          dateFormat="dd/MM/yyyy"
+        />
+      </div>
+    </div>
+  );
+
+
+
   return (
     <div className="container mt-4 maven-pro-body">
-      <h3 className="text-center mb-4 maven-pro-title">Estadísticas de turnos</h3>
-      <Tabs
-        activeKey={key}
-        onSelect={(k) => setKey(k)}
-        id="reportes-tabs"
-        className="custom-tabs m-4"
-      >
+      <h3 className="text-center mb-4 maven-pro-title">Reportes generales</h3>
+      <Tabs activeKey={key} onSelect={(k) => setKey(k)} id="reportes-tabs" className="custom-tabs m-4">
         {/* Pestaña Tipo Animal */}
-        <Tab eventKey="tipo-animal" title="Tipo de animal">
-          <Row>
-            <Col md={6}>
-              <Card>
-                <Card.Body>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={pieDataTipoAnimal}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        fill="#8884d8"
-                        label={({ name, value }) => `${name}: ${value.toFixed(2)}%`}
-                      >
-                        {pieDataTipoAnimal.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <PieTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={6}>
-              <Card>
-                <Card.Body>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={barDataTipoAnimal}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar
-                        dataKey="value"
-                        fill="#FF8153"
-                        label={renderCustomBarLabel}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
+        <Tab eventKey="tipo-animal" title="Tipo de animal Castrados">
+          {renderDatePickers()}
+          {!pieDataTipoAnimal || pieDataTipoAnimal.every(d => d.value === 0) ? (
+            <div className="text-center text-muted mt-4">
+              No hay estadísticas para las fechas seleccionadas.
+            </div>
+          ) : (
+            <Row>
+              <Col md={7}>
+                <Card>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={pieDataTipoAnimal}
+                          dataKey="value"
+                          nameKey="name"
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={100}
+                          fill="#8884d8"
+                          label={({ name, index }) =>
+                            `${name}: ${pieDataTipoAnimal[index]?.porcentaje.toFixed(2)}%`
+                          }
+                        >
+                          {pieDataTipoAnimal.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<CustomTooltip />} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={5}>
+                <Card>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={barDataTipoAnimal}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" fill="#FF8153" label={renderCustomBarLabel} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          )}
         </Tab>
+
 
         {/* Pestaña Cancelaciones */}
         <Tab eventKey="cancelaciones" title="Confirmados y cancelados">
+          {renderDatePickers()}
+          {!pieDataCancelaciones || pieDataCancelaciones.every(d => d.value === 0) ? (
+            <div className="text-center text-muted mt-4">
+              No hay estadísticas para las fechas seleccionadas.
+            </div>
+          ) : (
           <Row>
-            <Col md={6}>
+            <Col md={7}>
               <Card>
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
+                  <PieChart>
                       <Pie
                         data={pieDataCancelaciones}
                         dataKey="value"
                         nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        fill="#FF8153"
-                        label={({ name, value }) => `${name}: ${value.toFixed(2)}%`}
+                        outerRadius={75}
+                        fill="#8884d8"
+                        label={({ name, index }) =>
+                          `${name}: ${pieDataCancelaciones[index]?.porcentaje.toFixed(2)}%`
+                        }
                       >
                         {pieDataCancelaciones.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <PieTooltip />
+                      <PieTooltip content={<CustomTooltip />} />
                     </PieChart>
                   </ResponsiveContainer>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={6}>
+            <Col md={5}>
               <Card>
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={300}>
@@ -181,18 +221,16 @@ const Reportes = () => {
                       <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Bar
-                        dataKey="value"
-                        fill="#FF8153"
-                        label={renderCustomBarLabel}
-                      />
+                      <Bar dataKey="value" fill="#FF8153" label={renderCustomBarLabel} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
+          )}
         </Tab>
+          
       </Tabs>
     </div>
   );

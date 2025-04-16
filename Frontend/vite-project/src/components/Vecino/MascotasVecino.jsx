@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import gatoImg from "../../imgs/gato.png";
 import perroImg from "../../imgs/perro.png";
 import mascotaService from "../../services/animal/mascota.service";
@@ -22,6 +22,10 @@ import {
   FormControl,
   FormHelperText,
   Box,
+  List,
+  ListItem,
+  ListItemButton,
+  Paper
 } from "@mui/material";
 
 
@@ -35,7 +39,11 @@ const MisMascotas = () => {
   const [open, setOpen] = useState(false);
   const [mascotaEdit, setMascotaEdit] = useState(selectedMascota || {});
   const [errors, setErrors] = useState({});
+  const [razas, setRazas] = useState([]);
+  const [query, setQuery] = useState('');
+  const [mostrarOpciones, setMostrarOpciones] = useState(false);
   const navigate = useNavigate();
+  const contenedorRef = useRef(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -48,6 +56,44 @@ const MisMascotas = () => {
     fetchMascotas();
   }, []);
 
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (contenedorRef.current && !contenedorRef.current.contains(event.target)) {
+          setMostrarOpciones(false);
+        }
+      };
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
+  const HandleRaza = async(e) => {
+
+    setQuery(e.target.value)
+    setMascotaEdit((prev) => ({ ...prev, raza: e.target.value }));
+    if (query.length > 2){
+
+      let razas = await mascotaService.obtenerRazas(mascotaEdit.tipoAnimal, query)
+
+      if (razas != null){
+        setMostrarOpciones(true);
+        setRazas(razas.result)
+      }
+    }
+    else{
+      setRazas([])
+      setMostrarOpciones(false);
+    }
+
+  }
+
+  const handleSelect = (raza) => {
+    console.log(raza)
+    setQuery(raza.nombreRaza);
+    setMascotaEdit((prev) => ({ ...prev, raza: raza.nombreRaza }));
+    setMostrarOpciones(false);
+  };
+
+
   const cargarDetalleAnimal = async () => {
     setIsLoading(true);
     let responseSexo = await sexosService.Buscar();
@@ -58,6 +104,7 @@ const MisMascotas = () => {
 
     let responseTamaño = await tamanoService.Buscar();
     setTamañosAnimales(responseTamaño.result);
+
     setIsLoading(false);
   };
 
@@ -267,6 +314,45 @@ const MisMascotas = () => {
                   )}
                 </FormControl>
               </Box>
+
+              <Box mb={2}  ref={contenedorRef} sx={{ position: 'relative' }}>
+                <InputLabel htmlFor="raza">Raza</InputLabel>
+                <TextField
+                  id="raza"
+                  variant="standard"
+                  fullWidth
+                  value={mascotaEdit.raza || ""}
+                  onChange={HandleRaza}
+                  placeholder="Escriba la raza del animal"
+                />
+                {errors.raza && (
+                  <FormHelperText>{errors.raza.message}</FormHelperText>
+                )}
+                {mostrarOpciones && razas.length > 0 && (
+                  <Paper
+                    elevation={3}
+                    sx={{
+                      position: 'absolute',
+                      zIndex: 10,
+                      width: '100%',
+                      maxHeight: '200px',
+                      overflowY: 'auto',
+                      mt: 1
+                    }}
+                  >
+                    <List>
+                      {razas.map((raza, index) => (
+                        <ListItem key={index} disablePadding>
+                          <ListItemButton onClick={() => handleSelect(raza)}>
+                            {raza.nombreRaza}
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Paper>
+                )}
+              </Box>      
+
 
               <DialogActions>
                 <Button onClick={handleClose}>Cancelar</Button>
