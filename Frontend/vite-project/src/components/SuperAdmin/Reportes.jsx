@@ -18,6 +18,24 @@ const Reportes = () => {
   const [fechaDesde, setFechaDesde] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
   const [fechaHasta, setFechaHasta] = useState(new Date());
 
+  const [tipoAnimal, setTipoAnimal] = useState("PERRO");
+  const [dataRazas, setDataRazas] = useState(null);
+  const [errorRazas, setErrorRazas] = useState(null);
+  const [loadingRazas, setLoadingRazas] = useState(false);
+
+  const fetchRazaData = async () => {
+    setLoadingRazas(true);
+    try {
+      const result = await reportesService.obtenerInformeRazas(tipoAnimal, fechaDesde, fechaHasta);
+      setDataRazas(result.result); 
+      setErrorRazas(null);
+    } catch (err) {
+      setErrorRazas("Error al obtener datos de razas");
+      setDataRazas(null);
+    }
+    setLoadingRazas(false);
+};
+
   const fetchData = async () => {
     try {
       const resultTipoAnimal = await reportesService.obtenerInformeTipoAnimal(fechaDesde, fechaHasta);
@@ -92,7 +110,7 @@ const Reportes = () => {
     return null;
   }
 
-  const renderDatePickers = () => (
+  const renderDatePickers = ({ mostrarTipoAnimal = false }) => (
     <div className="d-flex gap-3 mb-3 align-items-center">
       <div>
         <label>Desde:</label>
@@ -113,7 +131,26 @@ const Reportes = () => {
           dateFormat="dd/MM/yyyy"
         />
       </div>
+      {mostrarTipoAnimal && (
+      <div>
+        <label>Tipo de animal:</label>
+        <select
+          value={tipoAnimal}
+          onChange={(e) => setTipoAnimal(e.target.value)}
+          className="form-control"
+        >
+          <option value="PERRO">Perro</option>
+          <option value="GATO">Gato</option>
+        </select>
+      </div>
+    )}
+    <div>
+      <button onClick={fetchRazaData} className="btn btn-primary mt-4">
+        Buscar
+      </button>
     </div>
+    </div>
+    
   );
 
 
@@ -228,6 +265,41 @@ const Reportes = () => {
               </Card>
             </Col>
           </Row>
+          )}
+        </Tab>
+
+        {/* Pestaña Razas */}
+        <Tab eventKey="por-raza" title="Castraciones por raza">
+          {renderDatePickers({ mostrarTipoAnimal: true })}
+
+          {loadingRazas ? (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "300px" }}>
+              <DotLoader color="#60C1EA" />
+            </div>
+          ) : errorRazas ? (
+            <div className="alert alert-danger">{errorRazas}</div>
+          ) : !dataRazas || dataRazas.length === 0 ? (
+            <div className="text-center text-muted mt-4">
+              No hay estadísticas disponibles para las fechas seleccionadas.
+            </div>
+          ) : (
+            <Row>
+              <Col>
+                <Card>
+                  <Card.Body>
+                    <ResponsiveContainer width="100%" height={400}>
+                      <BarChart data={dataRazas}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="raza" />
+                        <YAxis allowDecimals={false} />
+                        <Tooltip />
+                        <Bar dataKey="cantidad" fill="#14B3B7" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
           )}
         </Tab>
           

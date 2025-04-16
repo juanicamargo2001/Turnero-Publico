@@ -2,7 +2,8 @@ import axios from "axios";
 import loginService from "../login/login.service";
 
 const urlResourceTipoAnimal = import.meta.env.VITE_INFORME_TIPO_ANIMAL_URL;
-const urlResourceCancelaciones = import.meta.env.VITE_INFORME_CANCELACIONES_URL; // URL del informe de cancelaciones
+const urlResourceCancelaciones = import.meta.env.VITE_INFORME_CANCELACIONES_URL;
+const urlResourceRazas = import.meta.env.VITE_INFORME_RAZA_URL; // URL del informe de cancelaciones
 
 async function obtenerInformeTipoAnimal(fechaDesde, fechaHasta) {
   try {
@@ -42,7 +43,30 @@ async function obtenerInformeCancelaciones(fechaDesde, fechaHasta) {
   }
 }
 
+async function obtenerInformeRazas(tipoAnimal, fechaDesde, fechaHasta) {
+  try {
+    const token = await loginService.obtenerTokenConRenovacion();
+
+    const urlConParametro = `${urlResourceRazas}?tipoAnimal=${encodeURIComponent(tipoAnimal)}`;
+
+    const resp = await axios.post(urlConParametro, {fechaDesde, fechaHasta}, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    return resp.data;  
+  } catch (error) {
+    console.error("Error al cargar el informe de razas:", error);
+    throw error;
+  }
+  
+}
+
 export const reportesService = {
   obtenerInformeTipoAnimal,
-  obtenerInformeCancelaciones 
+  obtenerInformeCancelaciones,
+  obtenerInformeRazas
 };
