@@ -23,40 +23,40 @@ namespace SistemaTurneroCastracion.API.Controllers
             _validaciones = validaciones;
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> ObtenerMascotas()
-        {
-            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+        //[Authorize]
+        //[HttpGet]
+        //public async Task<IActionResult> ObtenerMascotas()
+        //{
+        //    var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
 
-            if (!isValid)
-            {
-                if (errorMessage == "Unauthorized")
-                {
-                    return Unauthorized();
-                }
-                return BadRequest(errorMessage);
-            }
+        //    if (!isValid)
+        //    {
+        //        if (errorMessage == "Unauthorized")
+        //        {
+        //            return Unauthorized();
+        //        }
+        //        return BadRequest(errorMessage);
+        //    }
 
 
-            try
-            {
-                List<MascotaDTO> mascotas = await _mascotaRepository.obtenerTodasMascotas();
+        //    try
+        //    {
+        //        List<MascotaDTO> mascotas = await _mascotaRepository.obtenerTodasMascotas();
 
-                if (mascotas.Count == 0)
-                {
+        //        if (mascotas.Count == 0)
+        //        {
 
-                    return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontró ninguna Mascota", Result = "" });
-                }
+        //            return NotFound(new ValidacionResultadosDTO { Success = false, Message = "No se encontró ninguna Mascota", Result = "" });
+        //        }
 
-                return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotas });
+        //        return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = mascotas });
 
-            }
-            catch
-            {
-                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
-            }
-        }
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error inesperado!", Result = "" });
+        //    }
+        //}
 
         [Authorize]
         [HttpPost]
@@ -233,7 +233,8 @@ namespace SistemaTurneroCastracion.API.Controllers
                 Edad = request.Edad,
                 Sexo = request.Sexo,
                 Tamaño = request.TipoTamaño,
-                TipoAnimal = request.TipoAnimal
+                TipoAnimal = request.TipoAnimal,
+                Raza = request.Raza ?? string.Empty
             }, request.IdUsuario) == null)
             {
                 return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al crear la mascota", Result = "" });
@@ -242,7 +243,33 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = "" });
         }
 
-        
+        [Authorize]
+        [HttpPost("razas")]
+        public async Task<IActionResult> RazasAnimal([FromBody] RazaAnimalRequest request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, 
+                [RolesEnum.vecino.ToString(), RolesEnum.secretaria.ToString(), RolesEnum.superAdministrador.ToString()]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            List<RazasDTO>? razas = await _mascotaRepository.ObtenerRazasAnimal(request.TipoAnimal, request.AnimalBuscar);
+
+            if (razas is null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "No se encontraron Razas!", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = razas });
+
+        }
+
 
 
 

@@ -12,4 +12,7 @@ public partial class TiposAnimal
 
     [JsonIgnore]
     public virtual ICollection<Mascota> Mascota { get; set; } = new List<Mascota>();
+
+    [JsonIgnore]
+    public virtual ICollection<Razas> Razas { get; set; } = [];
 }

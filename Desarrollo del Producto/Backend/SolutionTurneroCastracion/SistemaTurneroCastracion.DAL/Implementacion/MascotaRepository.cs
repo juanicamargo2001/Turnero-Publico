@@ -15,38 +15,40 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.DAL.Implementacion
 {
-    public class MascotaRepository :GenericRepository<Mascota>, IMascotaRepository
+    public class MascotaRepository : GenericRepository<Mascota>, IMascotaRepository
     {
         protected readonly CentroCastracionContext _dbContext;
+        private readonly IRazasRepository _razasRepository;
 
-        public MascotaRepository(CentroCastracionContext dbContext) : base(dbContext)
+        public MascotaRepository(CentroCastracionContext dbContext, IRazasRepository razasRepository) : base(dbContext)
         {
             _dbContext = dbContext;
+            _razasRepository = razasRepository;
         }
 
-        public async Task<List<MascotaDTO>> obtenerTodasMascotas()
-        {
-            using (var ctx = _dbContext)
-            {
-                var query = from m in ctx.Mascotas
-                            join s in ctx.Sexos on m.IdSexo equals s.IdSexos
-                            join t in ctx.Tamaños on m.IdTamaño equals t.IdTamaño
-                            join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo
-                            join V in ctx.Vecinos on m.IdVecino equals V.Id_vecino
-                            select new MascotaDTO
-                            {
-                                idMascota = m.IdMascota,
-                                Edad = m.Edad,
-                                Descripcion = m.Descripcion,
-                                Nombre = m.Nombre,
-                                Sexo = s.SexoTipo,
-                                Tamaño = t.TamañoTipo,
-                                TipoAnimal = ta.TipoAnimal,
-                                Vecino = V.Id_vecino
-                            };
-                return query.ToList();
-            }
-        }
+        //public async Task<List<MascotaDTO>> obtenerTodasMascotas()
+        //{
+        //    using (var ctx = _dbContext)
+        //    {
+        //        var query = from m in ctx.Mascotas
+        //                    join s in ctx.Sexos on m.IdSexo equals s.IdSexos
+        //                    join t in ctx.Tamaños on m.IdTamaño equals t.IdTamaño
+        //                    join ta in ctx.TiposAnimals on m.IdTipoAnimal equals ta.IdTipo
+        //                    join V in ctx.Vecinos on m.IdVecino equals V.Id_vecino
+        //                    select new MascotaDTO
+        //                    {
+        //                        idMascota = m.IdMascota,
+        //                        Edad = m.Edad,
+        //                        Descripcion = m.Descripcion,
+        //                        Nombre = m.Nombre,
+        //                        Sexo = s.SexoTipo,
+        //                        Tamaño = t.TamañoTipo,
+        //                        TipoAnimal = ta.TipoAnimal,
+        //                        Vecino = V.Id_vecino
+        //                    };
+        //        return query.ToList();
+        //    }
+        //}
 
 
         public async Task<List<MascotaDTO>> obtenerMascotasDueño(HttpContext? context = null, int? idUsuario = null)
@@ -61,6 +63,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                       join s in ctx.Sexos on M.IdSexo equals s.IdSexos
                                       join t in ctx.Tamaños on M.IdTamaño equals t.IdTamaño
                                       join ta in ctx.TiposAnimals on M.IdTipoAnimal equals ta.IdTipo
+                                      join r in ctx.Razas on M.IdRaza equals r.IdRazas
                                       where U.IdUsuario == idUsuario && M.EstaCastrado == false
                                       select new MascotaDTO
                                       {
@@ -71,7 +74,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                           Sexo = s.SexoTipo,
                                           Tamaño = t.TamañoTipo,
                                           TipoAnimal = ta.TipoAnimal,
-                                          Vecino = V.Id_vecino
+                                          Vecino = V.Id_vecino,
+                                          Raza = r.Nombre
                                       }).ToListAsync();
 
 
@@ -92,6 +96,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                       join s in ctx.Sexos on M.IdSexo equals s.IdSexos
                                       join t in ctx.Tamaños on M.IdTamaño equals t.IdTamaño
                                       join ta in ctx.TiposAnimals on M.IdTipoAnimal equals ta.IdTipo
+                                      join r in ctx.Razas on M.IdRaza equals r.IdRazas
                                       where U.IdUsuario == idUsuario
                                       select new MascotaDTO
                                       {
@@ -102,6 +107,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                           Sexo = s.SexoTipo,
                                           Tamaño = t.TamañoTipo,
                                           TipoAnimal = ta.TipoAnimal,
+                                          Raza = r.Nombre
                                       }).ToListAsync();
 
                 return mascotas;
@@ -128,7 +134,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 .Select(ta => ta.IdTipo)
                 .FirstOrDefaultAsync();
 
-            if (sexoId == 0 || tamañoId == 0 || tipoAnimalId == 0) {
+            int idRaza = await _dbContext.Razas
+                .Where(r => r.Nombre == mascotaEditar.Raza)
+                .Select(r => r.IdRazas)
+                .FirstOrDefaultAsync();
+
+
+            if (sexoId == 0 || tamañoId == 0 || tipoAnimalId == 0 || idRaza == 0) {
                 return false;
             }
 
@@ -142,6 +154,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             mascota.Nombre = mascotaEditar.Nombre;
             mascota.Descripcion = mascotaEditar.Descripcion;
             mascota.Edad = mascotaEditar.Edad;
+            mascota.IdRaza = idRaza;
 
 
             return await this.Editar(mascota);
@@ -166,6 +179,11 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 .Select(ta => ta.IdTipo)
                 .FirstOrDefaultAsync();
 
+            int idRaza = await _dbContext.Razas
+                .Where(r => r.Nombre == mascota.Raza)
+                .Select(r => r.IdRazas)
+                .FirstOrDefaultAsync();
+
 
             return await this.Crear(new Mascota
             {
@@ -175,7 +193,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 IdSexo = sexoId,
                 IdTamaño = tamañoId,
                 IdVecino = idVecino,
-                Nombre = mascota.Nombre
+                Nombre = mascota.Nombre,
+                IdRaza = idRaza
             });
 
         }
@@ -232,6 +251,19 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
             return true;
 
+        }
+
+
+        public async Task<List<RazasDTO>?> ObtenerRazasAnimal(string tipoAnimal, string animalBuscar)
+        {
+            List<RazasDTO>? razas = await _razasRepository.ObtenerTodasPorTipoAnimal(tipoAnimal, animalBuscar);
+
+            if (razas?.Count == 0)
+            {
+                return [];
+            }
+
+            return razas;
         }
     }
 }

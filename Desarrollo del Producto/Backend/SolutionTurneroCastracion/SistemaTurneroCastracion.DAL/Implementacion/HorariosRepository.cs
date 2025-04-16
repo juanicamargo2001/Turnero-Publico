@@ -626,7 +626,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                 Edad = request.Edad,
                 Sexo = request.Sexo,
                 Tamaño = request.TipoTamaño,
-                TipoAnimal = request.TipoAnimal
+                TipoAnimal = request.TipoAnimal,
+                Raza = request.Raza ?? string.Empty
             }, request.IdUsuario);
 
             if (mascotaUrgente == null)

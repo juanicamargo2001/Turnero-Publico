@@ -9,8 +9,8 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
 {
     public interface IReportesRepository
     {
-        Task<ResponseInformeAnimales?> ObtenerCantidadesTiposAnimales();
-        Task<ResponseInformeCancelacion?> ObtenerCantidadCancelaciones();
+        Task<ResponseInformeAnimales?> ObtenerCantidadesTiposAnimales(FechasReporteRequest request);
+        Task<ResponseInformeCancelacion?> ObtenerCantidadCancelaciones(FechasReporteRequest request);
 
 
     }

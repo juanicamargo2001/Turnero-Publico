@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Abstractions;
 using SistemaTurneroCastracion.Entity;
 
 namespace SistemaTurneroCastracion.DAL.DBContext;
@@ -66,6 +67,8 @@ public partial class CentroCastracionContext : DbContext
 
     public virtual DbSet<FranjaHoraria> FranjaHorarias { get; set; }
 
+    public virtual DbSet<Razas> Razas { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -92,6 +95,7 @@ public partial class CentroCastracionContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
+            entity.Property(e => e.IdRaza).HasColumnName("raza");
 
             entity.HasOne(d => d.IdSexoNavigation).WithMany(p => p.Mascota)
                 .HasForeignKey(d => d.IdSexo)
@@ -117,6 +121,10 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.EstaCastrado)
             .HasColumnName("es_castrado")
             .HasDefaultValueSql("0");
+
+            entity.HasOne(d => d.Razas).WithMany(r => r.Mascotas)
+                .HasForeignKey(d => d.IdRaza)
+                .HasConstraintName("FK_mascotas_raza");
 
         });
 
@@ -737,6 +745,24 @@ public partial class CentroCastracionContext : DbContext
            .HasForeignKey(e => e.IdTipoTurno)
            .HasConstraintName("FK_franja_horaria_centro_tipo_turno");
 
+        });
+
+
+        modelBuilder.Entity<Razas>(entity =>
+        {
+            entity.ToTable("razas");
+
+            entity.HasKey(e => e.IdRazas).HasName("PK_razas");
+
+            entity.Property(e => e.IdRazas).HasColumnName("id_raza");
+
+            entity.Property(e => e.Nombre).HasColumnName("nombre");
+
+            entity.Property(e => e.IdTipoAnimal).HasColumnName("tipo_animal");
+
+            entity.HasOne(r => r.TiposAnimal).WithMany(ta => ta.Razas)
+                .HasForeignKey(d => d.IdTipoAnimal)
+                .HasConstraintName("FK_razas_tipo_animal");
         });
 
 

@@ -22,6 +22,8 @@ public partial class Mascota
 
     public string? Descripcion { get; set; }
 
+    public int? IdRaza { get; set; }
+
     [JsonIgnore]
     public bool? EstaCastrado { get; set; }
 
@@ -39,5 +41,8 @@ public partial class Mascota
 
     [JsonIgnore]
     public virtual Horarios Horario { get; set; }
+
+    [JsonIgnore]
+    public virtual Razas? Razas { get; set; }
 
 }

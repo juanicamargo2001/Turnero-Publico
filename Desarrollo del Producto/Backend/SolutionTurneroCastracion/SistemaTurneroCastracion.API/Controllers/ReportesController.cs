@@ -23,8 +23,8 @@ namespace SistemaTurneroCastracion.API.Controllers
 
 
         [Authorize]
-        [HttpGet("informesTipoAnimal")]
-        public async Task<IActionResult> InformeTipoAnimal()
+        [HttpPost("informesTipoAnimal")]
+        public async Task<IActionResult> InformeTipoAnimal([FromBody] FechasReporteRequest request)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
 
@@ -38,7 +38,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
 
 
-            ResponseInformeAnimales? informe = await _reportesRepository.ObtenerCantidadesTiposAnimales();
+            ResponseInformeAnimales? informe = await _reportesRepository.ObtenerCantidadesTiposAnimales(request);
 
             if (informe == null)
             {
@@ -50,8 +50,8 @@ namespace SistemaTurneroCastracion.API.Controllers
 
 
         [Authorize]
-        [HttpGet("informesCancelaciones")]
-        public async Task<IActionResult> InformeCancelaciones()
+        [HttpPost("informesCancelaciones")]
+        public async Task<IActionResult> InformeCancelaciones([FromBody] FechasReporteRequest request)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
 
@@ -65,7 +65,7 @@ namespace SistemaTurneroCastracion.API.Controllers
             }
 
 
-            ResponseInformeCancelacion? informe = await _reportesRepository.ObtenerCantidadCancelaciones();
+            ResponseInformeCancelacion? informe = await _reportesRepository.ObtenerCantidadCancelaciones(request);
 
             if (informe == null)
             {

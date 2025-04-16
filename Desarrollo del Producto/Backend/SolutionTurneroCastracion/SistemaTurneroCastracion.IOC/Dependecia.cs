@@ -74,6 +74,8 @@ namespace SistemaTurneroCastracion.IOC
             services.AddScoped<IReportesRepository, ReportesRepository>();
 
             services.AddScoped<ICalificacionRepository, CalificacionRepository>();
+
+            services.AddScoped<IRazasRepository, RazasRepository>();
         }
     }
 }

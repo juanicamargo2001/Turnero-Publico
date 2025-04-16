@@ -18,6 +18,8 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string TipoAnimal {  get; set; }
 
+        public string? Raza { get; set; }
+
 
     }
 }

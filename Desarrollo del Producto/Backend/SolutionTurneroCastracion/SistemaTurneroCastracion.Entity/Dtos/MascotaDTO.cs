@@ -24,6 +24,8 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string? Tamaño { get; set; }
 
+        public string Raza {  get; set; }
+
         [JsonIgnore]
         public int? Vecino { get; set; }
 

@@ -20,10 +20,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             _dbContext = dbContext;
         }
 
-        public async Task<ResponseInformeAnimales?> ObtenerCantidadesTiposAnimales()
+        public async Task<ResponseInformeAnimales?> ObtenerCantidadesTiposAnimales(FechasReporteRequest request)
         {
 
             DatosInformesAnimalesDTO? datos = await (from M in _dbContext.Mascotas
+                                                     join H in _dbContext.Horarios on M.IdMascota equals H.Id_mascota
+                                                     join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                                     where T.Dia >= request.FechaDesde && T.Dia <= request.FechaHasta
                                                      join TA in _dbContext.TiposAnimals on M.IdTipoAnimal equals TA.IdTipo
                                                      group TA by 1 into g
                                                      orderby g.Key
@@ -56,11 +59,13 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         }
 
 
-        public async Task<ResponseInformeCancelacion?> ObtenerCantidadCancelaciones()
+        public async Task<ResponseInformeCancelacion?> ObtenerCantidadCancelaciones(FechasReporteRequest request)
         {
 
             DatosInformeCancelacionesDTO? datos = await (from H in _dbContext.Horarios
                                                          join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                                         join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
+                                                         where T.Dia >= request.FechaDesde && T.Dia <= request.FechaHasta
                                                          group E by 1 into g
                                                          orderby g.Key
                                                          select new DatosInformeCancelacionesDTO()
