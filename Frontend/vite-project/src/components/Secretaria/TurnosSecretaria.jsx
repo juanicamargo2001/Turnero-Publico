@@ -18,11 +18,20 @@ const TurnosSecretaria = () => {
   const [nuevoEstado, setNuevoEstado] = useState("");
   const [medicamentoData, setMedicamentoData] = useState({
     veterinario: "",
-    medicamento: "",
-    dosis: "",
-    unidadMedida: "",
-    descripcion: "",
+    medicamentos: [{
+      medicamento: "",
+      dosis: "",
+      unidadMedida: "",
+      descripcion: ""
+    }],
+    observacion: ""
+  })
+  const [fallidoModal, setFallidoModal] = useState({
+    show: false,
+    comentario: "",
+    veterinario: ""
   });
+
   const [medicamentoModal, setMedicamentoModal] = useState(false);
   const [veterinarios, setVeterinarios] = useState([]);
   const [medicamentos, setMedicamentos] = useState([]);
@@ -33,7 +42,7 @@ const TurnosSecretaria = () => {
   const estadosPermitidos = {
     Reservado: ["Cancelado"],
     Confirmado: ["Ingresado", "Cancelado"],
-    Ingresado: ["Realizado"],
+    Ingresado: ["Realizado", "Fallido"],
 
     
   };
@@ -114,16 +123,38 @@ const TurnosSecretaria = () => {
     setMedicamentoData({ ...medicamentoData, [name]: value });
   };
 
+  const handleFallidoInput = (e) => {
+    const { name, value } = e.target;
+    setFallidoModal(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleMedicamentoSubmit = () => {
-    const { veterinario, medicamento, dosis, unidadMedida, descripcion } = medicamentoData;
-    if (!veterinario || !medicamento || !dosis || !unidadMedida || !descripcion) {
-      setError("Todos los campos son obligatorios.");
-      console.log("Error")
+    if (!medicamentoData.veterinario) {
+      setError("Debe seleccionar un veterinario.");
       return;
     }
+  
+    if (!medicamentoData.medicamentos || medicamentoData.medicamentos.length === 0) {
+      setError("Debe agregar al menos un medicamento.");
+      return;
+    }
+  
+    // Validar que todos los campos de cada medicamento estén completos
+    const medicamentosIncompletos = medicamentoData.medicamentos.some(med => 
+      !med.medicamento || !med.dosis || !med.unidadMedida || !med.descripcion
+    );
+  
+    if (medicamentosIncompletos) {
+      setError("Todos los campos de cada medicamento son obligatorios.");
+      return;
+    }
+  
     setError(null);
     setMedicamentoModal(false);
-    setConfirmModal(true); // Mostrar modal de confirmación
+    setConfirmModal(true);
   };
 
   const handleEstadoChange = (turno, nuevoEstado) => {
@@ -132,7 +163,15 @@ const TurnosSecretaria = () => {
 
     if (nuevoEstado === "Realizado") {
       setMedicamentoModal(true); // Abrir modal para datos del medicamento
-    } else {
+    }
+    else if(nuevoEstado === "Fallido"){
+      setFallidoModal({
+        show: true,
+        comentario: "",
+        veterinario: ""
+      }); // Abrir modal para datos de turno fallido
+    }
+    else {
       setConfirmModal(true); // Mostrar modal de confirmación
     }
   };
@@ -142,17 +181,27 @@ const TurnosSecretaria = () => {
     try {
       setLoading(true);
       if (nuevoEstado === "Realizado") {
-        
-        
-        const medicaciones = [{
-          medicamento: medicamentoData.medicamento,      // Asegúrate de que este valor corresponda al nombre del medicamento
-          dosis: parseInt(medicamentoData.dosis, 10),             // Dosis del medicamento
-          unidadMedida: medicamentoData.unidadMedida, // Unidad de medida (ml, mg, etc.)
-          descripcion: medicamentoData.descripcion  // Descripción del medicamento
-        }]
+        const medicaciones = medicamentoData.medicamentos.map(med => ({
+          medicamento: med.medicamento,
+          dosis: parseInt(med.dosis, 10),
+          unidadMedida: med.unidadMedida,
+          descripcion: med.descripcion
+        }));
+  
+        await turnosService.finalizarHorario(
+          selectedTurno.idHorario, 
+          parseInt(medicamentoData.veterinario, 10), 
+          medicaciones,
+          medicamentoData.observacion
+        );
 
-        await turnosService.finalizarHorario(selectedTurno.idHorario, parseInt(medicamentoData.veterinario, 10), medicaciones);
-        
+      } else if (nuevoEstado === "Fallido") {
+        await turnosService.marcarTurnoFallido( //Modificar esto para despues
+          selectedTurno.idHorario,
+          fallidoModal.comentario,
+          parseInt(fallidoModal.veterinario, 10)
+        );
+
       } else if (nuevoEstado === "Cancelado") {
         await misTurnosService.cancelarTurno(selectedTurno.idHorario);
       //} else if (nuevoEstado === "Confirmado") {
@@ -179,14 +228,18 @@ const TurnosSecretaria = () => {
   const handleCloseModal = () => {
     setConfirmModal(false);
     setMedicamentoModal(false);
+    setFallidoModal({ show: false, comentario: "",veterinario: "" });
     setSelectedTurno(null);
     setNuevoEstado("");
     setMedicamentoData({
       veterinario: "",
-      medicamento: "",
-      dosis: "",
-      unidadMedida: "",
-      descripcion: "",
+      medicamentos: [{
+        medicamento: "",
+        dosis: "",
+        unidadMedida: "",
+        descripcion: ""
+      }],
+      observacion: ""
     });
   };
 
@@ -291,7 +344,8 @@ const TurnosSecretaria = () => {
                       turno.estado === "Cancelado" ? "bg-danger":
                       turno.estado === "Ingresado" ? "bg-secondary":
                       turno.estado === "Confirmado" ? "bg-info":
-                      turno.estado === "Ingresado" ? "bg-dark"
+                      turno.estado === "Ingresado" ? "bg-dark":
+                      turno.estado === "Fallido" ? "bg-warning"
                       : "bg-primary"}`}>
                       {turno.estado}
                     </span>
@@ -329,97 +383,184 @@ const TurnosSecretaria = () => {
           <div className="modal-dialog" role="document">
             <div className="modal-content p-4">
               <div className="modal-header">
-                <h5 className="maven-pro-title">Registrar Medicamento</h5>
-                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}>
-                  
-                </button>
+                <h5 className="maven-pro-title">Registrar Medicamentos</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
               </div>
-
 
               <div className="maven-pro-body">
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
 
-              {error && ( // Mostrar mensaje de error si existe
-                 <div className="alert alert-danger" role="alert">
-                 {error}
-                  </div>
-               )}
-
-                <form>
-                  <div className="form-group-secretaria">
-                    <label>Veterinario:</label>
-                    <select
-                      name="veterinario"
-                      value={medicamentoData.veterinario}
-                      onChange={handleMedicamentoInput}
-                      className="form-control"
-                    >
-                      <option value="">Seleccione un veterinario</option>
-                      {veterinarios.map((veterinario) => (
-                        <option key={veterinario.idLegajo} value={veterinario.idLegajo}>
-                          {veterinario.nombre} {veterinario.apellido} - {veterinario.dni}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group-secretaria">
-                    <label>Medicamento:</label>
-                    <select
-                      name="medicamento"
-                      value={medicamentoData.medicamento}
-                      onChange={handleMedicamentoInput}
-                      className="form-control"
-                    >
-                      <option value="">Seleccione un medicamento</option>
-                      {medicamentos.map((medicamento) => (
-                        <option key={medicamento.id} value={medicamento.id}>
-                          {medicamento.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group-secretaria">
-                  <label>Dosis:</label>
-                  <input
-                    type="number"
-                    name="dosis"
-                    value={medicamentoData.dosis}
+                <div className="form-group-secretaria mb-3">
+                  <label>Veterinario:</label>
+                  <select
+                    name="veterinario"
+                    value={medicamentoData.veterinario}
                     onChange={handleMedicamentoInput}
                     className="form-control"
-                    min="1"   // valor mínimo
-                   
-                    step="1"  // paso de incremento
-                    placeholder="Escriba la dosis necesaria"
-                  />
+                  >
+                    <option value="">Seleccione un veterinario</option>
+                    {veterinarios.map((veterinario) => (
+                      <option key={veterinario.idLegajo} value={veterinario.idLegajo}>
+                        {veterinario.nombre} {veterinario.apellido} - {veterinario.dni}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                  <div className="form-group-secretaria">
-                    <label>Unidad de Medida:</label>
-                    <select
-                      name="unidadMedida"
-                      onChange={handleMedicamentoInput} 
-                      value={medicamentoData.unidadMedida}
-                      className="form-control"
-                    >
-                      <option value="">Seleccione unidad</option>
-                      {unidadMedidaOptions.map((unidad) => (
-                        <option key={unidad.idUnidad} value={unidad.tipoUnidad}>
-                          {unidad.tipoUnidad}
-                        </option>
-                      ))}
-                    </select>
+
+                {medicamentoData.medicamentos?.map((med, index) => (
+                  <div key={index} className="medicamento-item mb-3 p-3 border rounded">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <h6>Medicamento #{index + 1}</h6>
+                      <button 
+                        type="button" 
+                        className="btn btn-danger btn-sm"
+                        onClick={() => {
+                          const updatedMedicamentos = [...medicamentoData.medicamentos];
+                          updatedMedicamentos.splice(index, 1);
+                          setMedicamentoData({
+                            ...medicamentoData,
+                            medicamentos: updatedMedicamentos
+                          });
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+
+                    <div className="form-group-secretaria mb-2">
+                      <label>Medicamento:</label>
+                      <select
+                        name="medicamento"
+                        value={med.medicamento}
+                        onChange={(e) => {
+                          const updatedMedicamentos = [...medicamentoData.medicamentos];
+                          updatedMedicamentos[index].medicamento = e.target.value;
+                          setMedicamentoData({
+                            ...medicamentoData,
+                            medicamentos: updatedMedicamentos
+                          });
+                        }}
+                        className="form-control"
+                      >
+                        <option value="">Seleccione un medicamento</option>
+                        {medicamentos.map((medicamento) => (
+                          <option key={medicamento.id} value={medicamento.id}>
+                            {medicamento.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group-secretaria mb-2">
+                      <label>Dosis:</label>
+                      <input
+                        type="number"
+                        name="dosis"
+                        value={med.dosis}
+                        onChange={(e) => {
+                          const updatedMedicamentos = [...medicamentoData.medicamentos];
+                          updatedMedicamentos[index].dosis = e.target.value;
+                          setMedicamentoData({
+                            ...medicamentoData,
+                            medicamentos: updatedMedicamentos
+                          });
+                        }}
+                        className="form-control"
+                        min="1"
+                        step="1"
+                        placeholder="Escriba la dosis necesaria"
+                      />
+                    </div>
+
+                    <div className="form-group-secretaria mb-2">
+                      <label>Unidad de Medida:</label>
+                      <select
+                        name="unidadMedida"
+                        value={med.unidadMedida}
+                        onChange={(e) => {
+                          const updatedMedicamentos = [...medicamentoData.medicamentos];
+                          updatedMedicamentos[index].unidadMedida = e.target.value;
+                          setMedicamentoData({
+                            ...medicamentoData,
+                            medicamentos: updatedMedicamentos
+                          });
+                        }}
+                        className="form-control"
+                      >
+                        <option value="">Seleccione unidad</option>
+                        {unidadMedidaOptions.map((unidad) => (
+                          <option key={unidad.idUnidad} value={unidad.tipoUnidad}>
+                            {unidad.tipoUnidad}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group-secretaria mb-2">
+                      <label>Descripción:</label>
+                      <input
+                        type="text"
+                        name="descripcion"
+                        value={med.descripcion}
+                        onChange={(e) => {
+                          const updatedMedicamentos = [...medicamentoData.medicamentos];
+                          updatedMedicamentos[index].descripcion = e.target.value;
+                          setMedicamentoData({
+                            ...medicamentoData,
+                            medicamentos: updatedMedicamentos
+                          });
+                        }}
+                        className="form-control"
+                        placeholder="Descripción del medicamento"
+                      />
+                    </div>
                   </div>
-                  <div className="form-group-secretaria">
-                    <label>Descripción:</label>
-                    <input
-                      type="text"
-                      name="descripcion"
-                      value={medicamentoData.descripcion}
-                      onChange={handleMedicamentoInput}
-                      className="form-control"
-                      placeholder="Descripción del medicamento"
-                    />
-                  </div>
-                </form>
+                  
+                ))}
+
+                <div className="d-flex justify-content-between mt-3">
+                  <button 
+                    type="button" 
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setMedicamentoData({
+                        ...medicamentoData,
+                        medicamentos: [
+                          ...(medicamentoData.medicamentos || []),
+                          {
+                            medicamento: "",
+                            dosis: "",
+                            unidadMedida: "",
+                            descripcion: "",
+                            observacion: "",
+                          }
+                        ]
+                      });
+                    }}
+                  >
+                    Agregar otro medicamento
+                  </button>
+                </div>
+
+                <div className="form-group-secretaria mb-3 mt-3">
+                  <label>Observación:</label>
+
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={medicamentoData.observacion}
+                    onChange={handleFallidoInput}
+                    placeholder="Ingrese la observación del Turno."
+                  ></textarea>
+                </div>
+
+                
               </div>
+
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
                   Cerrar
@@ -432,7 +573,6 @@ const TurnosSecretaria = () => {
           </div>
         </div>
       )}
-
       {/* Modal de confirmación */}
       {confirmModal && (
         <div className="modal show d-block" tabIndex="-1" role="dialog">
@@ -452,6 +592,78 @@ const TurnosSecretaria = () => {
                   Cancelar
                 </button>
                 <button type="button" className="btn btn-primary" onClick={handleConfirmChange}>
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de turno fallido */}
+      {fallidoModal.show && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content p-4">
+              <div className="modal-header">
+                <h5 className="maven-pro-title">Registrar Turno Fallido</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  aria-label="Close" 
+                  onClick={() => setFallidoModal({ show: false, comentario: "" })}
+                ></button>
+              </div>
+
+              <div className="form-group-secretaria mb-3">
+                  <label>Veterinario:</label>
+                  <select
+                    name="veterinario"
+                    value={fallidoModal.veterinario}
+                    onChange={handleFallidoInput}
+                    className="form-control"
+                  >
+                    <option value="">Seleccione un veterinario</option>
+                    {veterinarios.map((veterinario) => (
+                      <option key={veterinario.idLegajo} value={veterinario.idLegajo}>
+                        {veterinario.nombre} {veterinario.apellido} - {veterinario.dni}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+              <div className="maven-pro-body">
+                <div className="form-group-secretaria mb-3">
+                  <label>Comentario:</label>
+                  <textarea
+                    className="form-control"
+                    rows="3"
+                    value={fallidoModal.comentario}
+                    onChange={handleFallidoInput}
+                    placeholder="Ingrese el inconveniente del turno."
+                  ></textarea>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => setFallidoModal({ show: false, comentario: "", veterinario: "" })}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-primary" 
+                  onClick={() => {
+                    if (!fallidoModal.comentario.trim()) {
+                      setError("Por favor ingrese un comentario");
+                      return;
+                    }
+                    setError(null);
+                    setConfirmModal(true);
+                  }}
+                >
                   Confirmar
                 </button>
               </div>
