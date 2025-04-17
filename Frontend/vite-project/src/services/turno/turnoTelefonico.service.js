@@ -21,7 +21,6 @@ async function obtenerMascotasNoCastradas(dni) {
     );
 
     if (resp.status === 200) {
-      console.log(`Mascotas no castradas obtenidas para el DNI ${dni} exitosamente.`);
       return resp.data;
     } else {
       console.error(`Error al obtener mascotas no castradas: ${resp.status}`);

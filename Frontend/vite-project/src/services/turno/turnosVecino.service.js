@@ -20,12 +20,11 @@ async function filtrarPorDni(dni) {
     );
 
     if (resp.status === 200) {
-      console.log(`Turnos filtrados para el DNI ${dni} exitosamente.`);
       return resp.data;
     }
   } catch (error) {
-    console.error("Error al filtrar turnos por DNI:", error.response ? error.response.data : error.message);
-    throw error;
+    if (error.response.data.status == 400)
+      return "¡No se ha encontrado el DNI!"
   }
 }
 

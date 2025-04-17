@@ -110,7 +110,7 @@ const Reportes = () => {
     return null;
   }
 
-  const renderDatePickers = ({ mostrarTipoAnimal = false }) => (
+  const renderDatePickers = () => (
     <div className="d-flex gap-3 mb-3 align-items-center">
       <div>
         <label>Desde:</label>
@@ -131,26 +131,7 @@ const Reportes = () => {
           dateFormat="dd/MM/yyyy"
         />
       </div>
-      {mostrarTipoAnimal && (
-      <div>
-        <label>Tipo de animal:</label>
-        <select
-          value={tipoAnimal}
-          onChange={(e) => setTipoAnimal(e.target.value)}
-          className="form-control"
-        >
-          <option value="PERRO">Perro</option>
-          <option value="GATO">Gato</option>
-        </select>
-      </div>
-    )}
-    <div>
-      <button onClick={fetchRazaData} className="btn btn-primary mt-4">
-        Buscar
-      </button>
     </div>
-    </div>
-    
   );
 
 
@@ -160,7 +141,7 @@ const Reportes = () => {
       <h3 className="text-center mb-4 maven-pro-title">Reportes generales</h3>
       <Tabs activeKey={key} onSelect={(k) => setKey(k)} id="reportes-tabs" className="custom-tabs m-4">
         {/* Pestaña Tipo Animal */}
-        <Tab eventKey="tipo-animal" title="Tipo de animal Castrados">
+        <Tab eventKey="tipo-animal" title="Tipo de Animal Castrado">
           {renderDatePickers()}
           {!pieDataTipoAnimal || pieDataTipoAnimal.every(d => d.value === 0) ? (
             <div className="text-center text-muted mt-4">
@@ -216,7 +197,7 @@ const Reportes = () => {
 
 
         {/* Pestaña Cancelaciones */}
-        <Tab eventKey="cancelaciones" title="Confirmados y cancelados">
+        <Tab eventKey="cancelaciones" title="Confirmados y Cancelados">
           {renderDatePickers()}
           {!pieDataCancelaciones || pieDataCancelaciones.every(d => d.value === 0) ? (
             <div className="text-center text-muted mt-4">
@@ -269,9 +250,26 @@ const Reportes = () => {
         </Tab>
 
         {/* Pestaña Razas */}
-        <Tab eventKey="por-raza" title="Castraciones por raza">
-          {renderDatePickers({ mostrarTipoAnimal: true })}
-
+        <Tab eventKey="por-raza" title="Castraciones por Raza">
+          {renderDatePickers()}
+        
+          <div>
+              <label>Tipo de animal:</label>
+              <select
+                value={tipoAnimal}
+                onChange={(e) => setTipoAnimal(e.target.value)}
+                className="form-control"
+              >
+                <option value="PERRO">Perro</option>
+                <option value="GATO">Gato</option>
+              </select>
+            </div>
+          
+          <div>
+            <button onClick={fetchRazaData} className="btn btn-primary mt-4 mb-3">
+              Buscar
+            </button>
+          </div>
           {loadingRazas ? (
             <div className="d-flex justify-content-center align-items-center" style={{ height: "300px" }}>
               <DotLoader color="#60C1EA" />

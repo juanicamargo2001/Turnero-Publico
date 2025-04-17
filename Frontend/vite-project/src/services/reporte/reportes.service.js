@@ -3,7 +3,7 @@ import loginService from "../login/login.service";
 
 const urlResourceTipoAnimal = import.meta.env.VITE_INFORME_TIPO_ANIMAL_URL;
 const urlResourceCancelaciones = import.meta.env.VITE_INFORME_CANCELACIONES_URL;
-const urlResourceRazas = import.meta.env.VITE_INFORME_RAZA_URL; // URL del informe de cancelaciones
+const urlResourceRazas = import.meta.env.VITE_INFORME_RAZA_URL;
 
 async function obtenerInformeTipoAnimal(fechaDesde, fechaHasta) {
   try {
@@ -46,7 +46,8 @@ async function obtenerInformeCancelaciones(fechaDesde, fechaHasta) {
 async function obtenerInformeRazas(tipoAnimal, fechaDesde, fechaHasta) {
   try {
     const token = await loginService.obtenerTokenConRenovacion();
-
+    console.log("hola")
+    console.log(tipoAnimal)
     const urlConParametro = `${urlResourceRazas}?tipoAnimal=${encodeURIComponent(tipoAnimal)}`;
 
     const resp = await axios.post(urlConParametro, {fechaDesde, fechaHasta}, {

@@ -94,6 +94,22 @@ const mascotaService = {
     }
   },
 
+  async crearMascotaSecretaria(nuevaMascota) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const response = await axios.post(`${API_URL}/crearAnimalSecretaria`, nuevaMascota , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch {
+      return null
+    }
+  },
+
 };
 
 export default mascotaService;

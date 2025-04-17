@@ -42,7 +42,7 @@ export default function Registro_Vecino_Minimo() {
         confirmButtonColor: "#E15562",
         confirmButtonText: "OK",
       });
-      navigate("/secretaria/turno-urgencia")
+      navigate(-1)
     }catch(error){
       console.error("Error al registrar el vecino:", error.response ? error.response.data : error);
     }
@@ -160,7 +160,7 @@ export default function Registro_Vecino_Minimo() {
                 {errors.fNacimiento && <p style={{ color: 'red' }}>{errors.fNacimiento.message}</p>}
               </div>
         <div className="d-flex justify-content-end p-2">
-          <button type="button" className="btn btn-secondary me-2 confir2" onClick={() => navigate("/secretaria/turnos")}>Volver</button>
+          <button type="button" className="btn btn-secondary me-2 confir2" onClick={() => navigate(-1)}>Volver</button>
           <button type="submit" className="btn btn-success confir">Confirmar</button>
         </div>
       </form>

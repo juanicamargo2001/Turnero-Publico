@@ -48,7 +48,7 @@ const RegistroUnidadMedida = () => {
         </div>
 
         <div className="d-flex justify-content-end">
-          <a href='/unidades-medida'>
+          <a href='/unidades'>
             <button type='button' className="btn btn-primary me-2 ms-auto confir">Volver</button>
           </a>
           <button type="submit" className="btn btn-primary confir">Confirmar</button>

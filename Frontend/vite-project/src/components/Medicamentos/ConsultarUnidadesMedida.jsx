@@ -47,7 +47,7 @@ const ConsultarUnidadesMedida = () => {
               <button className="btn btn-primary confir">Crear</button>
             </a>
           </div>
-          <table className="">
+          <table className="mb-4">
             <thead className="table-primary">
               <tr>
                 <th>Id</th>

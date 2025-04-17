@@ -5,7 +5,6 @@ const API_URL = import.meta.env.VITE_TURNOS_URL;
 
 async function reservarTurno(idHorario, idMascota) {
   try {
-    // Obtener el token de sesión del usuario
     const token = await loginService.obtenerTokenConRenovacion();
 
     const requestBody = {
@@ -13,7 +12,6 @@ async function reservarTurno(idHorario, idMascota) {
       idMascota: idMascota,
     };
 
-    // Realizar la solicitud POST para reservar el turno
     const response = await axios.post(`${API_URL}/reservarTurno`, requestBody, {
       headers: {
         "ngrok-skip-browser-warning": "true",
@@ -22,25 +20,22 @@ async function reservarTurno(idHorario, idMascota) {
       },
     });
 
-    // Verificar si la respuesta es exitosa
     if (response.data.success) {
       console.log("Turno reservado con éxito:", response.data.message);
-      return response.data; // Devolver los datos de la respuesta
+      return response.data;
     } else {
-      throw new Error(response.data.message); // En caso de error, lanzar una excepción
+      throw new Error(response.data.message);
     }
   } catch (error) {
     console.error("Error al reservar el turno:", error);
-    throw error; // Re-lanzar el error para ser manejado en el frontend
+    throw error;
   }
 }
 
 async function reservarTurnoUrgencia(nuevoTurnoUrgencia) {
   try {
-    // Obtener el token de sesión del usuario
     const token = await loginService.obtenerTokenConRenovacion();
 
-    // Realizar la solicitud POST para reservar el turno
     const response = await axios.post(
       `${API_URL}/turnoEmergencia`,
       nuevoTurnoUrgencia,
@@ -53,19 +48,14 @@ async function reservarTurnoUrgencia(nuevoTurnoUrgencia) {
       }
     );
 
-    // Verificar si la respuesta es exitosa
     if (response.data.success) {
-      console.log(
-        "Turno de urgencia reservado con éxito:",
-        response.data.message
-      );
-      return response.data; // Devolver los datos de la respuesta
+      return response.data;
     } else {
-      throw new Error(response.data.message); // En caso de error, lanzar una excepción
+      throw new Error(response.data.message);
     }
   } catch (error) {
     console.error("Error al reservar el turno de urgencia:", error);
-    throw error; // Re-lanzar el error para ser manejado en el frontend
+    throw error;
   }
 }
 

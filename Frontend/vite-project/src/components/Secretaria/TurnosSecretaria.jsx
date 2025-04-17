@@ -191,7 +191,6 @@ const TurnosSecretaria = () => {
   };
 
   const fetchUnidades = async () => {
-    console.log("hola")
     try {
       const data = await medicamentosService.obtenerUnidadesMedida();
       setUnidadMedidaOptions(data.result);

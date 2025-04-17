@@ -73,7 +73,6 @@ const medicamentosService = {
             'Authorization': `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('Error al obtener los medicamentos:', error);

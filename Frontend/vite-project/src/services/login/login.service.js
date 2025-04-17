@@ -53,7 +53,6 @@ const refreshToken = async () => {
       
       refreshToken: refresh
     });
-    console.log(Cookies.get('refreshToken'));
 
     const { token, refreshToken } = response.data.result;
    
@@ -75,10 +74,8 @@ const obtenerTokenConRenovacion = async () => {
       let token = obtenerToken();
   
       return token;
-    } catch (error) {
-      // Si no se encuentra el token o si ha expirado, intenta refrescarlo
-      console.log('Token expirado o no encontrado, intentando renovar...');
-      return await refreshToken(); // Llama a la función para refrescar el token
+    } catch {
+      return await refreshToken();
     }
 };
 
@@ -86,7 +83,7 @@ const userRol = async () => {
   let token = null;
   try {
     token = await obtenerTokenConRenovacion();
-  } catch (error) {
+  } catch  {
     return "default";
   }
 
@@ -94,7 +91,7 @@ const userRol = async () => {
     const response = await axios.get(ROL_URL, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        'ngrok-skip-browser-warning': 'true', // Encabezado para omitir la advertencia
+        'ngrok-skip-browser-warning': 'true',
         'Content-Type': 'application/json',
       },
     });
@@ -126,7 +123,6 @@ const userName = async () => {
     return response.data.result;
   } catch (error) {
     console.error("Error al obtener el nombre de usuario:", error.response ? error.response.data : error.message);
-    //return await refreshToken();
     throw error;
   }
 };
@@ -151,7 +147,6 @@ const changePassword = async (passwordRequest) => {
     return response.data.result;
   } catch (error) {
     console.error("Error al cambiar la contraseña:", error.response ? error.response.data : error.message);
-    //return await refreshToken();
     throw error;
   }
 };

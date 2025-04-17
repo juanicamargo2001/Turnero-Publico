@@ -38,11 +38,8 @@ const TipoAnimal_Admin = () => {
 
   useEffect(() => {
     const fetchMascotas = async () => {
-      console.log(`ID Usuario: ${idUsuario}`);
-    console.log(`DNI: ${idParsed}`);
       try {
         const response = await turnoTelefonico.obtenerMascotasNoCastradas(idParsed);
-        console.log("Respuesta de la API:", response);
 
         if (response.success && response.result) {
           setMascotas(response.result);
@@ -87,7 +84,10 @@ const TipoAnimal_Admin = () => {
                  : ""}<br>
                <strong>Tamaño:</strong> ${mascota.tamaño 
                  ? mascota.tamaño.charAt(0).toUpperCase() + mascota.tamaño.slice(1).toLowerCase() 
-                 : ""}
+                 : ""}<br>
+               <strong>Raza:</strong> ${mascota.tamaño 
+                ? mascota.raza 
+                : ""}
               </div>`,
         confirmButtonColor: "#E15562",
         confirmButtonText: "OK",

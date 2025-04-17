@@ -1,29 +1,33 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { vecinoService } from '../../services/vecino/vecino.service'
 import { tipoAnimalService } from '../../services/animal/tipoAnimal.service'
 import { sexosService } from '../../services/animal/sexo.service'
 import { tamanoService } from '../../services/animal/tamano.service'
 import { turnosService} from '../../services/turno/turnos.service'
+import mascotaService from '../../services/animal/mascota.service'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
 
 
 export default function Turnos_Urgencia() {
   
-  const { register, handleSubmit, formState: { errors }} = useForm({
+  const { register, handleSubmit, formState: { errors }, watch, setValue} = useForm({
     mode: 'onChange', 
   })
 
   const [busqueda, setBusqueda] = useState("")
   const [vecinos, setVecinos] = useState([])
-  const [error, setError] = useState(null)
   const [showRegistro, setShowRegistro] = useState(false)
   const [dataForm, setDataForm] = useState("")
   const [sexos, setSexos] = useState([])
   const [tiposAnimal, setTiposAnimal] = useState([])
   const [tamanos, setTamanos] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null)
+  const [razas, setRazas] = useState([]);
+  const [mostrarOpciones, setMostrarOpciones] = useState(false);
+  const [query, setQuery] = useState('');
+  const refContenedor = useRef(null);
   const navigate = useNavigate()
 
   const manejarBusqueda = async (e) => {
@@ -34,7 +38,7 @@ export default function Turnos_Urgencia() {
           try {
             const response = await vecinoService.obtenerVecinoXDNI(busqueda)
             setVecinos([response.result])
-          } catch (error) {
+          } catch {
             Swal.fire({
               title: "¡Error!",
               text: "No se encontro a un vecino con ese DNI",
@@ -42,8 +46,6 @@ export default function Turnos_Urgencia() {
               confirmButtonColor: "#E15562",
               confirmButtonText: "OK",
             });
-            setError(error);
-            console.error("Error al buscar vecinos:", error);
             setVecinos([])
           }
       }}
@@ -66,31 +68,34 @@ export default function Turnos_Urgencia() {
   }
 
   const fetchSexos = async () => {
-    try {
-      const data = await sexosService.Buscar();
+    const data = await sexosService.Buscar();
+
+    if (data.result != null)
       setSexos(data.result);
-    } catch (error) {
-      setError("Error al cargar los sexos");
-    }
+    else
+      return
+    
   };
 
+
   const fetchTiposAnimal = async () => {
-    try {
-      const data = await tipoAnimalService.Buscar();
+    const data = await tipoAnimalService.Buscar();
+
+    if(data.result != null)
       setTiposAnimal(data.result);
-    } catch (error) {
-      setError("Error al cargar los tipos de animales");
-    }
+    else
+      return
   };
 
   const fetchTamanos = async () => {
-    try {
-      const data = await tamanoService.Buscar();
-      setTamanos(data.result);
-    } catch (error) {
-      setError("Error al cargar los tamaños");
-    }
+  const data = await tamanoService.Buscar();
+
+  if(data.result != null)
+    setTamanos(data.result);
+  else
+    return
   };
+
 
   const onSubmit = async (data) => {
     const nuevoTurnoUrgencia = {
@@ -98,13 +103,13 @@ export default function Turnos_Urgencia() {
       edad: parseInt(data.edad),
       sexo: data.sexo,
       tipoAnimal: data.tipoAnimal,
-      tipoTamaño: data.tamano
+      tipoTamaño: data.tamano,
+      raza : data.raza
     };
     
-    console.log(nuevoTurnoUrgencia)
+    let resultado = await turnosService.reservarTurnoUrgencia(nuevoTurnoUrgencia)
 
-    try {
-      await turnosService.reservarTurnoUrgencia(nuevoTurnoUrgencia)
+    if(resultado.success){
       Swal.fire({
               title: "¡Éxito!",
               text: "Turno de emergencia registrado con éxito.",
@@ -113,10 +118,33 @@ export default function Turnos_Urgencia() {
               confirmButtonText: "OK",
             });
       navigate("/secretaria/turnos")
-    } catch (error) {
-      setError("Error al grabar el turno")
+    }else
+      return
+  };
+
+  const HandleRaza = async(e) => {
+
+    setQuery(e.target.value)
+
+    if (query.length > 2){
+
+      let razas = await mascotaService.obtenerRazas(watch('tipoAnimal'), query)
+
+      if (razas != null){
+        setMostrarOpciones(true);
+        setRazas(razas.result)
+      }
     }
-    
+    else{
+      setRazas([])
+      setMostrarOpciones(false);
+    }
+  }
+
+  const handleSelect = (raza) => {
+    console.log(raza)
+    setValue('raza', raza.nombreRaza);
+    setMostrarOpciones(false);
   };
 
   useEffect(() => {
@@ -124,6 +152,16 @@ export default function Turnos_Urgencia() {
     fetchTiposAnimal()
     fetchTamanos()
   }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (refContenedor.current && !refContenedor.current.contains(event.target)) {
+        setMostrarOpciones(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <div className="container mt-4 page-container">
@@ -261,6 +299,32 @@ export default function Turnos_Urgencia() {
                     })}
                   />
                   {errors.edad && <div className="invalid-feedback">{errors.edad.message}</div>} 
+                </div>
+
+                <div className="col-md-6 mb-3 w-100" ref={refContenedor}>
+                  <label htmlFor="raza" className="form-label">Raza</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="raza"
+                    placeholder="Escriba la raza del animal"
+                    {...register('raza')}
+                    onChange={HandleRaza}
+                  />
+                  {mostrarOpciones && razas.length > 0 && (
+                <ul className="list-group position-absolute w-100 zindex-dropdown" style={{ maxHeight: '150px', overflowY: 'auto', maxWidth: '490px' }}>
+                  {razas.map((raza, index) => (
+                    <li
+                      key={index}
+                      className="list-group-item list-group-item-action"
+                      onClick={() => handleSelect(raza)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {raza.nombreRaza}
+                    </li>
+                  ))}
+                </ul>
+                )}
                 </div>
 
                 <div className="d-flex justify-content-between">

@@ -33,8 +33,8 @@ const CentrosCastracionSecre = () => {
   }, []);
 
   useEffect(() => {
-    console.log("DNI:", dni);
-    console.log("ID Usuario:", idUsuario);
+    // console.log("DNI:", dni);
+    // console.log("ID Usuario:", idUsuario);
   }, [dni, idUsuario]);
 
   const handleNavigate = (rutaCentro) => {
@@ -84,7 +84,7 @@ const CentrosCastracionSecre = () => {
           )}
         </div>
         <div className="d-flex justify-content-end p-2">
-        <button type="button" className="btn btn-dark me-2 confir2">Volver</button>
+        <button type="button" onClick={() => navigate(-1)} className="btn btn-dark me-2 confir2">Volver</button>
         
       </div>
       </div>
