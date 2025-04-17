@@ -314,7 +314,7 @@ function App() {
 
               <Route path="*" element={<Default/>} />
 
-              <Route path="/crear-Personal" element={
+              <Route path="/crear-rol" element={
                 <RutaProtegida rolesPermitidos={["superAdministrador"]}>
                 <CrearPersonal/>
                 </RutaProtegida>

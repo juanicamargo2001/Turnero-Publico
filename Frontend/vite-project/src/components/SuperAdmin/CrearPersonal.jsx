@@ -83,7 +83,7 @@ const CrearPersonal = () => {
 
     return (
         <div className="container mt-4">
-            <h2 className='maven-pro-title'>Crear Personal</h2>
+            <h2 className='maven-pro-title'>Crear Roles</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-3">
                     <label htmlFor="role" className="form-label">Rol</label>
