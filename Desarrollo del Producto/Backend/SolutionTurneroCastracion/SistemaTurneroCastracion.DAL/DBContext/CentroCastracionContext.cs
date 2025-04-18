@@ -359,6 +359,9 @@ public partial class CentroCastracionContext : DbContext
             entity.Property(e => e.Id_Legajo)
             .HasColumnName("id_legajo");
 
+            entity.Property(e => e.Observacion)
+            .HasColumnName("observacion");
+
             entity.HasOne(e => e.Turnos)
                   .WithMany(t => t.Horarios)
                   .HasForeignKey(e => e.IdTurno)

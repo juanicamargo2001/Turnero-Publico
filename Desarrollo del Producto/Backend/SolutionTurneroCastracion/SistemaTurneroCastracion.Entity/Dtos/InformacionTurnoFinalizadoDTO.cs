@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public record class FinalizarTurnoDTO
+    public class InformacionTurnoFinalizadoDTO
     {
-        public int IdHorario { get; set; }
+        public string NombreVeterinario { get; set; }
 
-        public int IdLegajoVeterinario { get; set; }
+        public string Matricula { get; set; }
 
         public List<MedicamentoxHorarioDTO>? Medicaciones { get; set; }
 
-        public string? Observacion {  get; set; }
-
+        public string? Observacion { get; set; }
     }
 }

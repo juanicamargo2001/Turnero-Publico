@@ -168,7 +168,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            List<MascotaDTO> mascotasVecino = await _mascotaRepository.obtenerMascotasDueño(HttpContext);
+            List<MascotaDTO> mascotasVecino = await _mascotaRepository.MisMascotas(HttpContext);
 
             if (mascotasVecino.Count == 0)
             {
@@ -230,6 +230,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             if (await _mascotaRepository.CrearMascota(new MascotaDTO
             {
+                Nombre = DateTime.Now.ToString(),
                 Edad = request.Edad,
                 Sexo = request.Sexo,
                 Tamaño = request.TipoTamaño,

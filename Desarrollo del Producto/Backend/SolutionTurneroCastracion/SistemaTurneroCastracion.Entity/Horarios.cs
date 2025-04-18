@@ -27,6 +27,8 @@ namespace SistemaTurneroCastracion.Entity
 
         public int? Id_mascota { get; set; }
 
+        public string? Observacion { get; set; }
+
 
         [JsonIgnore]    
         public Turnos Turnos { get; set; }

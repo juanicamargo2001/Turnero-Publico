@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace SistemaTurneroCastracion.Entity.Dtos
 {
-    public enum EstadoTurno
+    public class ResponseInformeRazas
     {
-        Libre,
-        Reservado,
-        Confirmado,
-        Realizado,
-        Cancelado,
-        Ingresado,
-        Fallido
+        public string Raza {  get; set; }
+        
+        public int Cantidad { get; set; }
+
+
     }
 }

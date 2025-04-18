@@ -74,5 +74,32 @@ namespace SistemaTurneroCastracion.API.Controllers
 
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = informe });
         }
+
+        [Authorize]
+        [HttpPost("informesRaza")]
+        public async Task<IActionResult> informesRazaPerro([FromBody] FechasReporteRequest request, [FromQuery] string tipoAnimal)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["superAdministrador"]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+
+            List<ResponseInformeRazas>? informe = await _reportesRepository.ObtenerCantidadRazaCastrados(request, tipoAnimal);
+
+            if (informe == null)
+            {
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al crear el informe", Result = "" });
+            }
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = informe });
+        }
     }
 }
+

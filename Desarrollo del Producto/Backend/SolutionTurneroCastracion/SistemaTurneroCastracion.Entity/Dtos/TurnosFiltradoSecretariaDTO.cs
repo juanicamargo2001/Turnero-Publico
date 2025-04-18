@@ -18,15 +18,15 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public long Telefono { get; set; }
 
-        public string TipoServicio { get; set; }
+        public string? TipoServicio { get; set; }
 
-        public int IdHorario { get; set; }
+        public int? IdHorario { get; set; }
 
-        public DateTime Dia {  get; set; }
+        public DateTime? Dia {  get; set; }
 
         public TimeSpan? Hora { get; set; }
 
-        public string Estado {  get; set; }
+        public string? Estado {  get; set; }
 
         public string? CentroCastracion {  get; set; }
 

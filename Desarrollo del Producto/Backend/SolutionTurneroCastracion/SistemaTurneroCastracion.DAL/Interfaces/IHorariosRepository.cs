@@ -24,5 +24,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
         Task<bool> TurnoEmergencia(TurnoUrgenteRequestDTO request, HttpContext context);
         Task<bool> FinalizarHorario(FinalizarTurnoDTO request);
         Task<bool> CancelacionMasiva(RequestCancelacionesMasivas request);
+        Task<bool> FinalizarTurnoFallido(FinalizarTurnoFallidoRequest request);
+        Task<InformacionTurnoFinalizadoDTO?> ObtenerTurnoFinalizacion(int idHorario);
     }
 }

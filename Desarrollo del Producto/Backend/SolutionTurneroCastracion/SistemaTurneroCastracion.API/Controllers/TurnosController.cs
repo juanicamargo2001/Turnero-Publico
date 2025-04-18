@@ -384,5 +384,53 @@ namespace SistemaTurneroCastracion.API.Controllers
             return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnoToken });
         }
 
+
+        [Authorize]
+        [HttpPost("finalizarFallido")]
+        public async Task<IActionResult> FinalizarTurnoIngresoFallido([FromBody] FinalizarTurnoFallidoRequest request)
+        {
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, 
+                [RolesEnum.secretaria.ToString(), RolesEnum.administrador.ToString(), RolesEnum.superAdministrador.ToString()]);
+
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            if (!await _horariosRepository.FinalizarTurnoFallido(request))
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al finalizar el turno fallido!", Result = "" });
+
+            return NoContent();
+        }
+
+        [Authorize]
+        [HttpPost("obtenerFinalizacionTurno")]
+        public async Task<IActionResult> ObtenerFinalizacionTurno([FromBody] int idHorario)
+        {
+
+            var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext,
+                [RolesEnum.secretaria.ToString(), RolesEnum.administrador.ToString(), RolesEnum.superAdministrador.ToString()]);
+            if (!isValid)
+            {
+                if (errorMessage == "Unauthorized")
+                {
+                    return Unauthorized();
+                }
+                return BadRequest(errorMessage);
+            }
+
+            InformacionTurnoFinalizadoDTO? turnoFinalizado = await _horariosRepository.ObtenerTurnoFinalizacion(idHorario);
+
+            if(turnoFinalizado == null)
+                return BadRequest(new ValidacionResultadosDTO { Success = false, Message = "Sucedio un error al obtener la información del turno finalizado!", Result = "" });
+
+            return Ok(new ValidacionResultadosDTO { Success = true, Message = "Ok", Result = turnoFinalizado });
+
+        }
+
     }
 }

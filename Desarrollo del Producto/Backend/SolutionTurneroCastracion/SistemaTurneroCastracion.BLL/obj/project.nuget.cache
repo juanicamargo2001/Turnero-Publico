@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "QIoLYk5Bqw4=",
+  "dgSpecHash": "BOaaz+KX9NQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
   "expectedPackageFiles": [
@@ -83,8 +83,10 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "El paquete \"SixLabors.ImageSharp\" 3.1.5 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-2cmq-823j-5qj8",
+      "projectPath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\agust\\OneDrive\\Escritorio\\Turnero_de_Castracion\\Desarrollo del Producto\\Backend\\SolutionTurneroCastracion\\SistemaTurneroCastracion.BLL\\SistemaTurneroCastracion.BLL.csproj",
       "libraryId": "SixLabors.ImageSharp",
       "targetGraphs": [
         "net8.0"

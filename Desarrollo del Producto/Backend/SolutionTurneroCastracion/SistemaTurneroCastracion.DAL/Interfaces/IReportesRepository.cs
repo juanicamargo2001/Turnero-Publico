@@ -11,7 +11,7 @@ namespace SistemaTurneroCastracion.DAL.Interfaces
     {
         Task<ResponseInformeAnimales?> ObtenerCantidadesTiposAnimales(FechasReporteRequest request);
         Task<ResponseInformeCancelacion?> ObtenerCantidadCancelaciones(FechasReporteRequest request);
-
+        Task<List<ResponseInformeRazas>?> ObtenerCantidadRazaCastrados(FechasReporteRequest request, string tipoAnimal);
 
     }
 }
