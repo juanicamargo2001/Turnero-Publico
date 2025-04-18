@@ -153,9 +153,11 @@ async function finalizarHorario(idHorario) {
   }
 }
 
+
+
 export const turnosService = {
   reservarTurno,
   reservarTurnoUrgencia,
   consultarTurnoToken,
-  confirmarTurno
+  confirmarTurno,
 };

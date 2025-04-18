@@ -142,7 +142,6 @@ export default function Turnos_Urgencia() {
   }
 
   const handleSelect = (raza) => {
-    console.log(raza)
     setValue('raza', raza.nombreRaza);
     setMostrarOpciones(false);
   };

@@ -16,6 +16,7 @@ const TurnosSecretaria = () => {
   const [selectedTurno, setSelectedTurno] = useState(null);
   const [confirmModal, setConfirmModal] = useState(false);
   const [nuevoEstado, setNuevoEstado] = useState("");
+  const [infoTurnoFinalizados, setInfoTurnoFinalizados] = useState(null)
   const [medicamentoData, setMedicamentoData] = useState({
     veterinario: "",
     medicamentos: [{
@@ -31,6 +32,8 @@ const TurnosSecretaria = () => {
     comentario: "",
     veterinario: ""
   });
+
+  const [modalInfo, setModalInfo] = useState({show: false,});
 
   const [medicamentoModal, setMedicamentoModal] = useState(false);
   const [veterinarios, setVeterinarios] = useState([]);
@@ -67,7 +70,19 @@ const TurnosSecretaria = () => {
     setError(null);
     try {
       const data = await turnosService.obtenerTurnosPorDni(dni);
-      setTurnos(data.result);
+      if (data.result != null && data.result.length > 0) {
+        const turnosValidos = data.result.filter(t => t.idHorario !== 0);
+      
+        if (turnosValidos.length > 0) {
+          setTurnos(turnosValidos);
+        }
+        else{
+          setTurnos([])
+        }
+      }
+      else{
+        setTurnos([])
+      }
     } catch (err) {
       setError("Error al obtener los turnos por DNI");
       setTurnos([]);
@@ -119,16 +134,20 @@ const TurnosSecretaria = () => {
   }, []);
 
   const handleMedicamentoInput = (e) => {
+    console.log(e.target.name)
     const { name, value } = e.target;
     setMedicamentoData({ ...medicamentoData, [name]: value });
   };
 
   const handleFallidoInput = (e) => {
     const { name, value } = e.target;
-    setFallidoModal(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFallidoModal(prev => {
+      const nuevo = {
+        ...prev,
+        [name]: value
+      };
+      return nuevo;
+    });
   };
 
   const handleMedicamentoSubmit = () => {
@@ -196,10 +215,10 @@ const TurnosSecretaria = () => {
         );
 
       } else if (nuevoEstado === "Fallido") {
-        await turnosService.marcarTurnoFallido( //Modificar esto para despues
+        await turnosService.finalizarTurnoFallido(
           selectedTurno.idHorario,
-          fallidoModal.comentario,
-          parseInt(fallidoModal.veterinario, 10)
+          parseInt(fallidoModal.veterinario, 10),
+          fallidoModal.comentario
         );
 
       } else if (nuevoEstado === "Cancelado") {
@@ -251,6 +270,19 @@ const TurnosSecretaria = () => {
       console.error("Error al obtener unidades de medida:", err);
     }
   }  
+
+  const handleInfoClick = async (turno) => {
+    let response = await turnosService.ObtenerInfoTurnosFinalizados(turno.idHorario)
+    if (response.success){
+      setModalInfo({show: true})
+      setInfoTurnoFinalizados(response.result)
+    }
+  };
+
+  const handleCloseModalInfo = () => {
+    setModalInfo({show: false});
+  };
+
 
   return (
     <div className="contenedor mt-4 page-container">
@@ -345,9 +377,17 @@ const TurnosSecretaria = () => {
                       turno.estado === "Ingresado" ? "bg-secondary":
                       turno.estado === "Confirmado" ? "bg-info":
                       turno.estado === "Ingresado" ? "bg-dark":
-                      turno.estado === "Fallido" ? "bg-warning"
+                      turno.estado === "Fallido" ? "bg-warning text-dark"
                       : "bg-primary"}`}>
                       {turno.estado}
+                      {(turno.estado === "Fallido" || turno.estado === "Realizado") && (
+                        <i
+                        className="fa-sharp fa-solid fa-circle-info text-light ms-2"
+                        style={{ cursor: "pointer", fontSize: "0.9rem"}}
+                        onClick={() => handleInfoClick(turno)}
+                        title="Ver detalles del turno"
+                      />
+                      )}
                     </span>
                   </td>
                   <td>
@@ -536,7 +576,6 @@ const TurnosSecretaria = () => {
                             dosis: "",
                             unidadMedida: "",
                             descripcion: "",
-                            observacion: "",
                           }
                         ]
                       });
@@ -553,11 +592,18 @@ const TurnosSecretaria = () => {
                     className="form-control"
                     rows="3"
                     value={medicamentoData.observacion}
-                    onChange={handleFallidoInput}
+                    onChange={(e) => {
+                      let observacion = e.target.value;
+                      setMedicamentoData({
+                        ...medicamentoData,
+                        observacion
+                      });
+                    }}
+                    name="observacion"
                     placeholder="Ingrese la observación del Turno."
                   ></textarea>
                 </div>
-
+                
                 
               </div>
 
@@ -638,6 +684,7 @@ const TurnosSecretaria = () => {
                   <textarea
                     className="form-control"
                     rows="3"
+                    name = "comentario"
                     value={fallidoModal.comentario}
                     onChange={handleFallidoInput}
                     placeholder="Ingrese el inconveniente del turno."
@@ -660,8 +707,9 @@ const TurnosSecretaria = () => {
                       setError("Por favor ingrese un comentario");
                       return;
                     }
+                    handleConfirmChange()
                     setError(null);
-                    setConfirmModal(true);
+                    setFallidoModal({ show: false, comentario: "", veterinario: "" })
                   }}
                 >
                   Confirmar
@@ -670,6 +718,46 @@ const TurnosSecretaria = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Modal de Informacion Turno Finalizado */}
+      {modalInfo.show && (
+      <div className="modal show fade d-block" tabIndex="-1" role="dialog">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Detalle del Turno</h5>
+              <button type="button" className="btn-close" onClick={handleCloseModalInfo}></button>
+            </div>
+            <div className="modal-body">
+              <p><strong>Veterinario:</strong> {infoTurnoFinalizados?.nombreVeterinario}</p>
+              <p><strong>Matricula:</strong> {infoTurnoFinalizados?.matricula}</p>
+              <p><strong>Observación:</strong> {infoTurnoFinalizados?.observacion || "Sin observación"}</p>
+
+              <hr />
+              <h5>Medicaciones:</h5>
+              {infoTurnoFinalizados?.medicaciones?.length > 0 ? (
+                <ul>
+                  {infoTurnoFinalizados.medicaciones.map((med, index) => (
+                    <li key={index}>
+                      <p><strong>Medicamento:</strong> {med.medicamento}</p>
+                      <p><strong>Dosis:</strong> {med.dosis}</p>
+                      <p><strong>Unidad de Medida:</strong> {med.unidadMedida}</p>
+                      <p><strong>Descripción:</strong> {med.descripcion || "Sin descripción"}</p>
+                      <hr />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No se registraron medicaciones para este turno.</p>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseModalInfo}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
       )}
 
 

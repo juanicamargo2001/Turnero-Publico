@@ -18,6 +18,7 @@ function TurnoVecino() {
       setIsLoading(true);
       try {
         const data = await misTurnosService.obtenerMisTurnos();
+        console.log(data)
         setTurnos(Array.isArray(data) ? data : [data]);
         setIsLoading(false);
       } catch {
@@ -142,7 +143,7 @@ function TurnoVecino() {
                   </div>
                   <div className="d-flex flex-column align-items-start">
                     <button
-                      className="btn btn-primary mb-2 w-100"
+                      className= {`btn btn-primary mb-2 w-100 ${turno.estado === "Realizado" ? "" : "d-none"}`}
                       onClick={() =>{
                         
                         
@@ -153,7 +154,8 @@ function TurnoVecino() {
                       Detalles
                     </button>
                     <button
-                      className={`w-100 btn btn-danger ${turno.tipoTurno === "EMERGENCIA" || turno.estado === "Cancelado" ? "d-none" : ""}`}
+                      className={`w-100 btn btn-danger ${turno.tipoTurno === "EMERGENCIA" || turno.estado === "Cancelado" ||
+                        turno.estado === "Realizado" ? "d-none" : ""}`}
                       onClick={() => handleCancelarTurno(turno.idHorario)}
                     >
                       Cancelar

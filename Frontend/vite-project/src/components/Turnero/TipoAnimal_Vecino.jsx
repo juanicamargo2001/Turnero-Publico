@@ -119,7 +119,7 @@ const TipoAnimal_Vecino = () => {
   }
 
   return (
-    <div className="container text-center mt-5">
+    <div className="container text-center mt-5 page-container">
       <h1 className="mb-4 maven-pro-title">{title}</h1>
       <div className="row">
         {mascotas.length > 0 ? (
@@ -165,7 +165,7 @@ const TipoAnimal_Vecino = () => {
         ) : (
           <div className="alert text-center">
             <p className="mb-3">
-              No hay mascotas registradas. Por favor, registre una.
+              Actualmente no hay mascotas registradas pendientes de castración. Por favor, ingrese una nueva mascota.
             </p>
             <button
               type="button"

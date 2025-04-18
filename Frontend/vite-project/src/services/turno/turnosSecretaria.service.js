@@ -66,7 +66,6 @@ async function obtenerTurnosPorDni(dni) {
       });
   
       if (resp.status === 200) {
-        console.log(`Turno con ID ${idHorario} confirmado exitosamente.`);
         return resp.data;
       } else {
         throw new Error("Error al confirmar el turno.");
@@ -89,7 +88,6 @@ async function obtenerTurnosPorDni(dni) {
       });
   
       if (resp.status === 200) {
-        console.log(`Turno con ID ${idHorario} confirmado el ingreso exitosamente.`);
         return resp.data;
       } else {
         throw new Error("Error al confirmar el ingreso del turno.");
@@ -100,15 +98,17 @@ async function obtenerTurnosPorDni(dni) {
     }
   }
   
-  async function finalizarHorario(idHorario, idLegajoVeterinario, medicaciones) {
+  async function finalizarHorario(idHorario, idLegajoVeterinario, medicaciones, observacion) {
+    console.log
     try {
       const token = await loginService.obtenerTokenConRenovacion();
       const body = {
         idHorario,
         idLegajoVeterinario,
         medicaciones,
-      };
-  
+        observacion
+      };  
+
       const resp = await axios.post(`${API_URL}/finalizarTurno`, body, {
         headers: {
           'ngrok-skip-browser-warning': 'true',
@@ -118,7 +118,6 @@ async function obtenerTurnosPorDni(dni) {
       });
   
       if (resp.status === 200) {
-        console.log(`Turno con ID ${idHorario} finalizado exitosamente.`);
         return resp.data;
       } else {
         throw new Error("Error al finalizar el turno.");
@@ -129,10 +128,50 @@ async function obtenerTurnosPorDni(dni) {
     }
   }
 
+  async function finalizarTurnoFallido(idHorario, idLegajoVeterinario, observacion) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const resp = await axios.post(`${API_URL}/finalizarFallido`, {idHorario, idLegajoVeterinario, observacion} , {
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (resp.status === 204) {
+        return resp.data;
+      }
+    } catch {
+      return null
+    }
+  }
+  async function ObtenerInfoTurnosFinalizados(idHorario) {
+    try {
+      const token = await loginService.obtenerTokenConRenovacion();
+      const resp = await axios.post(`${API_URL}/obtenerFinalizacionTurno`, idHorario, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (resp.status === 200) {
+        return resp.data;
+      }
+    } catch{
+        return null
+    }
+  }
+  
+
 export default {
   obtenerTurnosPorFecha,
   obtenerTurnosPorDni,
   confirmarTurno,
   confirmarIngreso,
-  finalizarHorario
+  finalizarHorario,
+  finalizarTurnoFallido,
+  ObtenerInfoTurnosFinalizados
 };

@@ -4,6 +4,7 @@ import { sexosService } from '../services/animal/sexo.service';
 import { tamanoService } from '../services/animal/tamano.service';
 import { tipoAnimalService } from '../services/animal/tipoAnimal.service';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 const RegistroAnimal = () => {
@@ -15,6 +16,7 @@ const RegistroAnimal = () => {
   const [query, setQuery] = useState('');
   const [mostrarOpciones, setMostrarOpciones] = useState(false);
   const refContenedor = useRef(null);
+  const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors }, watch, reset, setValue } = useForm({
     mode: 'onChange',
@@ -23,8 +25,6 @@ const RegistroAnimal = () => {
   const HandleRaza = async(e) => {
 
     setQuery(e.target.value)
-
-    console.log(query)
 
     if (query.length > 2){
 
@@ -43,7 +43,6 @@ const RegistroAnimal = () => {
   }
 
   const handleSelect = (raza) => {
-    console.log(raza)
     setValue('raza', raza.nombreRaza);
     setMostrarOpciones(false);
   };
@@ -68,7 +67,7 @@ const RegistroAnimal = () => {
               confirmButtonColor: "#E15562",
               confirmButtonText: "OK",
             }).then(() => {
-              reset(); 
+              navigate("/turno")
           });
       Object.keys(data).forEach((key) => {
         if (key !== 'edad') {

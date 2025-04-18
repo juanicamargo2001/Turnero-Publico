@@ -152,7 +152,6 @@ function BuscarTurnosPorDni() {
   }
 
   const handleSelect = (raza) => {
-    console.log(raza)
     setValue('raza', raza.nombreRaza);
     setMostrarOpciones(false);
   };

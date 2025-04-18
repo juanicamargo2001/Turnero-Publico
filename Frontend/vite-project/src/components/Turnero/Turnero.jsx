@@ -10,6 +10,7 @@ import { horarios } from '../../services/agenda/horarios.service';
 import { turneroService } from '../../services/turno/turnero.service';
 import { turnosService } from '../../services/turno/turnos.service';
 import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 
@@ -25,6 +26,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
     const timesContainerRef = React.useRef(null); // Referencia al contenedor de horarios
     const location = useLocation();
     const { tipoAnimal,idMascota } = location.state || {}; // Obtiene tipoAnimal desde el estado
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         // Llamada a la API para obtener las fechas del turno por ID
@@ -84,7 +86,7 @@ export default function DateCalendarValue({ nombreCentro, turnoId }) {
                 icon: "success",
                 confirmButtonColor: "#E15562",
                 confirmButtonText: "OK",
-              });
+              }).then(() => navigate("/misTurnos"));
         } catch (error) {
             setError("Hubo un problema al confirmar tu turno.");
             console.error("Error al confirmar el turno:", error);
