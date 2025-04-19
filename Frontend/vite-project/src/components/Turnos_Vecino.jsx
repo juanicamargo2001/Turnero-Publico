@@ -114,7 +114,7 @@ function TurnoVecino() {
   }
 
   return (
-    <div className="container p-2¿ maven-pro-body page-container">
+    <div className="container p-2 maven-pro-body page-container">
       <div className="row justify-content-center">
         {isLoading && (
           <div className="loading-overlay">
@@ -129,7 +129,7 @@ function TurnoVecino() {
               <div className="shadow-sm border p-5 rounded">
                 <div className="d-flex justify-content-between">
                   <div style={{ paddingLeft: "15px" }}>
-                    <h5>{`Turno para ${turno.tipoTurno}`}</h5>
+                    <h5>{`Turno para ${turno.nombreMascota != null ?turno.nombreMascota : turno.tipoTurno }`}</h5>
                     <p>
                       <strong>Hora:</strong> {parsearHorario(turno.hora) || "No disponible"}{" "}
                       <br />
@@ -176,14 +176,18 @@ function TurnoVecino() {
             <Modal.Title>Descripción Postoperatorio</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+        {console.log(postOperatorio)}
+
+        {postOperatorio.length > 0 ? (
+          <p><strong>Recomendación:</strong> Utilizar un {
+            postOperatorio[0].sexo === 'MACHO' ? 'Collar Isabelino' : 
+            postOperatorio[0].sexo === 'HEMBRA' ? 'Collar Isabelino o Faja' : 
+            ''
+        }</p>
+        ):<p>No hay datos disponibles.</p> }
         {postOperatorio.length > 0 ? (
           postOperatorio.map((item, index) => (
             <div key={index}>
-              <p><strong>Recomendación:</strong> Utilizar un {
-                  item.sexo === 'MACHO' ? 'Collar Isabelino' : 
-                  item.sexo === 'HEMBRA' ? 'Collar Isabelino o Faja' : 
-                  ''
-              }</p>
               <p>🧪 <strong>Nombre:</strong> {item.medicamento}</p>
               <p>💉 <strong>Dosis:</strong> {item.dosis} {item.unidadMedida}</p>
               <p>📝 <strong>Descripción:</strong> {item.descripcion || "Sin descripción"}</p>
