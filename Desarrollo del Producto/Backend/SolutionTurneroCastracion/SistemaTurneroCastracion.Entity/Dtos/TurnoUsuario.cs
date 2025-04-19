@@ -18,6 +18,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string Estado { get; set; }
 
+        public string? NombreMascota { get; set; }
 
     }
 }

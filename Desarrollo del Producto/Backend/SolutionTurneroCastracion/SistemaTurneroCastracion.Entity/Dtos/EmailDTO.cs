@@ -8,7 +8,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 {
     public class EmailDTO
     {
-        public string? TipoEmail {  get; set; }
+        public string? TipoEmail { get; set; }
 
         public string Email { get; set; }
 
@@ -16,7 +16,7 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string CentroCastracion { get; set; }
 
-        public string Fecha {  get; set; }
+        public string Fecha { get; set; }
 
         public string Hora { get; set; }
 
@@ -24,5 +24,6 @@ namespace SistemaTurneroCastracion.Entity.Dtos
 
         public string Mensaje { get; set; }
 
+        public string? NombreMascota {  get; set; }
     }
 }

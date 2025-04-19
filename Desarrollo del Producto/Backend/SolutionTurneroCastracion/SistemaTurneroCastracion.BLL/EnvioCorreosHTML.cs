@@ -369,7 +369,7 @@ namespace SistemaTurneroCastracion.BLL
                                 <tr>
                                   <td style=""padding: 10px 20px;"">
                                     <p style=""color: #333333; font-size: 16px; margin: 0;"">
-                                      Hola, " + nombreFormateado + @". " + texto.Mensaje + @"
+                                      Hola, " + nombreFormateado + @". " + texto.Mensaje + texto.NombreMascota + @".
                                     </p>
                                   </td>
                                 </tr>

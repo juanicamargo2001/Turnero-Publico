@@ -76,7 +76,7 @@ namespace SistemaTurneroCastracion.DAL.Publisher
                                                               (E.Nombre == EstadoTurno.Confirmado.ToString()
                                                               && ahora.Year == C.FechaEnvio.Year
                                                               && ahora.Day == C.FechaEnvio.Day
-                                                              && ahora.AddHours(-3).Hour == C.Hora.Hours
+                                                              && ahora.AddHours(-3).Hour >= C.Hora.Hours
                                                               && ahora.Minute >= C.Hora.Minutes + 15)
                                                         select H).ToListAsync();
 

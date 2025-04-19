@@ -187,7 +187,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         private async Task<bool> EnviarCorreoTurnoSolicitado(int? idUsuario, HorarioMascotaDTO horarioMascota)
         {
-            EmailDTO? email = await this.ObtenerInformacionEmail(idUsuario, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente su turno.");
+            EmailDTO? email = await this.ObtenerInformacionEmail(idUsuario, horarioMascota.IdTurnoHorario, "Registro de Turno", "Hemos agendado correctamente el turno para ");
 
             string mensaje = EnvioCorreosHTML.CrearHTMLRegistroCancelacion(email, esCancelacion: false);
 
@@ -363,7 +363,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             if (cancelarUsuario == null)
                 return false;
 
-            EmailDTO? email = await this.ObtenerInformacionEmail(idUsuario, idTurno, "Cancelación de Turno", "Hemos cancelado su turno de forma exitosa.");
+            EmailDTO? email = await this.ObtenerInformacionEmail(idUsuario, idTurno, "Cancelación de Turno", "Hemos cancelado correctamente el turno de ");
 
             cancelarUsuario.Id_Usuario = null;
 
@@ -395,6 +395,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                             join A in _dbContext.Agenda on T.IdAgenda equals A.IdAgenda
                             join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                             join C in _dbContext.Centros on A.IdCentroCastracion equals C.Id_centro_castracion
+                            join M in _dbContext.Mascotas on H.Id_mascota equals M.IdMascota
                             where H.IdHorario == IdHorario && U.IdUsuario == idUsuario
                             select new EmailDTO
                             {
@@ -405,7 +406,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                 Fecha = T.Dia.ToString(),
                                 Hora = H.Hora.ToString() ?? String.Empty,
                                 Tipo = TT.NombreTipo,
-                                Mensaje = mensaje
+                                Mensaje = mensaje,
+                                NombreMascota = M.Nombre
 
                             }).FirstOrDefault();
 

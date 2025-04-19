@@ -137,12 +137,12 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
         public async Task<List<TurnoUsuario>> ObtenerTurnosUsuario(HttpContext context)
         {
             int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
-            Console.WriteLine(idUsuario.ToString());
 
             var turnosUsuarios = (from H in _dbContext.Horarios
                                   join T in _dbContext.Turnos on H.IdTurno equals T.IdTurno
                                   join TT in _dbContext.TipoTurnos on H.TipoTurno equals TT.TipoId
                                   join E in _dbContext.Estados on H.Id_Estado equals E.IdEstado
+                                  join M in _dbContext.Mascotas on H.Id_mascota equals M.IdMascota
                                   where H.Id_Usuario == idUsuario
                                   orderby T.Dia descending, H.Hora descending
                                   select new TurnoUsuario
@@ -151,7 +151,8 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
                                       Hora = H.Hora,
                                       TipoTurno = TT.NombreTipo,
                                       DiaTurno = T.Dia,
-                                      Estado = E.Nombre
+                                      Estado = E.Nombre,
+                                      NombreMascota = M.Nombre
                                   }
                                   ).ToList();
 
