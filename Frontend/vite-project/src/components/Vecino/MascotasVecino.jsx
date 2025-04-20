@@ -52,6 +52,7 @@ const MisMascotas = () => {
       setMascotas(response.result);
       setIsLoading(false);
     };
+    setIsLoading(false);
 
     fetchMascotas();
   }, []);
