@@ -29,7 +29,7 @@ function TurnoVecino() {
     fetchTurnos();
 }, []);
 
-  const handleCancelarTurno = async (idHorario) => {
+  const handleCancelarTurno = async (idHorario, idUsuario) => {
     const parsedId = parseInt(idHorario);
 
     if (isNaN(parsedId)) {
@@ -54,7 +54,7 @@ function TurnoVecino() {
         // Si el usuario confirma la cancelación
         try {
           // Cancelar el turno en el backend
-          await misTurnosService.cancelarTurno(parsedId);
+          await misTurnosService.cancelarTurno(parsedId, idUsuario);
           setCancelError(null);
           console.log(`Turno con ID ${parsedId} cancelado exitosamente.`);
 
@@ -156,7 +156,7 @@ function TurnoVecino() {
                     <button
                       className={`w-100 btn btn-danger ${turno.tipoTurno === "EMERGENCIA" || turno.estado === "Cancelado" ||
                         turno.estado === "Realizado" ? "d-none" : ""}`}
-                      onClick={() => handleCancelarTurno(turno.idHorario)}
+                      onClick={() => handleCancelarTurno(turno.idHorario, null)}
                     >
                       Cancelar
                     </button>

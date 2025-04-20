@@ -222,7 +222,7 @@ const TurnosSecretaria = () => {
         );
 
       } else if (nuevoEstado === "Cancelado") {
-        await misTurnosService.cancelarTurno(selectedTurno.idHorario);
+        await misTurnosService.cancelarTurno(selectedTurno.idHorario, selectedTurno.idUsuario);
       //} else if (nuevoEstado === "Confirmado") {
       //  await turnosService.confirmarTurno(selectedTurno.idHorario);
       } else if (nuevoEstado === "Ingresado") {
