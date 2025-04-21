@@ -56,7 +56,8 @@ async function BuscarPorDni(dni) {
     }
 }
 
-async function Modificar(nuevoVeterinario) {
+async function Modificar(nuevoVeterinario, legajo ) {
+    nuevoVeterinario.idLegajo = legajo;
     try {
         const token = await loginService.obtenerTokenConRenovacion();
         const response = await axios.put(API_URL, nuevoVeterinario, {
@@ -66,6 +67,7 @@ async function Modificar(nuevoVeterinario) {
                 'Authorization': `Bearer ${token}` 
               },
         });
+        console.log(response)
         return response.data;
     } catch (error) {
         console.error("Error al modificar el veterinario:", error.response ? error.response.data : error.message);

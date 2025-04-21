@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Modal from '../Visual_Modificador';
 import { centroService } from '../../services/centro/centro.service';
 import Informacion_VxC from './Informacion_VxC.jsx';
@@ -6,22 +6,41 @@ import UserRoleContext from '../Login/UserRoleContext';
 import Swal from 'sweetalert2';
 import { styled } from "@mui/material/styles";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-} from "@mui/material";
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    TextField,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+    FormHelperText,
+    Box,
+  } from "@mui/material";
 
 export default function Modificar_Centro() {
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
     const [idCentro, setIdCentro] = useState(null);
+      const [erros, setErros] = useState({});
 
-    const [selectedItem, setSelectedItem] = useState(null);
+      const [selectedItem, setSelectedItem] = useState({
+        nombre: "",
+        barrio: "",
+        calle: "",
+        altura: "",
+        horaLaboralInicio: "",
+        horaLaboralFin: "",
+        habilitado: ""
+      });
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [nombreCentro, setNombreCentro] = useState([]);
@@ -36,7 +55,6 @@ export default function Modificar_Centro() {
     
     const closeModal = () => {
         setIsModalOpen(false);
-        setSelectedItem(null);
     };
 
     const fecthCentros = async () => {
@@ -73,6 +91,98 @@ export default function Modificar_Centro() {
         const { idCentro, ...newRow } = row;
         openModal(newRow);
     };
+
+    const handleSubmit = async (event) => {
+          event.preventDefault();
+      
+          let validationErrors = {};
+
+          if (!selectedItem.nombre || selectedItem.nombre.trim() === "")
+            validationErrors.nombre = "El nombre es requerido";
+        
+          if (!selectedItem.barrio || selectedItem.barrio.trim() === "")
+            validationErrors.barrio = "El barrio es requerido";
+        
+          if (!selectedItem.calle || selectedItem.calle.trim() === "")
+            validationErrors.calle = "La calle es requerida";
+        
+          if (
+            selectedItem.altura === undefined ||
+            selectedItem.altura === null ||
+            selectedItem.altura.toString().trim() === ""
+          ) {
+            validationErrors.altura = "La altura es requerida";
+          } else if (isNaN(selectedItem.altura) || selectedItem.altura <= 0) {
+            validationErrors.altura = "La altura debe ser un número válido y mayor a 0";
+          }
+        
+          if (
+            selectedItem.horaLaboralInicio === undefined ||
+            selectedItem.horaLaboralInicio === ""
+          ) {
+            validationErrors.horaLaboralInicio = "La hora de inicio es requerida";
+          }
+        
+          if (
+            selectedItem.horaLaboralFin === undefined ||
+            selectedItem.horaLaboralFin === ""
+          ) {
+            validationErrors.horaLaboralFin = "La hora de fin es requerida";
+          }
+        
+          if (
+            selectedItem.horaLaboralInicio &&
+            selectedItem.horaLaboralFin &&
+            selectedItem.horaLaboralInicio >= selectedItem.horaLaboralFin
+          ) {
+            validationErrors.horaLaboralFin =
+              "La hora de fin debe ser posterior a la hora de inicio";
+          }
+        
+          if (Object.keys(validationErrors).length > 0) {
+            setErros(validationErrors);
+            return;
+          }
+          
+
+          console.log(selectedItem)
+    
+          try {
+              
+              let response = await centroService.Modificar({
+                ...selectedItem,
+                horaLaboralInicio: selectedItem.horaLaboralInicio?.includes(":")
+                  ? (selectedItem.horaLaboralInicio.match(/^\d{2}:\d{2}:\d{2}$/)
+                      ? selectedItem.horaLaboralInicio
+                      : `${selectedItem.horaLaboralInicio}:00`)
+                  : `${selectedItem.horaLaboralInicio}:00:00`,
+                  
+                horaLaboralFin: selectedItem.horaLaboralFin?.includes(":")
+                  ? (selectedItem.horaLaboralFin.match(/^\d{2}:\d{2}:\d{2}$/)
+                      ? selectedItem.horaLaboralFin
+                      : `${selectedItem.horaLaboralFin}:00`)
+                  : `${selectedItem.horaLaboralFin}:00:00`,
+              }, idCentro);
+              console.log(response)
+              if (response != null)
+                Swal.fire({
+                  text: "El centro se editó correctamente",
+                  icon: "success",
+                  confirmButtonColor: "#E15562",
+                  confirmButtonText: "OK",
+                }).then(() => {
+                  window.location.reload();
+                });
+            } catch {
+              Swal.fire({
+                text: "Sucedió un error al editar",
+                icon: "error",
+                confirmButtonColor: "#E15562",
+                confirmButtonText: "OK",
+              })
+          }
+          closeModal();
+        };
 
     const handleModalSubmitSort = async (formData) => {
         if (!formData.nombre || !formData.barrio || !formData.calle || !formData.horaLaboralInicio || !formData.horaLaboralFin) {
@@ -229,13 +339,162 @@ export default function Modificar_Centro() {
                     </TableBody>
                 </StyledTable>
             </StyledTableContainer>
-
+{/* 
             <Modal
                 show={isModalOpen}
                 handleClose={closeModal}
                 item={selectedItem || {}}
                 onSubmitSort={handleModalSubmitSort}
-            />
+            /> */}
+
+            <React.Fragment>
+                        <Dialog open={isModalOpen} onClose={closeModal} fullWidth>
+                          <DialogContent>
+                          <form onSubmit={handleSubmit}>
+                            {/* Nombre */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Nombre"
+                                fullWidth
+                                variant="standard"
+                                value={selectedItem.nombre || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({ ...prev, nombre: e.target.value }))
+                                }
+                                error={Boolean(erros.nombre)}
+                                helperText={erros.nombre}
+                            />
+                            </Box>
+
+                            {/* Barrio */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Barrio"
+                                fullWidth
+                                variant="standard"
+                                value={selectedItem.barrio || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({ ...prev, barrio: e.target.value }))
+                                }
+                                error={Boolean(erros.barrio)}
+                                helperText={erros.barrio}
+                            />
+                            </Box>
+
+                            {/* Calle */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Calle"
+                                fullWidth
+                                variant="standard"
+                                value={selectedItem.calle || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({ ...prev, calle: e.target.value }))
+                                }
+                                error={Boolean(erros.calle)}
+                                helperText={erros.calle}
+                            />
+                            </Box>
+
+                            {/* Altura */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Altura"
+                                fullWidth
+                                variant="standard"
+                                type="number"
+                                value={selectedItem.altura || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({ ...prev, altura: e.target.value }))
+                                }
+                                error={Boolean(erros.altura)}
+                                helperText={erros.altura}
+                            />
+                            </Box>
+
+                            {/* Hora Laboral Inicio */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Hora Laboral Inicio"
+                                fullWidth
+                                variant="standard"
+                                type="time"
+                                InputLabelProps={{ shrink: true }}
+                                value={selectedItem.horaLaboralInicio || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({
+                                    ...prev,
+                                    horaLaboralInicio: e.target.value,
+                                }))
+                                }
+                                error={Boolean(erros.horaLaboralInicio)}
+                                helperText={erros.horaLaboralInicio}
+                            />
+                            </Box>
+
+                            {/* Hora Laboral Fin */}
+                            <Box mb={2}>
+                            <TextField
+                                label="Hora Laboral Fin"
+                                fullWidth
+                                variant="standard"
+                                type="time"
+                                InputLabelProps={{ shrink: true }}
+                                value={selectedItem.horaLaboralFin || ""}
+                                onChange={(e) =>
+                                setSelectedItem((prev) => ({
+                                    ...prev,
+                                    horaLaboralFin: e.target.value,
+                                }))
+                                }
+                                error={Boolean(erros.horaLaboralFin)}
+                                helperText={erros.horaLaboralFin}
+                            />
+                            </Box>
+
+                            {/* Habilitado */}
+                            <Box mb={2}>
+                            <FormControl
+                                fullWidth
+                                variant="standard"
+                                error={Boolean(erros.habilitado)}
+                            >
+                                <InputLabel>¿Está habilitado?</InputLabel>
+                                <Select
+                                value={
+                                    selectedItem.habilitado !== undefined
+                                    ? String(selectedItem.habilitado)
+                                    : ""
+                                }
+                                onChange={(e) =>
+                                    setSelectedItem((prev) => ({
+                                    ...prev,
+                                    habilitado: e.target.value === "true",
+                                    }))
+                                }
+                                >
+                                <MenuItem value="true">Sí</MenuItem>
+                                <MenuItem value="false">No</MenuItem>
+                                </Select>
+                                {erros.habilitado && (
+                                <FormHelperText>{erros.habilitado}</FormHelperText>
+                                )}
+                            </FormControl>
+                            </Box>
+
+                            {/* Acciones */}
+                            <DialogActions>
+                            <Button onClick={closeModal}>Cancelar</Button>
+                            <Button type="submit" className="w-auto">
+                                Confirmar
+                            </Button>
+                            </DialogActions>
+                        </form>
+                        </DialogContent>
+                          </Dialog>
+                    </React.Fragment>
+
+
 
             {showVeterinarios && 
             <div className='w-100'>

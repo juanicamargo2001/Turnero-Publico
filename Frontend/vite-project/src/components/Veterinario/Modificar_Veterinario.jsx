@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from "../Visual_Modificador";
 import { veterinarioService } from "../../services/veterinario/veterinario.service";
 import UserRoleContext from "../Login/UserRoleContext";
@@ -13,17 +13,41 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  FormHelperText,
+  Box,
 } from "@mui/material";
 
 const Veterinarios = () => {
   const [error, setError] = useState(null);
+  const [erros, setErros] = useState({});
   const [data, setData] = useState([]);
   const [leg, setLegajo] = useState(null);
   const [busqueda, setBusqueda] = useState("");
 
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState({
+    nombre: "",
+    apellido: "",
+    dni: "",
+    telefono: "",
+    fNacimiento: "",
+    matricula: "",
+    domicilio: "",
+    email: "",
+    habilitado: false,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { userRole } = useContext(UserRoleContext);
+
+  
 
   const openModal = (item) => {
     
@@ -33,7 +57,7 @@ const Veterinarios = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedItem(null);
+    // setSelectedItem(null);
   };
 
   const fetchVeterinarios = async () => {
@@ -83,13 +107,81 @@ const Veterinarios = () => {
     },
   }));
 
+  const handleSubmit = async (event) => {
+      event.preventDefault();
+  
+      let validationErrors = {};
+      if (!selectedItem.nombre || selectedItem.nombre.trim() === "")
+        validationErrors.nombre = "El nombre es requerido";
+    
+      if (!selectedItem.apellido || selectedItem.apellido.trim() === "")
+        validationErrors.apellido = "El apellido es requerido";
+    
+      const dniRegex = /^\d{8}$/;
+      if (!selectedItem.dni) {
+        validationErrors.dni = "El DNI es requerido";
+      } else if (!dniRegex.test(selectedItem.dni.toString())) {
+        validationErrors.dni = "El DNI debe tener exactamente 8 dígitos";
+      }
+    
+      const telefonoRegex = /^\d{8,15}$/;
+      if (!selectedItem.telefono) {
+        validationErrors.telefono = "El teléfono es requerido";
+      } else if (!telefonoRegex.test(selectedItem.telefono.toString())) {
+        validationErrors.telefono = "El teléfono debe contener entre 8 y 15 números";
+      }
+    
+      if (!selectedItem.fNacimiento) {
+        validationErrors.fNacimiento = "La fecha de nacimiento es requerida";
+      } else {
+        const hoy = new Date();
+        const nacimiento = new Date(selectedItem.fNacimiento);
+        const edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mes = hoy.getMonth() - nacimiento.getMonth();
+        const dia = hoy.getDate() - nacimiento.getDate();
+    
+        const tiene18 = edad > 18 || (edad === 18 && (mes > 0 || (mes === 0 && dia >= 0)));
+        if (!tiene18) {
+          validationErrors.fNacimiento = "El veterinario debe tener al menos 18 años";
+        }
+      }
+
+      if (Object.keys(validationErrors).length > 0) {
+        setErros(validationErrors);
+        return;
+      }
+
+      try {
+          
+          let response = await veterinarioService.Modificar(selectedItem, leg);
+          console.log(response)
+          if (response != null)
+            Swal.fire({
+              text: "El veterinario se editó correctamente",
+              icon: "success",
+              confirmButtonColor: "#E15562",
+              confirmButtonText: "OK",
+            }).then(() => {
+              window.location.reload();
+            });
+        } catch {
+          Swal.fire({
+            text: "Sucedió un error al editar",
+            icon: "error",
+            confirmButtonColor: "#E15562",
+            confirmButtonText: "OK",
+          })
+      }
+      closeModal();
+    };
+
   useEffect(() => {
     fetchVeterinarios();
   }, []);
 
   const handleView = (row) => {
     setLegajo(row.idLegajo);
-    //MANEJAR ESTO EN UN COMPONENTE ESPECIFICO
+    //MANEJAR ESTO EN UN COMPONENTE ESPECIFICO XD
     row.fNacimiento = new Date(row.fNacimiento);
     const { idLegajo, ...newRow } = row;
     openModal(newRow);
@@ -164,6 +256,7 @@ const Veterinarios = () => {
       }
     }
   };
+
 
   return (
     <div className="container mt-4">
@@ -252,13 +345,182 @@ const Veterinarios = () => {
           </TableBody>
         </StyledTable>
       </StyledTableContainer>
-
+{/* 
       <Modal
         show={isModalOpen}
         handleClose={closeModal}
         item={selectedItem || {}}
         onSubmitSort={handleModalSubmitSort}
-      />
+      /> */}
+
+      <React.Fragment>
+            <Dialog open={isModalOpen} onClose={closeModal} fullWidth>
+              <DialogContent>
+                  <form onSubmit={handleSubmit}>
+                    <Box mb={2}>
+                      <TextField
+                        label="Nombre"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.nombre || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, nombre: e.target.value }))
+                        }
+                        error={Boolean(erros.nombre)}
+                        helperText={erros.nombre}
+                      />
+                    </Box>
+
+                    {/* Apellido */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Apellido"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.apellido || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, apellido: e.target.value }))
+                        }
+                        error={Boolean(erros.apellido)}
+                        helperText={erros.apellido}
+                      />
+                    </Box>
+
+                    {/* DNI */}
+                    <Box mb={2}>
+                      <TextField
+                        label="DNI"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.dni || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, dni: e.target.value }))
+                        }
+                        error={Boolean(erros.dni)}
+                        helperText={erros.dni}
+                      />
+                    </Box>
+
+                    {/* Teléfono */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Teléfono"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.telefono || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, telefono: e.target.value }))
+                        }
+                        error={Boolean(erros.telefono)}
+                        helperText={erros.telefono}
+                      />
+                    </Box>
+
+                    {/* Fecha de nacimiento */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Fecha de Nacimiento"
+                        fullWidth
+                        variant="standard"
+                        type="date"
+                        InputLabelProps={{ shrink: true }}
+                        value={
+                          selectedItem.fNacimiento
+                            ? new Date(selectedItem.fNacimiento).toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({
+                            ...prev,
+                            fNacimiento: e.target.value,
+                          }))
+                        }
+                        error={Boolean(erros.fNacimiento)}
+                        helperText={erros.fNacimiento}
+                      />
+                    </Box>
+
+                    {/* Matrícula */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Matrícula"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.matricula || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, matricula: e.target.value }))
+                        }
+                        error={Boolean(erros.matricula)}
+                        helperText={erros.matricula}
+                      />
+                    </Box>
+
+                    {/* Domicilio */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Domicilio"
+                        fullWidth
+                        variant="standard"
+                        value={selectedItem.domicilio || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, domicilio: e.target.value }))
+                        }
+                        error={Boolean(erros.domicilio)}
+                        helperText={erros.domicilio}
+                      />
+                    </Box>
+
+                    {/* Email */}
+                    <Box mb={2}>
+                      <TextField
+                        label="Email"
+                        fullWidth
+                        variant="standard"
+                        type="email"
+                        value={selectedItem.email || ""}
+                        onChange={(e) =>
+                          setSelectedItem((prev) => ({ ...prev, email: e.target.value }))
+                        }
+                        error={Boolean(erros.email)}
+                        helperText={erros.email}
+                      />
+                    </Box>
+
+                    {/* Habilitado */}
+                    <Box mb={2}>
+                      <FormControl
+                        fullWidth
+                        variant="standard"
+                        error={Boolean(erros.habilitado)}
+                      >
+                        <InputLabel>¿Está habilitado?</InputLabel>
+                        <Select
+                          value={selectedItem.habilitado !== undefined ? selectedItem.habilitado : ""}
+                          onChange={(e) =>
+                            setSelectedItem((prev) => ({
+                              ...prev,
+                              habilitado: e.target.value === "true",
+                            }))
+                          }
+                        >
+                          <MenuItem value="true">Sí</MenuItem>
+                          <MenuItem value="false">No</MenuItem>
+                        </Select>
+                        {erros.habilitado && (
+                          <FormHelperText>{erros.habilitado}</FormHelperText>
+                        )}
+                      </FormControl>
+                    </Box> 
+      
+      
+                    <DialogActions>
+                      <Button onClick={closeModal}>Cancelar</Button>
+                      <Button type="submit" className="w-auto">Confirmar</Button>
+                    </DialogActions>
+                  </form>
+                </DialogContent>
+              </Dialog>
+        </React.Fragment>
     </div>
   );
 };

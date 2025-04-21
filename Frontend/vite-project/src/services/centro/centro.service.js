@@ -42,7 +42,8 @@ async function BuscarTodos() {
   }
 }
 
-async function Modificar(nuevoCentro) {
+async function Modificar(nuevoCentro, idCentro) {
+  nuevoCentro.idCentro = idCentro
   try {
     const token = await loginService.obtenerTokenConRenovacion();
     const response = await axios.put(`${API_URL}`, nuevoCentro, {
