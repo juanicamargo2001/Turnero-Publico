@@ -176,7 +176,7 @@ export default function Modificar_Centro() {
     <div className="container mt-4 page-container">
             <h2 className="maven-pro-title text-center mb-4">CENTROS DE CASTRACIÓN</h2>
            {/* Mostrar el botón solo si el rol del usuario no es "Secretaria" */}
-           {userRole.rol !== 'secretaria' && (
+           {userRole.rol == 'superAdministrador' && (
                 <div className="d-flex justify-content-between mb-3">
                     <a href='/registrar/centro'>
                         <button className="btn btn-primary confir3">Crear centro de castración</button>
@@ -219,7 +219,7 @@ export default function Modificar_Centro() {
                         {row.horaLaboralFin ? row.horaLaboralFin.split(':')[0] : 'N/A'} HS
                         </StyledTableBodyCell>
                         <StyledTableBodyCell>
-                        {userRole.rol !== "secretaria" && (
+                        {userRole.rol == "superAdministrador" && (
                             <a href='#' onClick={() => handleView(row)} className='btn btn-separator'><i title="Modificar" className="fa fa-edit" aria-hidden="true"></i></a>
                         )}
                             <a onClick={() => handleInfo(row)}><i className="fa fa-info-circle" style={{fontSize: "1rem"}} title="Informacion" aria-hidden="true"></i></a>
