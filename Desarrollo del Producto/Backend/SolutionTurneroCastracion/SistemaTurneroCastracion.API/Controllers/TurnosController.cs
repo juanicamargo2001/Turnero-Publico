@@ -155,7 +155,7 @@ namespace SistemaTurneroCastracion.API.Controllers
 
 
         [HttpPost("cancelarTurno")]
-        public async Task<IActionResult> CancelarTurno([FromBody] int idTurno)
+        public async Task<IActionResult> CancelarTurno([FromBody] CancelacionRequestDTO request)
         {
             var (isValid, user, errorMessage) = await _validaciones.ValidateTokenAndRole(HttpContext, ["vecino", "secretaria", "administrador", "superAdministrador"]);
 
@@ -168,7 +168,7 @@ namespace SistemaTurneroCastracion.API.Controllers
                 return BadRequest(errorMessage);
             }
 
-            bool cancelado = await _horariosRepository.CancelarTurno(idTurno, HttpContext);
+            bool cancelado = await _horariosRepository.CancelarTurno(request, HttpContext);
 
             if (!cancelado)
             {

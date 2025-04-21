@@ -345,25 +345,27 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
 
         }
 
-        public async Task<bool> CancelarTurno(int idTurno, HttpContext context)
+        public async Task<bool> CancelarTurno(CancelacionRequestDTO request, HttpContext httpContext)
         {
 
-            int? idUsuario = UtilidadesUsuario.ObtenerIdUsuario(context);
+            request.IdUsuario ??= httpContext != null ? UtilidadesUsuario.ObtenerIdUsuario(httpContext) : null;
 
-            if (!await EsEstado(EstadoTurno.Reservado, idTurno))
+            Console.WriteLine(request.IdUsuario.ToString());
+
+            if (!await EsEstado(EstadoTurno.Reservado, request.IdHorario))
                 return false;
 
 
-            if (!await this.CambiarEstado(EstadoTurno.Libre, idTurno))
+            if (!await this.CambiarEstado(EstadoTurno.Libre, request.IdHorario))
                 return false;
 
 
-            Horarios? cancelarUsuario = _dbContext.Horarios.Where(h => h.IdHorario == idTurno).FirstOrDefault();
+            Horarios? cancelarUsuario = _dbContext.Horarios.Where(h => h.IdHorario == request.IdHorario).FirstOrDefault();
 
             if (cancelarUsuario == null)
                 return false;
 
-            EmailDTO? email = await this.ObtenerInformacionEmail(idUsuario, idTurno, "Cancelación de Turno", "Hemos cancelado correctamente el turno de ");
+            EmailDTO? email = await this.ObtenerInformacionEmail(request.IdUsuario, request.IdHorario, "Cancelación de Turno", "Hemos cancelado correctamente el turno de ");
 
             cancelarUsuario.Id_Usuario = null;
 
@@ -377,7 +379,7 @@ namespace SistemaTurneroCastracion.DAL.Implementacion
             await _emailPublisher.ConexionConRMQ(mensaje, "email_send");
 
 
-            if (!await _correosProgramados.BorrarCorreo(idTurno))
+            if (!await _correosProgramados.BorrarCorreo(request.IdHorario))
                 return false;
 
             return true;
