@@ -172,6 +172,7 @@ function BuscarTurnosPorDni() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  console.log(resultado)
 
   return (
     <div className="container mt-5 maven-pro-body page-container ">
@@ -231,7 +232,7 @@ function BuscarTurnosPorDni() {
             </thead>
             <tbody>
               {resultado.map((turno, index) => (
-                
+  
                 <tr
                   key={index}
                   className="border-b hover:bg-gray-100 transition duration-300"

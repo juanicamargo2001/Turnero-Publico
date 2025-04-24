@@ -30,8 +30,12 @@ function CancelacionMasiva() {
       return;
     }
   
-    const diaCancelacion = selectedDate.toLocaleDateString("es-ES");
-    const diaCancelacionString = diaCancelacion.split("/").reverse().join("-");
+    // const diaCancelacion = selectedDate.toLocaleDateString("es-ES");
+    // const diaCancelacionString = diaCancelacion.split("/").reverse().join("-");
+    const dia = selectedDate.getDate().toString().padStart(2, '0');
+    const mes = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+    const anio = selectedDate.getFullYear();
+    const diaCancelacionString = `${anio}-${mes}-${dia}`;
 
     const requestCancelacionesMasivas = {
       diaCancelacion: diaCancelacionString,

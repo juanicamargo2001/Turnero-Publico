@@ -62,6 +62,8 @@ const TipoAnimal_Admin = () => {
     if (!selectedMascota) {     
       return;
     }
+
+    console.log(turneroPath)
     navigate(turneroPath, { 
       state: { 
         tipoAnimal: selectedMascota.tipoAnimal,

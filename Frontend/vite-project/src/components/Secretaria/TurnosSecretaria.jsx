@@ -283,7 +283,6 @@ const TurnosSecretaria = () => {
     setModalInfo({show: false});
   };
 
-
   return (
     <div className="contenedor mt-4 page-container">
       <h2 className="maven-pro-title">Turnos del Día</h2>

@@ -118,6 +118,7 @@ const TipoAnimal_Vecino = () => {
     );
   }
 
+
   return (
     <div className="container text-center mt-5 page-container">
       <h1 className="mb-4 maven-pro-title">{title}</h1>
