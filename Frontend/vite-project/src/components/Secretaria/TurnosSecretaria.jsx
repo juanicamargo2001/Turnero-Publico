@@ -44,7 +44,7 @@ const TurnosSecretaria = () => {
 
   const estadosPermitidos = {
     Reservado: ["Cancelado"],
-    Confirmado: ["Ingresado", "Cancelado"],
+    Confirmado: ["Ingresado"],
     Ingresado: ["Realizado", "Fallido"],
 
     

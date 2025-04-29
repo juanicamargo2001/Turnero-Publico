@@ -155,7 +155,7 @@ function TurnoVecino() {
                     </button>
                     <button
                       className={`w-100 btn btn-danger ${turno.tipoTurno === "EMERGENCIA" || turno.estado === "Cancelado" ||
-                        turno.estado === "Realizado" ? "d-none" : ""}`}
+                        turno.estado === "Realizado" || turno.estado === "Confirmado" ? "d-none" : ""}`}
                       onClick={() => handleCancelarTurno(turno.idHorario, null)}
                     >
                       Cancelar
