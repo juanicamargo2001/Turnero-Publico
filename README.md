@@ -45,6 +45,7 @@ Turnero-Publico/
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend
+
 - **Framework:** .NET 8.0 (ASP.NET Core Web API)
 - **Arquitectura:** N-Capas (API, BLL, DAL, Entity, IOC)
 - **ORM:** Entity Framework Core
@@ -54,6 +55,7 @@ Turnero-Publico/
 - **Base de Datos:** SQL Server
 
 ### Frontend
+
 - **Framework:** React 18.3.1
 - **Build Tool:** Vite
 - **UI Components:** Material-UI (MUI), React Bootstrap
@@ -68,15 +70,18 @@ Turnero-Publico/
 Antes de comenzar, asegúrate de tener instalado:
 
 ### Para el Backend
+
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) o superior
 - [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads) (Express o Developer)
 - [RabbitMQ](https://www.rabbitmq.com/download.html) (opcional, para envío de correos)
 
 ### Para el Frontend
+
 - [Node.js](https://nodejs.org/) (versión 18.x o superior)
 - [npm](https://www.npmjs.com/) o [yarn](https://yarnpkg.com/)
 
 ### Herramientas Recomendadas
+
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) o [Visual Studio Code](https://code.visualstudio.com/)
 - [SQL Server Management Studio (SSMS)](https://aka.ms/ssmsfullsetup)
 - [Postman](https://www.postman.com/) o [Thunder Client](https://www.thunderclient.com/) para pruebas de API
@@ -138,6 +143,7 @@ dotnet run
 ```
 
 El backend estará disponible en:
+
 - **HTTP:** `http://localhost:5000`
 - **HTTPS:** `https://localhost:5001`
 - **Swagger UI:** `https://localhost:5001/swagger`
@@ -177,6 +183,7 @@ npm run dev
 ```
 
 El frontend estará disponible en:
+
 - **URL:** `http://localhost:5173`
 
 #### Paso 5: Compilar para producción (opcional)
@@ -285,6 +292,7 @@ frontend/Frontend/vite-project/
 ## 📊 Características Principales
 
 ### Gestión de Turnos
+
 - ✅ Solicitud de turnos en línea
 - ✅ Turnos telefónicos (para vecinos sin acceso a internet)
 - ✅ Turnos de urgencia
@@ -292,18 +300,21 @@ frontend/Frontend/vite-project/
 - ✅ Sistema de confirmación por email
 
 ### Gestión de Agendas
+
 - ✅ Configuración de horarios por centro
 - ✅ Habilitación/deshabilitación de días específicos
 - ✅ Cupos limitados por franja horaria
 - ✅ Feriados y días no laborables
 
 ### Reportes y Estadísticas
+
 - ✅ Reporte de castraciones por periodo
 - ✅ Estadísticas por tipo de animal
 - ✅ Reportes de cancelaciones
 - ✅ Calificaciones de servicio
 
 ### Notificaciones
+
 - ✅ Confirmación de turno por email
 - ✅ Recordatorios automáticos
 - ✅ Instrucciones postoperatorias
@@ -316,13 +327,15 @@ frontend/Frontend/vite-project/
 Este proyecto fue desarrollado por estudiantes de la carrera **Analista Universitario en Sistemas** de la **UTN FRC**.
 
 **Desarrolladores:**
+
 - Juan Ignacio Camargo ([GitHub](https://github.com/juanicamargo2001))
-- *(Agregar más integrantes del equipo)*
 
 **Asesoramiento Técnico:**
+
 - BIOCORDOBA (Ente BiCórdoba)
 
 **Institución:**
+
 - Universidad Tecnológica Nacional - Facultad Regional Córdoba
 
 ---
@@ -336,7 +349,8 @@ Este proyecto fue desarrollado con fines académicos para la Universidad Tecnol�
 ## 📧 Contacto
 
 Para consultas sobre el proyecto:
-- **Email:** *(agregar email de contacto)*
+
+- **Email:** *juancamargo987@gmail.com*
 - **GitHub Issues:** [Reportar un problema](https://github.com/juanicamargo2001/Turnero-Publico/issues)
 
 ---
@@ -344,6 +358,7 @@ Para consultas sobre el proyecto:
 ## 🙏 Agradecimientos
 
 Agradecemos especialmente a:
+
 - **BIOCORDOBA** por brindarnos la oportunidad de desarrollar este proyecto real
 - **UTN FRC** por la formación académica recibida
 - **Docentes y tutores** que guiaron el desarrollo del proyecto
