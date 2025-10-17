@@ -1,0 +1,84 @@
+import { useEffect, useState } from 'react';
+import { centroService } from '../../services/centro/centro.service';
+import CentroCastracionCard from './CentroCard';
+import alberdiImg from '../../imgs/alberdi.jpg'; 
+import lafranceImg from '../../imgs/lafrance.jfif';
+import villaImg from '../../imgs/villaall.webp';
+import { useNavigate } from 'react-router-dom';
+
+const CentrosCastracionList = () => {
+  const [centros, setCentros] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await centroService.BuscarTodos();
+        if (response.success && Array.isArray(response.result)) {
+          const centrosHabilitados = response.result.filter((centro) => centro.habilitado);
+          setCentros(centrosHabilitados);
+        } else {
+          setCentros([]);
+        }
+      } catch (error) {
+        console.error("Error al cargar los centros", error);
+        setCentros([]);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  // Objeto que contiene las imágenes de los centros
+  const imagenesCentros = {
+    14: alberdiImg,
+    15: lafranceImg,
+    16: villaImg,
+  };
+
+  // Objeto que contiene las rutas de los centros
+  const rutasCentros = {
+    14: "/tipoAnimal/alberdi",
+    15: "/tipoAnimal/lafrance",
+    16: "/tipoAnimal/villallende",
+  };
+
+  return (
+    <>
+      <div className="container mt-4">
+        <div className="row justify-content-center">
+        {Array.isArray(centros) && centros.length > 0 ? (
+          centros
+            .map((centro) => (
+              <div className="col-md-4 col-sm-6" key={centro.id_centro_castracion}>
+                <CentroCastracionCard
+                  nombre={centro.nombre}
+                  calle={centro.calle}
+                  altura={centro.altura}
+                  barrio={centro.barrio}
+                  horaInicio={formatearHora(centro.horaLaboralInicio)}
+                  horaFin={formatearHora(centro.horaLaboralFin)}
+                  imagen={imagenesCentros[centro.id_centro_castracion]}
+                  ruta={rutasCentros[centro.id_centro_castracion]}
+                />
+              </div>
+            ))
+        ) : (
+          <p>No se encontraron centros de castración disponibles.</p>
+        )}
+        </div>
+        <div className="d-flex justify-content-end p-2">
+        <button type="button" className="btn btn-dark me-2 confir2" style={{marginTop: "10px"}} onClick={() => navigate("/")}>Volver</button>
+      </div>
+      </div>
+      
+    </>
+  );
+};
+
+// Función para formatear la hora
+const formatearHora = (hora) => {
+  return hora ? hora.substring(0, 5) : "No disponible";
+};
+
+export default CentrosCastracionList;

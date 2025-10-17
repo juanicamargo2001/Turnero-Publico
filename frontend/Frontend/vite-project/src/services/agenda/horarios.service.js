@@ -1,0 +1,50 @@
+import axios from 'axios';
+import loginService from "../login/login.service";
+
+const API_URL = import.meta.env.VITE_TURNOS_URL;
+
+const horarios = {
+    async obtenerHorarios(turnoId, dia, tipoAnimal) {
+        try {
+            const token = await loginService.obtenerTokenConRenovacion();
+
+            const response = await axios.post(
+                API_URL,
+                { id: turnoId, dia: dia , tipoAnimal: tipoAnimal},
+                { headers: {
+                    'ngrok-skip-browser-warning': 'true',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                  }, }
+            );
+
+            // Verificar si la respuesta es exitosa
+            if (response.data.success) {
+                // Crear un mapa para evitar horarios duplicados
+                const uniqueHorarios = new Map();
+
+                // Filtrar horarios únicos y extraer tipoTurno sin habilitado
+                response.data.result[0].hora.forEach(hora => {
+                    const key = `${hora.hora}-${hora.tipoTurno}`;
+                    if (!uniqueHorarios.has(key)) {
+                        uniqueHorarios.set(key, {
+                            idHorario: hora.idHorario,
+                            hora: hora.hora,
+                            tipoTurno: hora.tipoTurno
+                        });
+                    }
+                });
+
+                // Convertir el mapa a un array y devolver
+                return Array.from(uniqueHorarios.values());
+            } else {
+                throw new Error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error al obtener los horarios:", error);
+            throw error;
+        }
+    }
+};
+
+export { horarios };

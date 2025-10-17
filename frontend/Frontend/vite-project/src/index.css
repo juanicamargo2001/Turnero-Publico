@@ -1,0 +1,708 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+.custom-menu-bg {
+  background-color: #009EE2; 
+  color: white;
+}
+.navbar-nav .nav-link {
+  color: white !important; 
+}
+.navbar-brand{
+  padding: 20px;
+}
+.maven-pro-title {
+  font-family: "Maven Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  color: #009EE2;
+}
+
+.maven-pro-body {
+  font-family: "Albert Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500; 
+  font-style: normal;
+}
+
+.maven-pro-title2{
+  color: #ffffff;
+  font-weight: 900;
+  text-align: center;
+}
+/* BOTONES */
+.btn.confir {
+  width: 100px;
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
+}
+.btn.confir2 {
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  /* background-color: #009EE2;
+  border-color: #009EE2; */
+}
+
+.btn.confir3 {
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
+}
+
+.obtn{
+  text-align: center;
+}
+.btn.obtenerTurno{
+  width: 80%;
+  height: 2.83rem;
+  border-radius: 30px;
+  font-size: 14px;
+  padding: 12px;
+  font-weight: 600;
+  background-color: #009EE2;
+  border-color: #009EE2;
+}
+.btn.obtenerTurno:hover{
+  background-color: #ffffff; /* Color de fondo al pasar el cursor */
+  color: #009EE2 !important;
+}
+
+.btn.btn-separator {
+  margin-right: 1px;  /* Ajusta este valor según el espacio que desees */
+}
+
+
+/* Tarjeta */
+.card.turno{
+  height: 100%;
+  width: 100%;
+  border: none;
+  box-shadow: 0 0 10px 0 rgba(97, 99, 100, 0.5);
+  border-radius: 10px ;
+}
+.card-body.turno{
+  padding: 30px 30px 30px 30px;
+}
+
+.card .card-img-top{
+  width: 100%;
+  height: 100%;
+}
+
+.tarjeta{
+  display: flex;
+}
+.tipoAnimal{
+  width: 320px;
+  height: 310px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+/*ACA ABAJO ESTILO DE TABLAS*/
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  /* margin: 20px 0; */
+  font-size: 16px;
+  font-family: 'Arial', sans-serif;
+}
+
+thead {
+  background-color: #f2f2f2;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  text-align: center;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody td {
+  padding: 12px;
+  text-align: left;
+  text-align: center;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+th, td {
+  border: 1px solid #ddd;
+}
+
+.modal-title{
+  color: #009EE2;
+}
+
+.fa{
+  color: #009EE2;
+}
+
+/* Estilos tabla reactiva*/
+
+.responsive-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.responsive-table thead {
+  background-color: #f2f2f2;
+  color: white;
+}
+
+.responsive-table th, .responsive-table td {
+  padding: 8px;
+  text-align: center;
+  border-top: px solid #ddd;
+  border-bottom: 2px solid #ddd;
+}
+
+.responsive-table th {
+  background-color: #009EE2;
+}
+
+.responsive-table tbody tr:nth-child(even) {
+  background-color: #009ee222;
+}
+
+.veterinarios-info >h5{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color:#009EE2;
+  text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+.responsive-table thead {
+  display: none; /* Oculta los encabezados en dispositivos móviles */
+}
+
+.responsive-table tr {
+  margin-bottom: 0.625em;
+  display: block;
+  border-bottom: 2px solid #ddd;
+}
+
+.responsive-table td {
+ display: block;
+ text-align: left;
+ position: relative;
+ padding-right: 50%;
+}
+
+.responsive-table td::before {
+ content: attr(data-label);
+ position: absolute;
+ left: 0;
+ width: 50%;
+ padding-left: 15px;
+ font-weight: bold;
+ text-align: left;
+}
+
+.responsive-table-dark tr {
+  border-bottom: 2px solid #555;
+}
+
+.responsive-table-dark td::before {
+  color: #bbb;
+}
+}
+
+.subtituloturnero {
+  font-family: "Maven Pro", sans-serif !important;
+  font-size: 20px;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  width: 100%; /* Asegurarse de que ocupe todo el ancho */
+}
+
+/*Error mensaje*/
+.error-message {
+  color: red;
+}
+
+/* Contenedor para centrar los títulos */
+.titles-container {
+  display: flex;
+  justify-content: space-between; /* Espaciado igual entre títulos */
+  align-items: center; /* Centrar verticalmente */
+  width: 100%; /* Ancho completo */
+}
+
+/* Estilos para la fila del calendario y horario */
+.calendar-time-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px; /* Add gap between calendar and time sections */
+}
+
+/* Mantener la clase .calendar-container */
+.calendar-container {
+  padding: 20px;
+  width: 50%; /* Asegúrate de que ocupe el ancho completo */
+}
+
+/* Estilos generales del calendario */
+.custom-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: #F3F2F5; /* Color por defecto de los días */
+  color: #333;
+}
+
+.custom-day:hover {
+  background-color: #e6f7ff;
+  cursor: pointer;
+}
+
+.Mui-selected {
+  background-color: #009EE2 !important; /* Color seleccionado */
+  color: rgb(255, 255, 255) !important; /* Texto blanco en fecha seleccionada */
+}
+
+/* Mantener la clase .time-container */
+.time-container {
+  padding: 20px;
+  padding-top: 0;
+  width: 50%; /* Asegúrate de que ocupe el ancho completo */
+  max-width: 250px; /* Controlar el ancho máximo */
+  margin-top: 20px; /* Espacio entre el calendario y los horarios */
+}
+
+.time-box {
+  display: flex;
+  flex-direction: row; /* Una sola columna */
+  justify-content: space-between; /* Espacio entre las columnas */
+  background-color: rgb(255, 255, 255); /* Fondo blanco para el time box */
+  border-radius: 15px; /* Bordes redondeados */
+  padding: 20px 10px !important;
+  box-shadow: 0 0px 3px rgba(0, 0, 0, 0.1);
+  gap: 20px; /* Espacio entre las columnas */
+  width: 100%; /* Ajustar el ancho completo del contenedor */
+}
+
+/* Contenedor de cada sección de horarios (Mañana y Tarde) */
+.time-section {
+  display: flex;
+  flex-direction: column;
+  width: 70%; /* Asigna espacio equitativo a cada columna */
+}
+
+.time-section h3 {
+  font-family: "Maven Pro", sans-serif;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.time-slots {
+  display: flex;
+  flex-direction: column;
+}
+
+.time-slot {
+  padding: 10px ;
+  margin: 5px 0;
+  border-radius: 10px;
+  background-color: #F3F2F5 !important; /* Color de fondo por defecto */
+  border: none; /* Sin borde */
+  
+}
+
+
+.time-slot.selected {
+  background-color: #009EE2 !important; /* Color de fondo si está seleccionado */
+  color: rgb(255, 255, 255); /* Color del texto si está seleccionado */
+}
+
+.time-slot.selected:hover {
+  background-color: #009EE2; /* Color de fondo si está seleccionado */
+  color: rgb(255, 255, 255); /* Azul más claro cuando pasas el mouse sobre el seleccionado */
+}
+
+.css-11a8txn-MuiStack-root {
+  padding: 20px;
+}
+
+
+
+.css-cyfsxc-MuiPickersCalendarHeader-labelContainer{
+  font-family: "Maven Pro", sans-serif !important;
+}
+
+.css-1rv8zyt-MuiStack-root{
+  overflow: visible !important;
+}
+
+/* Estilos para los días resaltados */
+.highlighted-day {
+  color: #69c706 ; /* Color del texto de los días resaltados */
+  pointer-events: all; /* Permitir clic solo en los días resaltados */
+}
+
+/* Estilo para los días que no tienen turnos */
+.disabled-day {
+  pointer-events: none; /* Deshabilitar clics */
+  opacity: 0.5; /* Hacer que los días no seleccionables se vean atenuados */
+}
+
+/* Estilo para el tooltip cuando el mouse pasa sobre días sin turnos */
+.disabled-day:hover::after {
+  content: "No hay turnos disponibles";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.css-4k4mmf-MuiButtonBase-root-MuiPickersDay-root,
+.css-17f9e7e-MuiTypography-root-MuiDayCalendar-weekDayLabel{
+  font-family: "Maven Pro" !important;
+}
+
+.calendar-header {
+  display: flex;
+  flex-direction: column; /* Cambiar a columna para que el h2 esté arriba */
+  align-items: center; /* Centrar horizontalmente */
+  width: 100%; /* Asegurarse de que ocupe todo el ancho */
+}
+
+
+@media (max-width: 600px) {
+  .time-box {
+    flex-direction: column; /* Cambia a columnas apiladas en pantallas pequeñas */
+    gap: 10px;
+  }
+
+  .time-section {
+    width: 100%; /* Ancho completo en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 1000px) {
+  .calendar-time-row {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+    align-items: center; /* Centra horizontalmente */
+  }
+
+  .calendar-container, .time-container {
+    width: 100%; /* Ancho completo para ambos contenedores */
+    margin-top: 20px; /* Espacio entre calendario y horarios */
+  }
+}
+
+.cct{
+  padding: 20px 20px 20px 0px;
+  font-weight: 600;
+}
+
+
+input, select, textarea {
+  border-radius: 15px !important; /* Borde redondeado para todos los inputs */
+}
+
+.navbar-nav .nav-link {
+  transition: background-color 0.3s, color 0.3s; /* Animación suave para el cambio */
+  margin: 2px;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: #ffffff; /* Color de fondo al pasar el cursor */
+  color: #009EE2 !important;
+  
+  
+}
+
+/*Subir archivos*/
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+.upload-container:hover {
+  border-color: #009EE2;
+}
+
+.btn-upload {
+  background-color: #009EE2;
+  color: white;
+  margin-top: 10px;
+}
+
+/*Datos personales*/
+.progress-bar {
+  color: #009EE2;
+}
+
+/* MIS TURNOS */
+/* Botón de confirmación (Cancelar) */
+.swal2-confirm {
+  background-color: #e15562 !important; /* Rojo para cancelar */
+  border: none !important;
+  color: white !important;
+}
+
+.swal2-confirm:hover {
+  background-color: #c44251 !important; /* Un tono de rojo más oscuro cuando pasa el cursor */
+}
+
+/* Botón de cancelación (Volver) */
+.swal2-cancel {
+  background-color: #6c757d; /* Color gris para Volver */
+  border: none;
+  color: white;
+}
+
+.swal2-cancel:hover {
+  background-color: #5a6268; /* Gris oscuro cuando pasa el cursor */
+}
+
+/*CENTROS DE CASTRACION*/
+/*Lista de sugerencias*/
+.autocomplete-list {
+  position: absolute;
+  z-index: 1000;
+  background-color: #fff;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 85%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+}
+
+.autocomplete-item {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover {
+  background-color: #f5f5f5;
+}
+
+/* Ajustar el input del barrio para evitar desbordamientos */
+#barrio {
+  box-sizing: border-box; /* Asegura que padding y borde no causen desbordamientos */
+}
+
+/* Opcional: contenedor del formulario para evitar que todo se desborde */
+.container {
+  max-width: 100%; /* Evita desbordes horizontales */
+  overflow-x: hidden; /* Esconde cualquier contenido que sobresalga */
+}
+
+
+.card.tipoAnimal {
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.card.tipoAnimal:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card.tipoAnimal.selected {
+  border-color: #009EE2;
+  background-color: #f0f8ff;
+  transform: scale(1.1);
+}
+
+/* FOOTER  */
+
+.contact-column {
+  background-color: #d6eaf8;
+  color: #1d3557;
+  border-radius: 80px 80px 0 0;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 1rem;
+}
+
+.footer-logo {
+  height: 50px;
+  width: auto;
+}
+
+.social-icon {
+  color: #6A9FCA;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #009EE2;
+}
+
+.footer-image-container {
+  background-color: #6A9FCA;
+  text-align: center;
+  padding: 1rem 0;
+  border-radius: 150px 150px 0 0;
+}
+
+.footer-image {
+  max-width: 60%;
+  height: auto;
+}
+
+/* PASO 1 */
+.card-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 50px 20px 50px 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s ease-in-out;
+  user-select: none;
+}
+
+.card-option:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.icon-container i {
+  font-size: 60px;
+  color: #6A9FCA;
+  margin-bottom: 15px;
+}
+
+.card-option h4 {
+  font-size: 18px;
+  margin: 0 0 10px;
+  color: #000;
+}
+
+.card-option p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+div.containerPaso1 {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.maven-pro-body {
+  flex: 2;
+  min-width: 300px;
+}
+
+.card-option.maven-pro-body {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+  align-self: center;
+}
+
+.video-container {
+  position: relative;
+  overflow: hidden;
+  height: 500px; /* Ajusta según tus necesidades */
+  background: black; /* Fondo negro para ocultar bordes si es necesario */
+}
+
+.video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none; /* Asegúrate de que no haya bordes alrededor del iframe */
+}
+
+.dropdown-menu[data-bs-popper] {
+  left: -60% !important; 
+}
+
+/* Estilos responsivos: para dispositivos tablet y celulares */
+@media (max-width: 768px) {
+  div.container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .col-md-4{
+    margin-bottom: 2rem;
+  }
+
+  .card-option.maven-pro-body {
+    align-self: stretch;
+  }
+}
+
+/* Reportes */
+.custom-tabs .nav-link {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-bottom-color: transparent;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-tabs .nav-link.active,
+.custom-tabs .nav-item.show .nav-link {
+  background-color: #CDE9FF !important;
+  color: #4A4A4A !important;
+  border-color: #CDE9FF !important;
+}
+
+.custom-tabs .nav-link:hover:not(.active) {
+  background-color: #d1d1d1;
+  color: #495057;
+}
+
+

@@ -1,0 +1,133 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .titulo-form {
+    font-size: 20px;
+    color: #606060;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .formulario-editar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .formulario-contraseña {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .seccion h5 {
+    font-size: 18px;
+    color: #777;
+    min-width: 120px;
+    margin-bottom: 10px;
+  }
+
+  .campo {
+    margin-bottom: 15px;
+  }
+
+  .campo-contraseña {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .campo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .campo-nombre-apellido {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .campo-nombre-apellido {
+      grid-template-columns: 1fr;
+    }
+
+    .campo-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .botonOjo{
+      margin-left: 88% !important;
+    }
+
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  
+  input:placeholder-shown {
+    color: #ccc; /* Placeholder gris claro */
+  }
+  
+  input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  button {
+    grid-column: span 2;
+    justify-self: center;
+    padding: 10px 20px;
+  }
+
+  .boton-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .btn-guardar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-guardar:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: #007bff;
+    padding: 10px;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .btn-link:hover, .btn-link.active {
+    background-color: #e6f7ff;
+    color: #0056b3;
+    font-weight: bold;
+  }  
+
+
+  
