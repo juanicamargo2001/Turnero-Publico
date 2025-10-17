@@ -350,7 +350,6 @@ Este proyecto fue desarrollado con fines acad√©micos para la Universidad Tecnol√
 
 Para consultas sobre el proyecto:
 
-- **Email:** *juancamargo987@gmail.com*
 - **GitHub Issues:** [Reportar un problema](https://github.com/juanicamargo2001/Turnero-Publico/issues)
 
 ---
