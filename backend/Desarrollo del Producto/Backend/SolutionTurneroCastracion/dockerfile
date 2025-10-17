@@ -1,0 +1,35 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["SistemaTurneroCastracion.API/SistemaTurneroCastracion.API.csproj", "SistemaTurneroCastracion.API/"]
+
+COPY ["SistemaTurneroCastracion.Entity/SistemaTurneroCastracion.Entity.csproj", "SistemaTurneroCastracion.Entity/"]
+
+COPY ["SistemaTurneroCastracion.DAL/SistemaTurneroCastracion.DAL.csproj", "SistemaTurneroCastracion.DAL/"]
+
+COPY ["SistemaTurneroCastracion.BLL/SistemaTurneroCastracion.BLL.csproj", "SistemaTurneroCastracion.BLL/"]
+
+COPY ["SistemaTurneroCastracion.IOC/SistemaTurneroCastracion.IOC.csproj", "SistemaTurneroCastracion.IOC/"]
+
+RUN dotnet restore "SistemaTurneroCastracion.API/SistemaTurneroCastracion.API.csproj"
+
+COPY . .
+
+WORKDIR "/src/SistemaTurneroCastracion.API"
+RUN dotnet build "SistemaTurneroCastracion.API.csproj" -c ${BUILD_CONFIGURATION} -o /app/build
+
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "SistemaTurneroCastracion.API.csproj" -c ${BUILD_CONFIGURATION} -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+ENTRYPOINT [ "dotnet", "SistemaTurneroCastracion.API.dll"]

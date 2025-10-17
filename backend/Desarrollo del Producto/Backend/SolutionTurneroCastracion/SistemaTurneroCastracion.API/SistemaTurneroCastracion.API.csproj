@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<UseRidGraph>true</UseRidGraph>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SistemaTurneroCastracion.BLL\SistemaTurneroCastracion.BLL.csproj" />
+    <ProjectReference Include="..\SistemaTurneroCastracion.Entity\SistemaTurneroCastracion.Entity.csproj" />
+    <ProjectReference Include="..\SistemaTurneroCastracion.IOC\SistemaTurneroCastracion.IOC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ImagenesDNI\tessdata\spa.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
